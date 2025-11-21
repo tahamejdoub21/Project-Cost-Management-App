@@ -7,6 +7,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 @Injectable()
 export class ShadowPrismaService
@@ -14,6 +16,7 @@ export class ShadowPrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   private readonly logger = new Logger(ShadowPrismaService.name);
+  private pool: Pool;
 
   constructor(private configService: ConfigService) {
     const shadowDatabaseUrl = configService.get<string>('SHADOW_DATABASE_URL');
@@ -23,23 +26,24 @@ export class ShadowPrismaService
       );
     }
 
-    // Temporarily override DATABASE_URL for shadow database connection
-    const originalDatabaseUrl = process.env.DATABASE_URL;
-    process.env.DATABASE_URL = shadowDatabaseUrl;
+    // Create PostgreSQL connection pool for shadow database
+    const pool = new Pool({
+      connectionString: shadowDatabaseUrl,
+    });
 
+    // Create Prisma adapter for PostgreSQL
+    const adapter = new PrismaPg(pool);
+
+    // Initialize PrismaClient with the adapter
     super({
+      adapter,
       log:
         configService.get<string>('NODE_ENV') === 'development'
           ? ['query', 'info', 'warn', 'error']
           : ['error'],
     });
 
-    // Restore original DATABASE_URL
-    if (originalDatabaseUrl) {
-      process.env.DATABASE_URL = originalDatabaseUrl;
-    } else {
-      delete process.env.DATABASE_URL;
-    }
+    this.pool = pool;
   }
 
   async onModuleInit() {

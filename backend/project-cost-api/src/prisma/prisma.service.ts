@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
 @Injectable()
 export class PrismaService
@@ -13,6 +15,7 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   private readonly logger = new Logger(PrismaService.name);
+  private pool: Pool;
 
   constructor(private configService: ConfigService) {
     const databaseUrl = configService.get<string>('DATABASE_URL');
@@ -20,14 +23,24 @@ export class PrismaService
       throw new Error('DATABASE_URL is not defined in environment variables');
     }
 
-    // PrismaClient automatically reads DATABASE_URL from environment
-    // We validate it here but let PrismaClient use it from env
+    // Create PostgreSQL connection pool
+    const pool = new Pool({
+      connectionString: databaseUrl,
+    });
+
+    // Create Prisma adapter for PostgreSQL
+    const adapter = new PrismaPg(pool);
+
+    // Initialize PrismaClient with the adapter
     super({
+      adapter,
       log:
         configService.get<string>('NODE_ENV') === 'development'
           ? ['query', 'info', 'warn', 'error']
           : ['error'],
     });
+
+    this.pool = pool;
   }
 
   async onModuleInit() {
