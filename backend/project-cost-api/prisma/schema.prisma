@@ -1,14 +1,553 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+
+}
+
+model User {
+  id                String              @id @default(uuid())
+  email             String              @unique
+  password          String
+  name              String
+  avatar            String?
+  role              UserRole            @default(USER)
+  isActive          Boolean             @default(true)
+  lastLoginAt       DateTime?
+  emailVerified     Boolean             @default(false)
+  verificationToken String?
+  resetToken        String?
+  resetTokenExpiry  DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  deletedAt         DateTime?
+  auditLogs         AuditLog[]
+  chatMessages      ChatMessage[]
+  costCategories    CostCategory[]
+  costTemplates     CostTemplate[]
+  costs             Cost[]
+  discussions       Discussion[]
+  notifications     Notification[]
+  attachments       ProjectAttachment[]
+  projects          Project[]
+  refreshTokens     RefreshToken[]
+  sessions          Session[]
+  taskAttachments   TaskAttachment[]
+  taskComments      TaskComment[]
+  tasks             Task[]
+  createdTasks      Task[]              @relation("TaskCreator")
+  teamMembers       TeamMember[]
+  ratingsReceived   TeamRating[]        @relation("RatingReceived")
+  teamRatings       TeamRating[]        @relation("RatingGiven")
+  timeEntries       TimeEntry[]
+  profile           UserProfile?
+  userSettings      UserSettings?
+
+  @@unique([email, deletedAt])
+  @@index([email, isActive])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
+}
+
+model UserProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  bio         String?
+  position    String?
+  department  String?
+  skills      String[]
+  experience  Int?
+  hourlyRate  Decimal? @db.Decimal(10, 2)
+  phone       String?
+  location    String?
+  website     String?
+  socialLinks Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model UserSettings {
+  id             String         @id @default(uuid())
+  userId         String         @unique
+  language       String         @default("en")
+  currency       String         @default("USD")
+  timezone       String         @default("UTC")
+  dateFormat     String         @default("YYYY-MM-DD")
+  theme          String         @default("light")
+  notifications  Json?          @default("{\"teamMessages\": true, \"monthlyReports\": false, \"projectUpdates\": true, \"taskAssignments\": true, \"deadlineReminders\": true}")
+  emailFrequency EmailFrequency @default(REALTIME)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
+
+model Project {
+  id           String              @id @default(uuid())
+  name         String
+  code         String              @unique
+  description  String?
+  client       String?
+  startDate    DateTime
+  endDate      DateTime
+  status       ProjectStatus       @default(PLANNING)
+  priority     ProjectPriority     @default(MEDIUM)
+  totalBudget  Decimal             @db.Decimal(15, 2)
+  actualCost   Decimal             @default(0) @db.Decimal(15, 2)
+  progress     Float               @default(0)
+  color        String              @default("#3B82F6")
+  tags         String[]
+  metadata     Json?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  userId       String
+  deletedAt    DateTime?
+  chatMessages ChatMessage[]
+  costs        Cost[]
+  discussions  Discussion[]
+  attachments  ProjectAttachment[]
+  phases       ProjectPhase[]
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks        Task[]
+  teamMembers  TeamMember[]
+  teamRatings  TeamRating[]
+
+  @@index([userId, status])
+  @@index([code])
+  @@index([startDate, endDate])
+  @@index([priority, status])
+  @@map("projects")
+}
+
+model TeamMember {
+  id          String   @id @default(uuid())
+  projectId   String
+  userId      String
+  role        TeamRole @default(MEMBER)
+  joinedAt    DateTime @default(now())
+  permissions Json?
+  isActive    Boolean  @default(true)
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@map("team_members")
+}
+
+model ProjectPhase {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  budget      Decimal     @db.Decimal(15, 2)
+  progress    Float       @default(0)
+  status      PhaseStatus @default(NOT_STARTED)
+  order       Int
+  projectId   String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  costs       Cost[]
+  project     Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@index([projectId, status])
+  @@index([projectId, order])
+  @@map("project_phases")
+}
+
+model Task {
+  id             String           @id @default(uuid())
+  title          String
+  description    String?
+  status         TaskStatus       @default(TODO)
+  priority       TaskPriority     @default(MEDIUM)
+  dueDate        DateTime?
+  estimatedHours Float?
+  actualHours    Float?
+  progress       Float            @default(0)
+  order          Int
+  tags           String[]
+  metadata       Json?
+  projectId      String
+  phaseId        String?
+  assigneeId     String?
+  creatorId      String
+  parentTaskId   String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  attachments    TaskAttachment[]
+  comments       TaskComment[]
+  assignee       User?            @relation(fields: [assigneeId], references: [id])
+  creator        User             @relation("TaskCreator", fields: [creatorId], references: [id])
+  parentTask     Task?            @relation("TaskDependencies", fields: [parentTaskId], references: [id])
+  subtasks       Task[]           @relation("TaskDependencies")
+  phase          ProjectPhase?    @relation(fields: [phaseId], references: [id])
+  project        Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  timeEntries    TimeEntry[]
+
+  @@index([projectId, status])
+  @@index([assigneeId, status])
+  @@index([dueDate])
+  @@index([priority, status])
+  @@map("tasks")
+}
+
+model TimeEntry {
+  id          String    @id @default(uuid())
+  taskId      String
+  userId      String
+  description String?
+  startTime   DateTime
+  endTime     DateTime?
+  duration    Float?
+  billable    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, userId])
+  @@index([startTime])
+  @@map("time_entries")
+}
+
+model TaskComment {
+  id        String        @id @default(uuid())
+  content   String
+  taskId    String
+  userId    String
+  parentId  String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  parent    TaskComment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies   TaskComment[] @relation("CommentReplies")
+  task      Task          @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([taskId, createdAt])
+  @@map("task_comments")
+}
+
+model TaskAttachment {
+  id          String   @id @default(uuid())
+  name        String
+  fileName    String
+  filePath    String
+  fileSize    Int
+  mimeType    String
+  description String?
+  taskId      String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("task_attachments")
+}
+
+model Discussion {
+  id        String        @id @default(uuid())
+  title     String
+  content   String?
+  projectId String
+  userId    String
+  isPinned  Boolean       @default(false)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  messages  ChatMessage[]
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, isPinned])
+  @@map("discussions")
+}
+
+model ChatMessage {
+  id           String      @id @default(uuid())
+  content      String
+  discussionId String?
+  projectId    String?
+  userId       String
+  messageType  MessageType @default(TEXT)
+  attachments  Json?
+  readBy       String[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  discussion   Discussion? @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+  project      Project?    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([discussionId, createdAt])
+  @@index([projectId, createdAt])
+  @@map("chat_messages")
+}
+
+model Notification {
+  id              String           @id @default(uuid())
+  userId          String
+  type            NotificationType
+  title           String
+  message         String
+  data            Json?
+  isRead          Boolean          @default(false)
+  relatedEntity   String?
+  relatedEntityId String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt])
+  @@map("notifications")
+}
+
+model TeamRating {
+  id          String   @id @default(uuid())
+  raterId     String
+  ratedUserId String
+  projectId   String
+  rating      Int
+  comment     String?
+  skills      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  ratedUser   User     @relation("RatingReceived", fields: [ratedUserId], references: [id])
+  rater       User     @relation("RatingGiven", fields: [raterId], references: [id])
+
+  @@unique([raterId, ratedUserId, projectId])
+  @@map("team_ratings")
+}
+
+model CostCategory {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  color       String         @default("#6B7280")
+  icon        String?
+  isActive    Boolean        @default(true)
+  userId      String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  user        User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  templates   CostTemplate[]
+  costs       Cost[]
+
+  @@unique([name, userId])
+  @@map("cost_categories")
+}
+
+model Cost {
+  id           String        @id @default(uuid())
+  title        String
+  description  String?
+  amount       Decimal       @db.Decimal(15, 2)
+  quantity     Int           @default(1)
+  unitPrice    Decimal       @db.Decimal(15, 2)
+  currency     String        @default("USD")
+  categoryId   String
+  type         CostType      @default(EXPENSE)
+  status       CostStatus    @default(PENDING)
+  dateIncurred DateTime
+  dueDate      DateTime?
+  paidDate     DateTime?
+  reference    String?
+  metadata     Json?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  projectId    String
+  phaseId      String?
+  userId       String
+  isRecurring  Boolean       @default(false)
+  recurrence   Json?
+  category     CostCategory  @relation(fields: [categoryId], references: [id])
+  phase        ProjectPhase? @relation(fields: [phaseId], references: [id])
+  project      Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, categoryId])
+  @@index([dateIncurred])
+  @@index([status])
+  @@index([type])
+  @@map("costs")
+}
+
+model CostTemplate {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  amount      Decimal      @db.Decimal(15, 2)
+  categoryId  String
+  metadata    Json?
+  userId      String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  category    CostCategory @relation(fields: [categoryId], references: [id])
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("cost_templates")
+}
+
+model ProjectAttachment {
+  id          String   @id @default(uuid())
+  name        String
+  fileName    String
+  filePath    String
+  fileSize    Int
+  mimeType    String
+  description String?
+  projectId   String
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("project_attachments")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  entity    String
+  entityId  String
+  oldValues Json?
+  newValues Json?
+  userId    String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  MANAGER
+  USER
+  VIEWER
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+enum ProjectPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum PhaseStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  BLOCKED
+}
+
+enum TeamRole {
+  OWNER
+  MANAGER
+  LEAD
+  MEMBER
+  VIEWER
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum CostType {
+  EXPENSE
+  INCOME
+  INVESTMENT
+}
+
+enum CostStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+  PAID
+  CANCELLED
+}
+
+enum MessageType {
+  TEXT
+  FILE
+  SYSTEM
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_UPDATED
+  TASK_COMMENT
+  PROJECT_INVITE
+  PROJECT_UPDATE
+  DEADLINE_REMINDER
+  TEAM_MESSAGE
+  SYSTEM
+}
+
+enum EmailFrequency {
+  REALTIME
+  DAILY
+  WEEKLY
+  NEVER
 }
