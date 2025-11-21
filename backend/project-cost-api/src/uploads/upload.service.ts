@@ -1,5 +1,4 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
@@ -11,11 +10,16 @@ const mkdirAsync = promisify(fs.mkdir);
 export class UploadService {
   private readonly uploadDir: string;
   private readonly maxFileSize = 5 * 1024 * 1024; // 5MB
-  private readonly allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+  private readonly allowedMimeTypes = [
+    'image/jpeg',
+    'image/png',
+    'image/jpg',
+    'image/webp',
+  ];
 
-  constructor(private configService: ConfigService) {
+  constructor() {
     this.uploadDir = path.join(process.cwd(), 'uploads');
-    this.ensureUploadDirectory();
+    void this.ensureUploadDirectory();
   }
 
   private async ensureUploadDirectory() {

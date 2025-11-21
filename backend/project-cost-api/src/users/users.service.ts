@@ -2,13 +2,12 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-  BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { UserRole } from '@prisma/client';
+import { UserRole, Prisma } from '@prisma/client';
 import { UploadService } from '../uploads/upload.service';
 
 @Injectable()
@@ -97,7 +96,7 @@ export class UsersService {
   ) {
     const skip = (page - 1) * limit;
 
-    const where: any = {
+    const where: Prisma.UserWhereInput = {
       deletedAt: null,
     };
 
@@ -243,22 +242,27 @@ export class UsersService {
       throw new ForbiddenException('You can only update your own profile');
     }
 
-    const updateData: any = {};
+    const updateData: Prisma.UserUpdateInput = {};
 
     if (updateUserDto.name) updateData.name = updateUserDto.name;
     if (updateUserDto.role) updateData.role = updateUserDto.role;
     if (updateUserDto.isActive !== undefined)
       updateData.isActive = updateUserDto.isActive;
 
-    const profileData: any = {};
-    if (updateUserDto.position) profileData.position = updateUserDto.position;
-    if (updateUserDto.department)
+    const profileData: Prisma.UserProfileUncheckedCreateInput = {
+      userId: id,
+    };
+    if (updateUserDto.position !== undefined)
+      profileData.position = updateUserDto.position;
+    if (updateUserDto.department !== undefined)
       profileData.department = updateUserDto.department;
-    if (updateUserDto.bio) profileData.bio = updateUserDto.bio;
-    if (updateUserDto.phone) profileData.phone = updateUserDto.phone;
-    if (updateUserDto.location) profileData.location = updateUserDto.location;
+    if (updateUserDto.bio !== undefined) profileData.bio = updateUserDto.bio;
+    if (updateUserDto.phone !== undefined)
+      profileData.phone = updateUserDto.phone;
+    if (updateUserDto.location !== undefined)
+      profileData.location = updateUserDto.location;
 
-    if (Object.keys(profileData).length > 0) {
+    if (Object.keys(profileData).length > 1) {
       updateData.profile = {
         upsert: {
           create: profileData,

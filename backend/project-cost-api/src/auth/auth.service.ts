@@ -149,7 +149,7 @@ export class AuthService {
 
   async refreshTokens(refreshToken: string) {
     try {
-      const payload = this.jwtService.verify(refreshToken, {
+      this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
 
@@ -182,7 +182,7 @@ export class AuthService {
       );
 
       return tokens;
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid refresh token');
     }
   }

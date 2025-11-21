@@ -52,9 +52,16 @@ export class UsersController {
   ) {
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 10;
-    const isActiveBoolean = isActive === 'true' ? true : isActive === 'false' ? false : undefined;
+    const isActiveBoolean =
+      isActive === 'true' ? true : isActive === 'false' ? false : undefined;
 
-    return this.usersService.findAll(pageNum, limitNum, role, isActiveBoolean, search);
+    return this.usersService.findAll(
+      pageNum,
+      limitNum,
+      role,
+      isActiveBoolean,
+      search,
+    );
   }
 
   @Get(':id')
@@ -69,7 +76,12 @@ export class UsersController {
     @CurrentUser('id') currentUserId: string,
     @CurrentUser('role') currentUserRole: UserRole,
   ) {
-    return this.usersService.update(id, updateUserDto, currentUserId, currentUserRole);
+    return this.usersService.update(
+      id,
+      updateUserDto,
+      currentUserId,
+      currentUserRole,
+    );
   }
 
   @Post(':id/avatar')

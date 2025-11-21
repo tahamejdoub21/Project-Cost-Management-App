@@ -4,19 +4,28 @@ import { BadRequestException } from '@nestjs/common';
 
 export const multerConfig = {
   storage: diskStorage({
-    destination: (req, file, cb) => {
+    destination: (_req, _file, cb) => {
       const uploadPath = './uploads/avatars';
       cb(null, uploadPath);
     },
-    filename: (req, file, cb) => {
+    filename: (_req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const ext = extname(file.originalname);
       const filename = `avatar-${uniqueSuffix}${ext}`;
       cb(null, filename);
     },
   }),
-  fileFilter: (req: any, file: any, cb: any) => {
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
+  fileFilter: (
+    _req: Express.Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null, acceptFile: boolean) => void,
+  ) => {
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/jpg',
+      'image/webp',
+    ];
 
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);

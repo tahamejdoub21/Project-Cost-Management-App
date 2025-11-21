@@ -1,5 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsOptional, IsString, IsEnum, IsBoolean, MinLength, MaxLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsBoolean,
+  MinLength,
+  MaxLength,
+} from 'class-validator';
 import { UserRole } from '@prisma/client';
 import { CreateUserDto } from './create-user.dto';
 

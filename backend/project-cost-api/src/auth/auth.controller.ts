@@ -9,7 +9,12 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto, RefreshTokenDto, ChangePasswordDto } from './dto';
+import {
+  RegisterDto,
+  LoginDto,
+  RefreshTokenDto,
+  ChangePasswordDto,
+} from './dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
@@ -68,7 +73,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  async getCurrentUser(@CurrentUser() user: any) {
+  getCurrentUser(@CurrentUser() user: unknown) {
     return user;
   }
 }
