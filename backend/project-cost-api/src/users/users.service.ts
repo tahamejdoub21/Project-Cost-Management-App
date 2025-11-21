@@ -32,12 +32,62 @@ export class UsersService {
     const existingUser = await this.prisma.user.findFirst({
       where: {
         email: createUserDto.email,
-        deletedAt: null,
       },
     });
 
-    if (existingUser) {
+    if (existingUser && existingUser.deletedAt === null) {
       throw new ConflictException('User with this email already exists');
+    }
+
+    if (existingUser && existingUser.deletedAt !== null) {
+      const hashedPassword = await bcrypt.hash(
+        createUserDto.password,
+        this.SALT_ROUNDS,
+      );
+
+      const restoredUser = await this.prisma.user.update({
+        where: { id: existingUser.id },
+        data: {
+          password: hashedPassword,
+          name: createUserDto.name,
+          role: createUserDto.role || UserRole.USER,
+          isActive: createUserDto.isActive ?? true,
+          deletedAt: null,
+          emailVerified: false,
+          avatar: null,
+          profile: {
+            upsert: {
+              create: {
+                position: createUserDto.position,
+                department: createUserDto.department,
+              },
+              update: {
+                position: createUserDto.position,
+                department: createUserDto.department,
+              },
+            },
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          avatar: true,
+          isActive: true,
+          emailVerified: true,
+          createdAt: true,
+          updatedAt: true,
+          profile: {
+            select: {
+              position: true,
+              department: true,
+            },
+          },
+        },
+      });
+
+      return restoredUser;
     }
 
     const hashedPassword = await bcrypt.hash(
@@ -249,24 +299,35 @@ export class UsersService {
     if (updateUserDto.isActive !== undefined)
       updateData.isActive = updateUserDto.isActive;
 
-    const profileData: Prisma.UserProfileUncheckedCreateInput = {
-      userId: id,
-    };
-    if (updateUserDto.position !== undefined)
-      profileData.position = updateUserDto.position;
-    if (updateUserDto.department !== undefined)
-      profileData.department = updateUserDto.department;
-    if (updateUserDto.bio !== undefined) profileData.bio = updateUserDto.bio;
-    if (updateUserDto.phone !== undefined)
-      profileData.phone = updateUserDto.phone;
-    if (updateUserDto.location !== undefined)
-      profileData.location = updateUserDto.location;
+    const profileCreateData: Prisma.UserProfileCreateWithoutUserInput = {};
+    const profileUpdateData: Prisma.UserProfileUpdateWithoutUserInput = {};
 
-    if (Object.keys(profileData).length > 1) {
+    if (updateUserDto.position !== undefined) {
+      profileCreateData.position = updateUserDto.position;
+      profileUpdateData.position = updateUserDto.position;
+    }
+    if (updateUserDto.department !== undefined) {
+      profileCreateData.department = updateUserDto.department;
+      profileUpdateData.department = updateUserDto.department;
+    }
+    if (updateUserDto.bio !== undefined) {
+      profileCreateData.bio = updateUserDto.bio;
+      profileUpdateData.bio = updateUserDto.bio;
+    }
+    if (updateUserDto.phone !== undefined) {
+      profileCreateData.phone = updateUserDto.phone;
+      profileUpdateData.phone = updateUserDto.phone;
+    }
+    if (updateUserDto.location !== undefined) {
+      profileCreateData.location = updateUserDto.location;
+      profileUpdateData.location = updateUserDto.location;
+    }
+
+    if (Object.keys(profileCreateData).length > 0) {
       updateData.profile = {
         upsert: {
-          create: profileData,
-          update: profileData,
+          create: profileCreateData,
+          update: profileUpdateData,
         },
       };
     }

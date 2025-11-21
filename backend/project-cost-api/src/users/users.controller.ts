@@ -10,9 +10,6 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -90,14 +87,7 @@ export class UsersController {
     @Param('id') id: string,
     @CurrentUser('id') currentUserId: string,
     @CurrentUser('role') currentUserRole: UserRole,
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }), // 5MB
-          new FileTypeValidator({ fileType: /^image\/(jpeg|png|jpg|webp)$/ }),
-        ],
-      }),
-    )
+    @UploadedFile()
     file: Express.Multer.File,
   ) {
     const allowedRoles: UserRole[] = [UserRole.SUPER_ADMIN, UserRole.ADMIN];
