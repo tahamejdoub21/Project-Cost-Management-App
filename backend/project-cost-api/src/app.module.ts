@@ -4,7 +4,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { ShadowPrismaService } from './prisma/shadow-prisma.service';
 import { ArchiveTask } from './prisma/archive.task';
 
 @Module({
@@ -13,9 +12,9 @@ import { ArchiveTask } from './prisma/archive.task';
       isGlobal: true,
     }),
     PrismaModule,
-    ScheduleModule.forRoot(), // <-- Add this
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService, ArchiveTask, ShadowPrismaService], // <-- Add ArchiveTask & ShadowPrismaService
+  providers: [AppService, ArchiveTask],
 })
 export class AppModule {}
