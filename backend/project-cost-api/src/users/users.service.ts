@@ -67,6 +67,12 @@ export class UsersService {
               },
             },
           },
+          userSettings: {
+            upsert: {
+              create: {},
+              update: {},
+            },
+          },
         },
         select: {
           id: true,
@@ -82,6 +88,14 @@ export class UsersService {
             select: {
               position: true,
               department: true,
+              bio: true,
+              phone: true,
+              location: true,
+              skills: true,
+              experience: true,
+              hourlyRate: true,
+              website: true,
+              socialLinks: true,
             },
           },
         },
@@ -129,6 +143,14 @@ export class UsersService {
           select: {
             position: true,
             department: true,
+            bio: true,
+            phone: true,
+            location: true,
+            skills: true,
+            experience: true,
+            hourlyRate: true,
+            website: true,
+            socialLinks: true,
           },
         },
       },
@@ -185,7 +207,14 @@ export class UsersService {
             select: {
               position: true,
               department: true,
+              bio: true,
               phone: true,
+              location: true,
+              skills: true,
+              experience: true,
+              hourlyRate: true,
+              website: true,
+              socialLinks: true,
             },
           },
         },
@@ -322,6 +351,26 @@ export class UsersService {
       profileCreateData.location = updateUserDto.location;
       profileUpdateData.location = updateUserDto.location;
     }
+    if (updateUserDto.skills !== undefined) {
+      profileCreateData.skills = updateUserDto.skills;
+      profileUpdateData.skills = updateUserDto.skills;
+    }
+    if (updateUserDto.experience !== undefined) {
+      profileCreateData.experience = updateUserDto.experience;
+      profileUpdateData.experience = updateUserDto.experience;
+    }
+    if (updateUserDto.hourlyRate !== undefined) {
+      profileCreateData.hourlyRate = updateUserDto.hourlyRate;
+      profileUpdateData.hourlyRate = updateUserDto.hourlyRate;
+    }
+    if (updateUserDto.website !== undefined) {
+      profileCreateData.website = updateUserDto.website;
+      profileUpdateData.website = updateUserDto.website;
+    }
+    if (updateUserDto.socialLinks !== undefined) {
+      profileCreateData.socialLinks = updateUserDto.socialLinks;
+      profileUpdateData.socialLinks = updateUserDto.socialLinks;
+    }
 
     if (Object.keys(profileCreateData).length > 0) {
       updateData.profile = {
@@ -351,6 +400,11 @@ export class UsersService {
             bio: true,
             phone: true,
             location: true,
+            skills: true,
+            experience: true,
+            hourlyRate: true,
+            website: true,
+            socialLinks: true,
           },
         },
       },
@@ -360,8 +414,11 @@ export class UsersService {
   }
 
   async updateAvatar(userId: string, file: Express.Multer.File) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
     });
 
     if (!user) {
@@ -393,8 +450,11 @@ export class UsersService {
   }
 
   async deleteAvatar(userId: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
     });
 
     if (!user) {

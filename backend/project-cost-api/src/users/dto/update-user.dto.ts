@@ -1,4 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
 import {
   IsOptional,
   IsString,
@@ -6,11 +5,15 @@ import {
   IsBoolean,
   MinLength,
   MaxLength,
+  IsArray,
+  IsInt,
+  IsNumber,
+  IsUrl,
+  IsObject,
 } from 'class-validator';
 import { UserRole } from '@prisma/client';
-import { CreateUserDto } from './create-user.dto';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+export class UpdateUserDto {
   @IsOptional()
   @IsString()
   @MinLength(2)
@@ -44,4 +47,25 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsString()
   location?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  skills?: string[];
+
+  @IsOptional()
+  @IsInt()
+  experience?: number;
+
+  @IsOptional()
+  @IsNumber()
+  hourlyRate?: number;
+
+  @IsOptional()
+  @IsUrl()
+  website?: string;
+
+  @IsOptional()
+  @IsObject()
+  socialLinks?: Record<string, string>;
 }

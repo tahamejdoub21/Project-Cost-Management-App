@@ -7,8 +7,16 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
-import { RegisterDto, LoginDto, ChangePasswordDto } from './dto';
+import {
+  RegisterDto,
+  LoginDto,
+  ChangePasswordDto,
+  VerifyEmailDto,
+  RequestPasswordResetDto,
+  ResetPasswordDto,
+} from './dto';
 import { UserRole } from '@prisma/client';
 
 @Injectable()
@@ -36,6 +44,7 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, this.SALT_ROUNDS);
+    const verificationToken = crypto.randomBytes(32).toString('hex');
 
     const user = await this.prisma.user.create({
       data: {
@@ -43,6 +52,7 @@ export class AuthService {
         password: hashedPassword,
         name: dto.name,
         role: UserRole.USER,
+        verificationToken,
         profile:
           dto.position || dto.department
             ? {
@@ -52,6 +62,9 @@ export class AuthService {
                 },
               }
             : undefined,
+        userSettings: {
+          create: {},
+        },
       },
       select: {
         id: true,
@@ -344,6 +357,163 @@ export class AuthService {
       refreshToken,
       sessionToken,
       expiresIn: this.ACCESS_TOKEN_EXPIRY,
+    };
+  }
+
+  async verifyEmail(dto: VerifyEmailDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        verificationToken: dto.token,
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired verification token');
+    }
+
+    if (user.emailVerified) {
+      throw new BadRequestException('Email is already verified');
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        verificationToken: null,
+      },
+    });
+
+    await this.createAuditLog(
+      user.id,
+      'EMAIL_VERIFIED',
+      'User',
+      user.id,
+      { emailVerified: false },
+      { emailVerified: true },
+    );
+
+    return { message: 'Email verified successfully' };
+  }
+
+  async requestPasswordReset(dto: RequestPasswordResetDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: dto.email,
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      return {
+        message:
+          'If an account with that email exists, a password reset link has been sent',
+      };
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 60 * 60 * 1000);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        resetToken,
+        resetTokenExpiry,
+      },
+    });
+
+    await this.createAuditLog(
+      user.id,
+      'PASSWORD_RESET_REQUESTED',
+      'User',
+      user.id,
+      null,
+      { resetTokenExpiry },
+    );
+
+    return {
+      message:
+        'If an account with that email exists, a password reset link has been sent',
+      resetToken,
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        resetToken: dto.token,
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired reset token');
+    }
+
+    if (!user.resetTokenExpiry || user.resetTokenExpiry < new Date()) {
+      throw new BadRequestException('Reset token has expired');
+    }
+
+    const hashedPassword = await bcrypt.hash(dto.newPassword, this.SALT_ROUNDS);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+
+    await this.prisma.refreshToken.updateMany({
+      where: { userId: user.id },
+      data: { revoked: true },
+    });
+
+    await this.createAuditLog(
+      user.id,
+      'PASSWORD_RESET',
+      'User',
+      user.id,
+      null,
+      null,
+    );
+
+    return { message: 'Password reset successfully. Please login again.' };
+  }
+
+  async resendVerificationEmail(email: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+        deletedAt: null,
+      },
+    });
+
+    if (!user) {
+      return {
+        message:
+          'If an account with that email exists, a verification email has been sent',
+      };
+    }
+
+    if (user.emailVerified) {
+      throw new BadRequestException('Email is already verified');
+    }
+
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        verificationToken,
+      },
+    });
+
+    return {
+      message:
+        'If an account with that email exists, a verification email has been sent',
+      verificationToken,
     };
   }
 
