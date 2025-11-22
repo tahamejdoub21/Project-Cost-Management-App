@@ -93,8 +93,11 @@ To test email sending:
 
 1. Use Postman collection endpoints for registration and password reset
 2. Check MailAPI.dev dashboard for sent emails
-3. Email tokens are NO LONGER returned in API responses for security
-4. In development, you can check the application logs for email send confirmations
+3. **Development Mode**: Tokens ARE returned in API responses when `NODE_ENV !== 'production'`
+   - `verificationToken` and `verificationUrl` included in registration/resend responses
+   - `resetToken` and `resetUrl` included in password reset responses
+4. **Production Mode**: Tokens are NOT returned in responses for security
+5. Postman test scripts automatically capture and save tokens to environment variables
 
 ## Security Notes
 

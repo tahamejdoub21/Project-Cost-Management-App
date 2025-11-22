@@ -101,11 +101,17 @@ export class AuthService {
       verificationToken,
     );
 
+    const isDevelopment = this.configService.get('NODE_ENV') !== 'production';
+
     return {
       user,
       ...tokens,
       message:
         'Registration successful! Please check your email to verify your account.',
+      ...(isDevelopment && {
+        verificationToken,
+        verificationUrl: `${this.configService.get('FRONTEND_URL')}/verify-email?token=${verificationToken}`,
+      }),
     };
   }
 
@@ -455,9 +461,15 @@ export class AuthService {
       resetToken,
     );
 
+    const isDevelopment = this.configService.get('NODE_ENV') !== 'production';
+
     return {
       message:
         'If an account with that email exists, a password reset link has been sent',
+      ...(isDevelopment && {
+        resetToken,
+        resetUrl: `${this.configService.get('FRONTEND_URL')}/reset-password?token=${resetToken}`,
+      }),
     };
   }
 
@@ -543,9 +555,15 @@ export class AuthService {
       verificationToken,
     );
 
+    const isDevelopment = this.configService.get('NODE_ENV') !== 'production';
+
     return {
       message:
         'If an account with that email exists, a verification email has been sent',
+      ...(isDevelopment && {
+        verificationToken,
+        verificationUrl: `${this.configService.get('FRONTEND_URL')}/verify-email?token=${verificationToken}`,
+      }),
     };
   }
 
