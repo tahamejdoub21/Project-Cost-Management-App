@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 import {
   RegisterDto,
   LoginDto,
@@ -29,6 +30,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private mailService: MailService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -92,9 +94,18 @@ export class AuthService {
       },
     );
 
+    // Send verification email
+    await this.mailService.sendVerificationEmail(
+      user.email,
+      user.name,
+      verificationToken,
+    );
+
     return {
       user,
       ...tokens,
+      message:
+        'Registration successful! Please check your email to verify your account.',
     };
   }
 
@@ -271,6 +282,9 @@ export class AuthService {
       null,
     );
 
+    // Send password changed confirmation email
+    await this.mailService.sendPasswordChangedEmail(user.email, user.name);
+
     return { message: 'Password changed successfully. Please login again.' };
   }
 
@@ -393,6 +407,9 @@ export class AuthService {
       { emailVerified: true },
     );
 
+    // Send welcome email
+    await this.mailService.sendWelcomeEmail(user.email, user.name);
+
     return { message: 'Email verified successfully' };
   }
 
@@ -431,10 +448,16 @@ export class AuthService {
       { resetTokenExpiry },
     );
 
+    // Send password reset email
+    await this.mailService.sendPasswordResetEmail(
+      user.email,
+      user.name,
+      resetToken,
+    );
+
     return {
       message:
         'If an account with that email exists, a password reset link has been sent',
-      resetToken,
     };
   }
 
@@ -479,6 +502,9 @@ export class AuthService {
       null,
     );
 
+    // Send password changed confirmation email
+    await this.mailService.sendPasswordChangedEmail(user.email, user.name);
+
     return { message: 'Password reset successfully. Please login again.' };
   }
 
@@ -510,10 +536,16 @@ export class AuthService {
       },
     });
 
+    // Send verification email
+    await this.mailService.sendVerificationEmail(
+      user.email,
+      user.name,
+      verificationToken,
+    );
+
     return {
       message:
         'If an account with that email exists, a verification email has been sent',
-      verificationToken,
     };
   }
 

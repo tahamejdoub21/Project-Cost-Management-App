@@ -276,21 +276,6 @@
         },
         {
           "name": "Resend Verification Email",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.verificationToken) {",
-                  "        pm.environment.set('verificationToken', jsonData.verificationToken);",
-                  "    }",
-                  "}"
-                ]
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
@@ -312,21 +297,6 @@
         },
         {
           "name": "Request Password Reset",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    var jsonData = pm.response.json();",
-                  "    if (jsonData.resetToken) {",
-                  "        pm.environment.set('resetToken', jsonData.resetToken);",
-                  "    }",
-                  "}"
-                ]
-              }
-            }
-          ],
           "request": {
             "method": "POST",
             "header": [
