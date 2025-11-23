@@ -13,6 +13,7 @@ import { MailModule } from './mail/mail.module';
 import { ProjectsModule } from './projects/projects.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
     UploadModule,
     ProjectsModule,
     StatisticsModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [

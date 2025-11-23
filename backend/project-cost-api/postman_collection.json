@@ -1,9 +1,9 @@
 {
   "info": {
     "name": "Project Cost Management API",
-    "description": "Complete API collection with authentication, user management, project management, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails. Now includes comprehensive statistics and analytics endpoints with advanced filtering.",
+    "description": "Complete API collection with authentication, user management, project management, task management, statistics, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails. Now includes comprehensive task management with filtering, assignment, and status updates.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "4.0.0"
+    "version": "5.0.0"
   },
   "variable": [
     {
@@ -40,6 +40,10 @@
     },
     {
       "key": "phaseId",
+      "value": ""
+    },
+    {
+      "key": "taskId",
       "value": ""
     }
   ],
@@ -1722,6 +1726,408 @@
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "description": "Task management endpoints - create, read, update, delete tasks with filtering, assignment, and status management",
+      "item": [
+        {
+          "name": "Create Task",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('taskId', response.id);",
+                  "    pm.environment.set('taskId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Implement User Authentication\",\n  \"description\": \"Add JWT authentication to the API with refresh tokens\",\n  \"status\": \"TODO\",\n  \"priority\": \"HIGH\",\n  \"dueDate\": \"2025-12-31T23:59:59Z\",\n  \"estimatedHours\": 8.5,\n  \"progress\": 0,\n  \"tags\": [\n    \"backend\",\n    \"api\",\n    \"security\"\n  ],\n  \"projectId\": \"{{projectId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ]
+            },
+            "description": "Create a new task in a project. Only project owners and team members can create tasks."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks?projectId={{projectId}}&page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks"
+              ],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by project ID"
+                },
+                {
+                  "key": "phaseId",
+                  "value": "",
+                  "description": "Filter by phase ID",
+                  "disabled": true
+                },
+                {
+                  "key": "assigneeId",
+                  "value": "",
+                  "description": "Filter by assignee ID",
+                  "disabled": true
+                },
+                {
+                  "key": "creatorId",
+                  "value": "",
+                  "description": "Filter by creator ID",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by status (TODO, IN_PROGRESS, REVIEW, DONE, CANCELLED)",
+                  "disabled": true
+                },
+                {
+                  "key": "priority",
+                  "value": "",
+                  "description": "Filter by priority (LOW, MEDIUM, HIGH, URGENT)",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search in title and description",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "",
+                  "description": "Filter by tag",
+                  "disabled": true
+                },
+                {
+                  "key": "dueDateFrom",
+                  "value": "",
+                  "description": "Filter tasks due after this date",
+                  "disabled": true
+                },
+                {
+                  "key": "dueDateTo",
+                  "value": "",
+                  "description": "Filter tasks due before this date",
+                  "disabled": true
+                },
+                {
+                  "key": "unassigned",
+                  "value": "",
+                  "description": "Show only unassigned tasks (true/false)",
+                  "disabled": true
+                },
+                {
+                  "key": "parentOnly",
+                  "value": "",
+                  "description": "Show only parent tasks (true/false)",
+                  "disabled": true
+                },
+                {
+                  "key": "sortBy",
+                  "value": "",
+                  "description": "Sort by field (createdAt, updatedAt, dueDate, priority, status, order)",
+                  "disabled": true
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "",
+                  "description": "Sort order (asc, desc)",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Items per page"
+                }
+              ]
+            },
+            "description": "Get all tasks with filtering, sorting, and pagination. Returns tasks from user's projects."
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/my-tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "my-tasks"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by status",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get tasks assigned to the current user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Tasks by Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/project/{{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "project",
+                "{{projectId}}"
+              ]
+            },
+            "description": "Get all tasks for a specific project."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Get detailed information about a specific task including comments, attachments, time entries, and subtasks."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Task Title\",\n  \"status\": \"IN_PROGRESS\",\n  \"priority\": \"URGENT\",\n  \"progress\": 50,\n  \"actualHours\": 4.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Update task details. All fields are optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Delete a task. Only project owners, task creators, or team managers can delete tasks."
+          },
+          "response": []
+        },
+        {
+          "name": "Assign Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assigneeId\": \"{{userId}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}/assign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}",
+                "assign"
+              ]
+            },
+            "description": "Assign a task to a user."
+          },
+          "response": []
+        },
+        {
+          "name": "Unassign Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}/unassign",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}",
+                "unassign"
+              ]
+            },
+            "description": "Remove the assignee from a task."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Task Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DONE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tasks/{{taskId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "tasks",
+                "{{taskId}}",
+                "status"
+              ]
+            },
+            "description": "Update the status of a task. Valid values: TODO, IN_PROGRESS, REVIEW, DONE, CANCELLED."
+          },
+          "response": []
         }
       ]
     },
