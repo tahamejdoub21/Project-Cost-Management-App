@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import axios from 'axios';
+import * as brevo from '@getbrevo/brevo';
 
 export interface EmailOptions {
   to: string;
@@ -11,54 +11,61 @@ export interface EmailOptions {
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private readonly apiKey: string;
+  private readonly apiInstance: brevo.TransactionalEmailsApi;
   private readonly fromEmail: string;
   private readonly fromName: string;
-  private readonly apiUrl = 'https://api.mailapi.dev/v1/email/send';
+  private readonly isConfigured: boolean;
 
   constructor() {
-    this.apiKey = process.env.MAILAPI_API_KEY || '';
-    this.fromEmail = process.env.MAILAPI_FROM_EMAIL || '';
-    this.fromName = process.env.MAILAPI_FROM_NAME || 'Project Cost Management';
+    const apiKey = process.env.BREVO_API_KEY || '';
+    this.fromEmail = process.env.BREVO_FROM_EMAIL || '';
+    this.fromName = process.env.BREVO_FROM_NAME || 'Project Cost Management';
 
-    if (!this.apiKey || !this.fromEmail) {
+    this.apiInstance = new brevo.TransactionalEmailsApi();
+
+    if (!apiKey || !this.fromEmail) {
       this.logger.warn(
-        'MailAPI configuration is missing. Email functionality will not work.',
+        'Brevo configuration is missing. Email functionality will not work.',
       );
+      this.isConfigured = false;
+    } else {
+      this.apiInstance.setApiKey(
+        brevo.TransactionalEmailsApiApiKeys.apiKey,
+        apiKey,
+      );
+      this.isConfigured = true;
+      this.logger.log('Brevo (Sendinblue) initialized successfully');
     }
   }
 
   async sendEmail(options: EmailOptions): Promise<boolean> {
-    try {
-      const response = await axios.post(
-        this.apiUrl,
-        {
-          from: {
-            email: this.fromEmail,
-            name: this.fromName,
-          },
-          to: [
-            {
-              email: options.to,
-            },
-          ],
-          subject: options.subject,
-          html: options.html,
-          text: options.text || this.stripHtml(options.html),
-        },
-        {
-          headers: {
-            'X-API-Key': this.apiKey,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+    if (!this.isConfigured) {
+      this.logger.error('Brevo not configured - check API key and from email');
+      return false;
+    }
 
-      this.logger.log(`Email sent successfully to ${options.to}`);
-      return response.status === 200;
+    try {
+      const sendSmtpEmail = new brevo.SendSmtpEmail();
+      sendSmtpEmail.sender = {
+        name: this.fromName,
+        email: this.fromEmail,
+      };
+      sendSmtpEmail.to = [{ email: options.to }];
+      sendSmtpEmail.subject = options.subject;
+      sendSmtpEmail.htmlContent = options.html;
+      if (options.text) {
+        sendSmtpEmail.textContent = options.text;
+      }
+
+      const result = await this.apiInstance.sendTransacEmail(sendSmtpEmail);
+
+      this.logger.log(
+        `Email sent successfully to ${options.to} (Message ID: ${result.body.messageId || 'unknown'})`,
+      );
+      return true;
     } catch (error) {
       this.logger.error(
-        `Failed to send email to ${options.to}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to send email to ${options.to}: ${error instanceof Error ? error.message : JSON.stringify(error)}`,
       );
       return false;
     }
@@ -356,12 +363,5 @@ export class MailService {
       </body>
       </html>
     `;
-  }
-
-  private stripHtml(html: string): string {
-    return html
-      .replace(/<[^>]*>/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
   }
 }

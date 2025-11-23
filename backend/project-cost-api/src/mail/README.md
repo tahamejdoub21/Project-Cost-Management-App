@@ -1,17 +1,25 @@
 # Mail Service Module
 
-This module handles all email functionality for the Project Cost Management application using MailAPI.dev.
+This module handles all email functionality for the Project Cost Management application using Brevo (formerly Sendinblue).
 
 ## Configuration
 
 Add the following environment variables to your `.env` file:
 
 ```env
-MAILAPI_API_KEY=your_api_key_here
-MAILAPI_FROM_EMAIL=noreply@mail.mailapi.dev
-MAILAPI_FROM_NAME=Project Cost Management
+BREVO_API_KEY=your_brevo_api_key_here
+BREVO_FROM_EMAIL=noreply@yourdomain.com
+BREVO_FROM_NAME=Project Cost Management
 FRONTEND_URL=http://localhost:4200
 ```
+
+### Getting Brevo API Key
+
+1. Sign up at [Brevo](https://www.brevo.com/)
+2. Go to Settings → SMTP & API → API Keys
+3. Create a new API key
+4. Copy the key to your `.env` file
+5. Verify your sender email address in Brevo dashboard
 
 ## Features
 
@@ -55,10 +63,11 @@ The mail service provides the following email templates:
 
 ## API Integration
 
-The service uses MailAPI.dev's REST API:
-- **Endpoint**: `https://api.mailapi.dev/v1/email/send`
-- **Authentication**: API key via `X-API-Key` header
-- **Content-Type**: `application/json`
+The service uses Brevo's (Sendinblue) official SDK:
+- **Package**: `@getbrevo/brevo`
+- **API**: Transactional Emails API
+- **Authentication**: API key configuration
+- **Features**: HTML emails, text fallback, sender customization
 
 ## Error Handling
 
@@ -91,13 +100,15 @@ export class YourService {
 
 To test email sending:
 
-1. Use Postman collection endpoints for registration and password reset
-2. Check MailAPI.dev dashboard for sent emails
-3. **Development Mode**: Tokens ARE returned in API responses when `NODE_ENV !== 'production'`
+1. Set up your Brevo account and add API key to `.env`
+2. Verify your sender email address in Brevo dashboard
+3. Use Postman collection endpoints for registration and password reset
+4. Check Brevo dashboard → Statistics → Transactional Emails for delivery status
+5. **Development Mode**: Tokens ARE returned in API responses when `NODE_ENV !== 'production'`
    - `verificationToken` and `verificationUrl` included in registration/resend responses
    - `resetToken` and `resetUrl` included in password reset responses
-4. **Production Mode**: Tokens are NOT returned in responses for security
-5. Postman test scripts automatically capture and save tokens to environment variables
+6. **Production Mode**: Tokens are NOT returned in responses for security
+7. Postman test scripts automatically capture and save tokens to environment variables
 
 ## Security Notes
 
