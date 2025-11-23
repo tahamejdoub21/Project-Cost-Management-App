@@ -6,6 +6,18 @@ export interface EmailOptions {
   subject: string;
   html: string;
   text?: string;
+  replyTo?: string;
+  tags?: string[];
+  attachments?: Array<{
+    content: string;
+    name: string;
+  }>;
+}
+
+export interface EmailResult {
+  success: boolean;
+  messageId?: string;
+  error?: string;
 }
 
 @Injectable()
@@ -15,6 +27,8 @@ export class MailService {
   private readonly fromEmail: string;
   private readonly fromName: string;
   private readonly isConfigured: boolean;
+  private emailsSentCount = 0;
+  private emailsFailedCount = 0;
 
   constructor() {
     const apiKey = process.env.BREVO_API_KEY || '';
@@ -35,12 +49,28 @@ export class MailService {
       );
       this.isConfigured = true;
       this.logger.log('Brevo (Sendinblue) initialized successfully');
+      this.logger.log(`Using sender: ${this.fromName} <${this.fromEmail}>`);
     }
+  }
+
+  isEmailConfigured(): boolean {
+    return this.isConfigured;
+  }
+
+  getEmailStats() {
+    return {
+      configured: this.isConfigured,
+      sent: this.emailsSentCount,
+      failed: this.emailsFailedCount,
+      fromEmail: this.fromEmail,
+      fromName: this.fromName,
+    };
   }
 
   async sendEmail(options: EmailOptions): Promise<boolean> {
     if (!this.isConfigured) {
       this.logger.error('Brevo not configured - check API key and from email');
+      this.emailsFailedCount++;
       return false;
     }
 
@@ -53,22 +83,125 @@ export class MailService {
       sendSmtpEmail.to = [{ email: options.to }];
       sendSmtpEmail.subject = options.subject;
       sendSmtpEmail.htmlContent = options.html;
+
       if (options.text) {
         sendSmtpEmail.textContent = options.text;
       }
 
+      if (options.replyTo) {
+        sendSmtpEmail.replyTo = { email: options.replyTo };
+      }
+
+      if (options.tags && options.tags.length > 0) {
+        sendSmtpEmail.tags = options.tags;
+      }
+
+      if (options.attachments && options.attachments.length > 0) {
+        sendSmtpEmail.attachment = options.attachments;
+      }
+
       const result = await this.apiInstance.sendTransacEmail(sendSmtpEmail);
 
+      this.emailsSentCount++;
       this.logger.log(
         `Email sent successfully to ${options.to} (Message ID: ${result.body.messageId || 'unknown'})`,
       );
       return true;
     } catch (error) {
+      this.emailsFailedCount++;
+      const errorMessage = this.getErrorMessage(error);
       this.logger.error(
-        `Failed to send email to ${options.to}: ${error instanceof Error ? error.message : JSON.stringify(error)}`,
+        `Failed to send email to ${options.to}: ${errorMessage}`,
       );
       return false;
     }
+  }
+
+  async sendEmailWithResult(options: EmailOptions): Promise<EmailResult> {
+    if (!this.isConfigured) {
+      this.logger.error('Brevo not configured - check API key and from email');
+      this.emailsFailedCount++;
+      return {
+        success: false,
+        error: 'Email service not configured',
+      };
+    }
+
+    try {
+      const sendSmtpEmail = new brevo.SendSmtpEmail();
+      sendSmtpEmail.sender = {
+        name: this.fromName,
+        email: this.fromEmail,
+      };
+      sendSmtpEmail.to = [{ email: options.to }];
+      sendSmtpEmail.subject = options.subject;
+      sendSmtpEmail.htmlContent = options.html;
+
+      if (options.text) {
+        sendSmtpEmail.textContent = options.text;
+      }
+
+      if (options.replyTo) {
+        sendSmtpEmail.replyTo = { email: options.replyTo };
+      }
+
+      if (options.tags && options.tags.length > 0) {
+        sendSmtpEmail.tags = options.tags;
+      }
+
+      if (options.attachments && options.attachments.length > 0) {
+        sendSmtpEmail.attachment = options.attachments;
+      }
+
+      const result = await this.apiInstance.sendTransacEmail(sendSmtpEmail);
+      const messageId = result.body.messageId || 'unknown';
+
+      this.emailsSentCount++;
+      this.logger.log(
+        `Email sent successfully to ${options.to} (Message ID: ${messageId})`,
+      );
+
+      return {
+        success: true,
+        messageId,
+      };
+    } catch (error) {
+      this.emailsFailedCount++;
+      const errorMessage = this.getErrorMessage(error);
+      this.logger.error(
+        `Failed to send email to ${options.to}: ${errorMessage}`,
+      );
+
+      return {
+        success: false,
+        error: errorMessage,
+      };
+    }
+  }
+
+  private getErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    if (typeof error === 'object' && error !== null) {
+      if ('response' in error && typeof error.response === 'object') {
+        const response = error.response as {
+          body?: { message?: string };
+          text?: string;
+        };
+        if (response?.body?.message) {
+          return response.body.message;
+        }
+        if (response?.text) {
+          return response.text;
+        }
+      }
+      return JSON.stringify(error);
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    return 'Unknown error occurred';
   }
 
   async sendVerificationEmail(
@@ -80,11 +213,27 @@ export class MailService {
     const verificationUrl = `${frontendUrl}/verify-email?token=${token}`;
 
     const html = this.getVerificationEmailTemplate(name, verificationUrl);
+    const text = `Hello ${name},
+
+Thank you for registering with Project Cost Management!
+
+To complete your registration, please verify your email address by clicking the link below:
+
+${verificationUrl}
+
+If you didn't create an account, you can safely ignore this email.
+
+Best regards,
+Project Cost Management Team
+
+© 2024 Project Cost Management. All rights reserved.`;
 
     return this.sendEmail({
       to: email,
-      subject: 'Verify Your Email Address',
+      subject: 'Verify Your Email Address - Project Cost Management',
       html,
+      text,
+      tags: ['verification', 'auth', 'onboarding'],
     });
   }
 
@@ -97,11 +246,29 @@ export class MailService {
     const resetUrl = `${frontendUrl}/reset-password?token=${token}`;
 
     const html = this.getPasswordResetEmailTemplate(name, resetUrl);
+    const text = `Hello ${name},
+
+We received a request to reset your password for your Project Cost Management account.
+
+Click the link below to reset your password:
+
+${resetUrl}
+
+⚠️ This link will expire in 1 hour.
+
+If you didn't request a password reset, please ignore this email or contact support if you have concerns.
+
+Best regards,
+Project Cost Management Team
+
+© 2024 Project Cost Management. All rights reserved.`;
 
     return this.sendEmail({
       to: email,
-      subject: 'Reset Your Password',
+      subject: 'Reset Your Password - Project Cost Management',
       html,
+      text,
+      tags: ['password-reset', 'auth', 'security'],
     });
   }
 
@@ -110,21 +277,49 @@ export class MailService {
     name: string,
   ): Promise<boolean> {
     const html = this.getPasswordChangedEmailTemplate(name);
+    const text = `Hello ${name},
+
+This is a confirmation that your password has been successfully changed for your Project Cost Management account.
+
+If you made this change, no further action is required.
+
+⚠️ If you did not make this change, please contact our support team immediately.
+
+Best regards,
+Project Cost Management Team
+
+© 2024 Project Cost Management. All rights reserved.`;
 
     return this.sendEmail({
       to: email,
-      subject: 'Password Changed Successfully',
+      subject: 'Password Changed Successfully - Project Cost Management',
       html,
+      text,
+      tags: ['password-changed', 'auth', 'security', 'notification'],
     });
   }
 
   async sendWelcomeEmail(email: string, name: string): Promise<boolean> {
     const html = this.getWelcomeEmailTemplate(name);
+    const text = `Hello ${name},
+
+Welcome to Project Cost Management! Your email has been verified and your account is now active.
+
+You can now log in and start managing your projects effectively.
+
+If you have any questions or need assistance, feel free to reach out to our support team.
+
+Best regards,
+Project Cost Management Team
+
+© 2024 Project Cost Management. All rights reserved.`;
 
     return this.sendEmail({
       to: email,
       subject: 'Welcome to Project Cost Management',
       html,
+      text,
+      tags: ['welcome', 'onboarding'],
     });
   }
 
