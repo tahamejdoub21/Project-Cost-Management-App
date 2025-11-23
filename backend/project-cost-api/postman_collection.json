@@ -1,9 +1,9 @@
 {
   "info": {
     "name": "Project Cost Management API",
-    "description": "Complete API collection with authentication, user management, project management, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails.",
+    "description": "Complete API collection with authentication, user management, project management, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails. Now includes comprehensive statistics and analytics endpoints with advanced filtering.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "3.0.0"
+    "version": "4.0.0"
   },
   "variable": [
     {
@@ -55,8 +55,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/health/email",
-              "host": ["{{baseUrl}}"],
-              "path": ["health", "email"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health",
+                "email"
+              ]
             },
             "description": "Check email service health and statistics. Returns configuration status, emails sent/failed counts, and sender information. This endpoint is public and requires no authentication."
           },
@@ -68,8 +73,13 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/health/email",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["health", "email"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health",
+                    "email"
+                  ]
                 }
               },
               "status": "OK",
@@ -92,7 +102,9 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}",
-              "host": ["{{baseUrl}}"]
+              "host": [
+                "{{baseUrl}}"
+              ]
             },
             "description": "Root API endpoint - returns welcome message"
           }
@@ -117,9 +129,9 @@
                   "    pm.environment.set('userId', jsonData.user.id);",
                   "    if (jsonData.verificationToken) {",
                   "        pm.environment.set('verificationToken', jsonData.verificationToken);",
-                  "        console.log('✅ User registered successfully');",
-                  "        console.log('📧 Verification email sent via Brevo');",
-                  "        console.log('🔗 Verification URL: ' + jsonData.verificationUrl);",
+                  "        console.log('\u2705 User registered successfully');",
+                  "        console.log('\ud83d\udce7 Verification email sent via Brevo');",
+                  "        console.log('\ud83d\udd17 Verification URL: ' + jsonData.verificationUrl);",
                   "    }",
                   "}"
                 ]
@@ -140,8 +152,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             },
             "description": "Register new user with full profile. This endpoint:\n- Creates new user account\n- Generates authentication tokens (access + refresh)\n- Sends email verification link via Brevo with tags: ['verification', 'auth', 'onboarding']\n- In development mode: returns verificationToken and verificationUrl\n\n**Email Template:** Green-themed professional email with verification button\n\n**Next Step:** Use 'Verify Email' endpoint to verify the account"
           }
@@ -180,8 +197,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           }
         },
@@ -216,8 +238,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           }
         },
@@ -251,8 +278,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/refresh",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "refresh"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
             }
           }
         },
@@ -268,8 +300,13 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/auth/profile",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "profile"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "profile"
+              ]
             }
           }
         },
@@ -285,8 +322,13 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
             }
           }
         },
@@ -298,9 +340,9 @@
               "script": {
                 "exec": [
                   "if (pm.response.code === 200) {",
-                  "    console.log('✅ Password changed successfully');",
-                  "    console.log('📧 Confirmation email sent via Brevo');",
-                  "    console.log('🔒 All user sessions have been revoked');",
+                  "    console.log('\u2705 Password changed successfully');",
+                  "    console.log('\ud83d\udce7 Confirmation email sent via Brevo');",
+                  "    console.log('\ud83d\udd12 All user sessions have been revoked');",
                   "    // Clear tokens as user needs to login again",
                   "    pm.environment.set('accessToken', '');",
                   "    pm.environment.set('refreshToken', '');",
@@ -327,8 +369,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/change-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "change-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
             },
             "description": "Change password for authenticated user. This endpoint:\n- Requires authentication (Bearer token)\n- Validates current password\n- Updates to new password\n- Revokes all existing sessions for security\n- Sends password changed confirmation email via Brevo with tags: ['password-changed', 'auth', 'security', 'notification']\n\n**Email Template:** Blue-themed security notification email\n\n**Note:** User must login again after password change"
           }
@@ -345,8 +392,13 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
             }
           }
         },
@@ -358,8 +410,8 @@
               "script": {
                 "exec": [
                   "if (pm.response.code === 200) {",
-                  "    console.log('✅ Email verified successfully');",
-                  "    console.log('📧 Welcome email sent via Brevo');",
+                  "    console.log('\u2705 Email verified successfully');",
+                  "    console.log('\ud83d\udce7 Welcome email sent via Brevo');",
                   "    pm.environment.set('verificationToken', '');",
                   "}"
                 ]
@@ -380,8 +432,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/verify-email",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "verify-email"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "verify-email"
+              ]
             },
             "description": "**Email Verification Flow - Step 2**\n\nVerify email address using token from verification email. This endpoint:\n- Validates the verification token\n- Marks email as verified\n- Sends welcome email via Brevo with tags: ['welcome', 'onboarding']\n\n**Email Template:** Purple-themed welcome email\n\n**Token:** Single-use, no expiration (but can be regenerated)"
           }
@@ -417,8 +474,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/resend-verification",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "resend-verification"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "resend-verification"
+              ]
             }
           }
         },
@@ -433,10 +495,10 @@
                   "    var jsonData = pm.response.json();",
                   "    if (jsonData.resetToken) {",
                   "        pm.environment.set('resetToken', jsonData.resetToken);",
-                  "        console.log('✅ Reset token saved to environment');",
-                  "        console.log('🔗 Reset URL: ' + jsonData.resetUrl);",
+                  "        console.log('\u2705 Reset token saved to environment');",
+                  "        console.log('\ud83d\udd17 Reset URL: ' + jsonData.resetUrl);",
                   "    }",
-                  "    console.log('📧 Password reset email sent via Brevo');",
+                  "    console.log('\ud83d\udce7 Password reset email sent via Brevo');",
                   "}"
                 ]
               }
@@ -456,8 +518,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/request-password-reset",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "request-password-reset"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "request-password-reset"
+              ]
             },
             "description": "**Forgot Password Flow - Step 1**\n\nRequest a password reset link to be sent via email. This endpoint:\n- Generates a secure reset token (expires in 1 hour)\n- Sends password reset email via Brevo with tags: ['password-reset', 'auth', 'security']\n- Returns success message even if email doesn't exist (security best practice)\n- In development mode: returns resetToken and resetUrl for testing\n\n**Email Template:** Orange-themed professional email with reset button\n\n**Next Step:** Use the 'Reset Password' endpoint with the token from the email"
           },
@@ -478,8 +545,13 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/auth/request-password-reset",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["auth", "request-password-reset"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "request-password-reset"
+                  ]
                 }
               },
               "status": "OK",
@@ -509,8 +581,13 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/auth/request-password-reset",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["auth", "request-password-reset"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "request-password-reset"
+                  ]
                 }
               },
               "status": "OK",
@@ -534,9 +611,9 @@
               "script": {
                 "exec": [
                   "if (pm.response.code === 200) {",
-                  "    console.log('✅ Password reset successful');",
-                  "    console.log('📧 Confirmation email sent via Brevo');",
-                  "    console.log('🔒 All user sessions have been revoked');",
+                  "    console.log('\u2705 Password reset successful');",
+                  "    console.log('\ud83d\udce7 Confirmation email sent via Brevo');",
+                  "    console.log('\ud83d\udd12 All user sessions have been revoked');",
                   "    // Clear tokens as user needs to login again",
                   "    pm.environment.set('accessToken', '');",
                   "    pm.environment.set('refreshToken', '');",
@@ -560,8 +637,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/reset-password",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "reset-password"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
             },
             "description": "**Forgot Password Flow - Step 2**\n\nReset password using the token received via email. This endpoint:\n- Validates the reset token (must not be expired)\n- Updates user's password with new secure password\n- Revokes all existing user sessions for security\n- Sends password changed confirmation email via Brevo with tags: ['password-changed', 'auth', 'security', 'notification']\n\n**Email Template:** Blue-themed security notification email\n\n**Security Features:**\n- Token expires after 1 hour\n- Token is single-use only\n- All sessions are invalidated\n- User must login again with new password\n\n**Password Requirements:**\n- Minimum 8 characters\n- At least one uppercase letter\n- At least one lowercase letter\n- At least one number\n- At least one special character"
           },
@@ -582,8 +664,13 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/auth/reset-password",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["auth", "reset-password"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
                 }
               },
               "status": "OK",
@@ -613,8 +700,13 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/auth/reset-password",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["auth", "reset-password"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
                 }
               },
               "status": "Bad Request",
@@ -644,8 +736,13 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/auth/reset-password",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["auth", "reset-password"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "reset-password"
+                  ]
                 }
               },
               "status": "Bad Request",
@@ -686,8 +783,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -711,8 +812,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -736,8 +841,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -761,8 +870,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -786,8 +899,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -811,8 +928,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
             }
           }
         },
@@ -828,8 +949,12 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/users?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["users"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ],
               "query": [
                 {
                   "key": "page",
@@ -870,8 +995,13 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -895,8 +1025,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -920,8 +1055,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -945,8 +1085,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -970,8 +1115,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -995,8 +1145,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -1022,8 +1177,14 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}/avatar",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}", "avatar"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "avatar"
+              ]
             }
           }
         },
@@ -1039,8 +1200,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}/avatar",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}", "avatar"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "avatar"
+              ]
             }
           }
         },
@@ -1056,8 +1223,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}/deactivate",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}", "deactivate"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "deactivate"
+              ]
             }
           }
         },
@@ -1073,8 +1246,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}/activate",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}", "activate"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}",
+                "activate"
+              ]
             }
           }
         },
@@ -1090,8 +1269,13 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "{{userId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         }
@@ -1114,9 +1298,9 @@
                       "if (pm.response.code === 201) {",
                       "    var jsonData = pm.response.json();",
                       "    pm.environment.set('projectId', jsonData.id);",
-                      "    console.log('✅ Project created successfully');",
-                      "    console.log('📋 Project ID: ' + jsonData.id);",
-                      "    console.log('🔖 Project Code: ' + jsonData.code);",
+                      "    console.log('\u2705 Project created successfully');",
+                      "    console.log('\ud83d\udccb Project ID: ' + jsonData.id);",
+                      "    console.log('\ud83d\udd16 Project Code: ' + jsonData.code);",
                       "}"
                     ]
                   }
@@ -1140,8 +1324,12 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/projects",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects"
+                  ]
                 },
                 "description": "Create a new project. The authenticated user becomes the project owner and is automatically added as a team member with OWNER role."
               }
@@ -1158,8 +1346,12 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects?page=1&limit=10",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects"],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects"
+                  ],
                   "query": [
                     {
                       "key": "page",
@@ -1196,8 +1388,13 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}"
+                  ]
                 },
                 "description": "Get detailed project information including team members, phases, tasks, and costs."
               }
@@ -1222,8 +1419,13 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}"
+                  ]
                 },
                 "description": "Update project details. Only project managers, owners, or admins can update projects."
               }
@@ -1240,8 +1442,13 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}"
+                  ]
                 },
                 "description": "Soft delete a project. Only project owners or admins can delete projects. Status is set to ARCHIVED."
               }
@@ -1261,8 +1468,8 @@
                       "if (pm.response.code === 201) {",
                       "    var jsonData = pm.response.json();",
                       "    pm.environment.set('teamMemberId', jsonData.id);",
-                      "    console.log('✅ Team member added successfully');",
-                      "    console.log('👤 Member ID: ' + jsonData.id);",
+                      "    console.log('\u2705 Team member added successfully');",
+                      "    console.log('\ud83d\udc64 Member ID: ' + jsonData.id);",
                       "}"
                     ]
                   }
@@ -1286,8 +1493,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/team-members",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "team-members"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "team-members"
+                  ]
                 },
                 "description": "Add a team member to the project. Requires manager, owner, or admin permissions."
               }
@@ -1304,8 +1517,14 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/team-members",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "team-members"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "team-members"
+                  ]
                 },
                 "description": "Get all team members for a project including their roles and profiles."
               }
@@ -1330,8 +1549,15 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/team-members/{{teamMemberId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "team-members", "{{teamMemberId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "team-members",
+                    "{{teamMemberId}}"
+                  ]
                 },
                 "description": "Update team member role and permissions. Cannot modify the project owner."
               }
@@ -1348,8 +1574,15 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/team-members/{{teamMemberId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "team-members", "{{teamMemberId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "team-members",
+                    "{{teamMemberId}}"
+                  ]
                 },
                 "description": "Remove a team member from the project. Sets isActive to false. Cannot remove the project owner."
               }
@@ -1369,8 +1602,8 @@
                       "if (pm.response.code === 201) {",
                       "    var jsonData = pm.response.json();",
                       "    pm.environment.set('phaseId', jsonData.id);",
-                      "    console.log('✅ Phase created successfully');",
-                      "    console.log('📌 Phase ID: ' + jsonData.id);",
+                      "    console.log('\u2705 Phase created successfully');",
+                      "    console.log('\ud83d\udccc Phase ID: ' + jsonData.id);",
                       "}"
                     ]
                   }
@@ -1394,8 +1627,14 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/phases",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "phases"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "phases"
+                  ]
                 },
                 "description": "Create a new project phase. Phases help organize project work into manageable stages."
               }
@@ -1412,8 +1651,14 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/phases",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "phases"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "phases"
+                  ]
                 },
                 "description": "Get all phases for a project, ordered by the order field."
               }
@@ -1438,8 +1683,15 @@
                 },
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/phases/{{phaseId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "phases", "{{phaseId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "phases",
+                    "{{phaseId}}"
+                  ]
                 },
                 "description": "Update phase details including status and progress."
               }
@@ -1456,13 +1708,318 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/projects/{{projectId}}/phases/{{phaseId}}",
-                  "host": ["{{baseUrl}}"],
-                  "path": ["projects", "{{projectId}}", "phases", "{{phaseId}}"]
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "projects",
+                    "{{projectId}}",
+                    "phases",
+                    "{{phaseId}}"
+                  ]
                 },
                 "description": "Delete a project phase. Cannot delete phases that have associated tasks or costs."
               }
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Statistics & Analytics",
+      "description": "Comprehensive statistics and analytics endpoints with advanced filtering capabilities",
+      "item": [
+        {
+          "name": "Dashboard Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statistics/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statistics",
+                "dashboard"
+              ]
+            },
+            "description": "Get comprehensive dashboard statistics including overview counts, recent projects, and upcoming deadlines. Automatically filtered based on user role and access permissions."
+          },
+          "response": []
+        },
+        {
+          "name": "Project Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statistics/projects?startDate=2024-01-01&endDate=2024-12-31&status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statistics",
+                "projects"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Filter by start date (ISO 8601 format)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "Filter by end date (ISO 8601 format)"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE",
+                  "description": "Filter by project status (PLANNING, ACTIVE, ON_HOLD, COMPLETED, CANCELLED, ARCHIVED)"
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "description": "Filter by user ID (Admin only)",
+                  "disabled": true
+                },
+                {
+                  "key": "projectId",
+                  "value": "",
+                  "description": "Filter by specific project ID",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get project statistics with advanced filters including counts by status and priority, budget analysis, and top projects by cost."
+          },
+          "response": []
+        },
+        {
+          "name": "Cost Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statistics/costs?startDate=2024-01-01&type=EXPENSE&status=PAID",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statistics",
+                "costs"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Filter by start date (ISO 8601 format)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "description": "Filter by end date (ISO 8601 format)",
+                  "disabled": true
+                },
+                {
+                  "key": "projectId",
+                  "value": "",
+                  "description": "Filter by specific project ID",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "EXPENSE",
+                  "description": "Filter by cost type (EXPENSE, INCOME, INVESTMENT)"
+                },
+                {
+                  "key": "status",
+                  "value": "PAID",
+                  "description": "Filter by cost status (DRAFT, PENDING, APPROVED, REJECTED, PAID, CANCELLED)"
+                },
+                {
+                  "key": "categoryId",
+                  "value": "",
+                  "description": "Filter by cost category ID",
+                  "disabled": true
+                },
+                {
+                  "key": "phaseId",
+                  "value": "",
+                  "description": "Filter by project phase ID",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get cost statistics with advanced filters including breakdowns by type, status, and category with total amounts and top costs."
+          },
+          "response": []
+        },
+        {
+          "name": "Task Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statistics/tasks?status=IN_PROGRESS&projectId={{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statistics",
+                "tasks"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "IN_PROGRESS",
+                  "description": "Filter by task status (TODO, IN_PROGRESS, REVIEW, DONE, CANCELLED)"
+                },
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by specific project ID"
+                },
+                {
+                  "key": "assigneeId",
+                  "value": "",
+                  "description": "Filter by assignee user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "phaseId",
+                  "value": "",
+                  "description": "Filter by project phase ID",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "description": "Filter by start date (ISO 8601 format)",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "description": "Filter by end date (ISO 8601 format)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get task statistics with advanced filters including counts by status and priority, time tracking summaries, completion rates, and overdue task counts."
+          },
+          "response": []
+        },
+        {
+          "name": "Team Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statistics/team?projectId={{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statistics",
+                "team"
+              ],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by specific project ID"
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "description": "Filter by specific user ID",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get team statistics including member counts by role, active members, member details with projects, and average ratings per team member."
+          },
+          "response": []
+        },
+        {
+          "name": "Time Tracking Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/statistics/time?startDate=2024-01-01&endDate=2024-12-31&projectId={{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "statistics",
+                "time"
+              ],
+              "query": [
+                {
+                  "key": "startDate",
+                  "value": "2024-01-01",
+                  "description": "Filter by start date (ISO 8601 format)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-12-31",
+                  "description": "Filter by end date (ISO 8601 format)"
+                },
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by specific project ID"
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "description": "Filter by specific user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "taskId",
+                  "value": "",
+                  "description": "Filter by specific task ID",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get time tracking statistics including total hours, billable vs non-billable hours, breakdowns by user, and recent time entries."
+          },
+          "response": []
         }
       ]
     }
