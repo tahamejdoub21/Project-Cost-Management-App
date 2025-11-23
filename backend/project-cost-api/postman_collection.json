@@ -1,8 +1,9 @@
 {
   "info": {
-    "name": "Project Cost Management - Authentication API",
-    "description": "Complete authentication and user management API collection",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "name": "Project Cost Management API",
+    "description": "Complete API collection with authentication, user management, project management, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "3.0.0"
   },
   "variable": [
     {
@@ -28,11 +29,79 @@
     {
       "key": "resetToken",
       "value": ""
+    },
+    {
+      "key": "projectId",
+      "value": ""
+    },
+    {
+      "key": "teamMemberId",
+      "value": ""
+    },
+    {
+      "key": "phaseId",
+      "value": ""
     }
   ],
   "item": [
     {
+      "name": "Health & Monitoring",
+      "description": "System health checks and monitoring endpoints",
+      "item": [
+        {
+          "name": "Email Service Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["health", "email"]
+            },
+            "description": "Check email service health and statistics. Returns configuration status, emails sent/failed counts, and sender information. This endpoint is public and requires no authentication."
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health/email",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["health", "email"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"service\": \"email\",\n  \"configured\": true,\n  \"sent\": 15,\n  \"failed\": 0,\n  \"fromEmail\": \"9c4fa1001@smtp-brevo.com\",\n  \"fromName\": \"Project Cost Management\",\n  \"timestamp\": \"2025-11-23T13:51:23.327Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "API Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": ["{{baseUrl}}"]
+            },
+            "description": "Root API endpoint - returns welcome message"
+          }
+        }
+      ]
+    },
+    {
       "name": "Authentication",
+      "description": "User authentication endpoints including registration, login, password management, and email verification",
       "item": [
         {
           "name": "Register - Full Profile",
@@ -48,6 +117,9 @@
                   "    pm.environment.set('userId', jsonData.user.id);",
                   "    if (jsonData.verificationToken) {",
                   "        pm.environment.set('verificationToken', jsonData.verificationToken);",
+                  "        console.log('✅ User registered successfully');",
+                  "        console.log('📧 Verification email sent via Brevo');",
+                  "        console.log('🔗 Verification URL: ' + jsonData.verificationUrl);",
                   "    }",
                   "}"
                 ]
@@ -70,7 +142,8 @@
               "raw": "{{baseUrl}}/auth/register",
               "host": ["{{baseUrl}}"],
               "path": ["auth", "register"]
-            }
+            },
+            "description": "Register new user with full profile. This endpoint:\n- Creates new user account\n- Generates authentication tokens (access + refresh)\n- Sends email verification link via Brevo with tags: ['verification', 'auth', 'onboarding']\n- In development mode: returns verificationToken and verificationUrl\n\n**Email Template:** Green-themed professional email with verification button\n\n**Next Step:** Use 'Verify Email' endpoint to verify the account"
           }
         },
         {
@@ -219,6 +292,23 @@
         },
         {
           "name": "Change Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    console.log('✅ Password changed successfully');",
+                  "    console.log('📧 Confirmation email sent via Brevo');",
+                  "    console.log('🔒 All user sessions have been revoked');",
+                  "    // Clear tokens as user needs to login again",
+                  "    pm.environment.set('accessToken', '');",
+                  "    pm.environment.set('refreshToken', '');",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -239,7 +329,8 @@
               "raw": "{{baseUrl}}/auth/change-password",
               "host": ["{{baseUrl}}"],
               "path": ["auth", "change-password"]
-            }
+            },
+            "description": "Change password for authenticated user. This endpoint:\n- Requires authentication (Bearer token)\n- Validates current password\n- Updates to new password\n- Revokes all existing sessions for security\n- Sends password changed confirmation email via Brevo with tags: ['password-changed', 'auth', 'security', 'notification']\n\n**Email Template:** Blue-themed security notification email\n\n**Note:** User must login again after password change"
           }
         },
         {
@@ -261,6 +352,20 @@
         },
         {
           "name": "Verify Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    console.log('✅ Email verified successfully');",
+                  "    console.log('📧 Welcome email sent via Brevo');",
+                  "    pm.environment.set('verificationToken', '');",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -277,7 +382,8 @@
               "raw": "{{baseUrl}}/auth/verify-email",
               "host": ["{{baseUrl}}"],
               "path": ["auth", "verify-email"]
-            }
+            },
+            "description": "**Email Verification Flow - Step 2**\n\nVerify email address using token from verification email. This endpoint:\n- Validates the verification token\n- Marks email as verified\n- Sends welcome email via Brevo with tags: ['welcome', 'onboarding']\n\n**Email Template:** Purple-themed welcome email\n\n**Token:** Single-use, no expiration (but can be regenerated)"
           }
         },
         {
@@ -327,7 +433,10 @@
                   "    var jsonData = pm.response.json();",
                   "    if (jsonData.resetToken) {",
                   "        pm.environment.set('resetToken', jsonData.resetToken);",
+                  "        console.log('✅ Reset token saved to environment');",
+                  "        console.log('🔗 Reset URL: ' + jsonData.resetUrl);",
                   "    }",
+                  "    console.log('📧 Password reset email sent via Brevo');",
                   "}"
                 ]
               }
@@ -349,11 +458,94 @@
               "raw": "{{baseUrl}}/auth/request-password-reset",
               "host": ["{{baseUrl}}"],
               "path": ["auth", "request-password-reset"]
+            },
+            "description": "**Forgot Password Flow - Step 1**\n\nRequest a password reset link to be sent via email. This endpoint:\n- Generates a secure reset token (expires in 1 hour)\n- Sends password reset email via Brevo with tags: ['password-reset', 'auth', 'security']\n- Returns success message even if email doesn't exist (security best practice)\n- In development mode: returns resetToken and resetUrl for testing\n\n**Email Template:** Orange-themed professional email with reset button\n\n**Next Step:** Use the 'Reset Password' endpoint with the token from the email"
+          },
+          "response": [
+            {
+              "name": "Success Response (Development)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"test@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/request-password-reset",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "request-password-reset"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"If an account with that email exists, a password reset link has been sent\",\n  \"resetToken\": \"00ab489007001f9f74cca9b73cc48e123e7826a1cdffad8f630b225f66949141\",\n  \"resetUrl\": \"http://localhost:4200/reset-password?token=00ab489007001f9f74cca9b73cc48e123e7826a1cdffad8f630b225f66949141\"\n}"
+            },
+            {
+              "name": "Success Response (Production)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"test@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/request-password-reset",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "request-password-reset"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"If an account with that email exists, a password reset link has been sent\"\n}"
             }
-          }
+          ]
         },
         {
           "name": "Reset Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    console.log('✅ Password reset successful');",
+                  "    console.log('📧 Confirmation email sent via Brevo');",
+                  "    console.log('🔒 All user sessions have been revoked');",
+                  "    // Clear tokens as user needs to login again",
+                  "    pm.environment.set('accessToken', '');",
+                  "    pm.environment.set('refreshToken', '');",
+                  "    pm.environment.set('resetToken', '');",
+                  "}"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -370,8 +562,104 @@
               "raw": "{{baseUrl}}/auth/reset-password",
               "host": ["{{baseUrl}}"],
               "path": ["auth", "reset-password"]
+            },
+            "description": "**Forgot Password Flow - Step 2**\n\nReset password using the token received via email. This endpoint:\n- Validates the reset token (must not be expired)\n- Updates user's password with new secure password\n- Revokes all existing user sessions for security\n- Sends password changed confirmation email via Brevo with tags: ['password-changed', 'auth', 'security', 'notification']\n\n**Email Template:** Blue-themed security notification email\n\n**Security Features:**\n- Token expires after 1 hour\n- Token is single-use only\n- All sessions are invalidated\n- User must login again with new password\n\n**Password Requirements:**\n- Minimum 8 characters\n- At least one uppercase letter\n- At least one lowercase letter\n- At least one number\n- At least one special character"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"00ab489007001f9f74cca9b73cc48e123e7826a1cdffad8f630b225f66949141\",\n  \"newPassword\": \"NewSecurePass123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "reset-password"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Password reset successfully. Please login again.\"\n}"
+            },
+            {
+              "name": "Invalid Token Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"invalid-token\",\n  \"newPassword\": \"NewSecurePass123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "reset-password"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Invalid or expired reset token\",\n  \"error\": \"Bad Request\",\n  \"statusCode\": 400\n}"
+            },
+            {
+              "name": "Expired Token Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"expired-token\",\n  \"newPassword\": \"NewSecurePass123!\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/auth/reset-password",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["auth", "reset-password"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Reset token has expired\",\n  \"error\": \"Bad Request\",\n  \"statusCode\": 400\n}"
             }
-          }
+          ]
         }
       ]
     },
@@ -806,6 +1094,375 @@
               "path": ["users", "{{userId}}"]
             }
           }
+        }
+      ]
+    },
+    {
+      "name": "Project Management",
+      "description": "Comprehensive project management endpoints including CRUD operations, team member management, and project phases",
+      "item": [
+        {
+          "name": "Projects",
+          "item": [
+            {
+              "name": "Create Project",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('projectId', jsonData.id);",
+                      "    console.log('✅ Project created successfully');",
+                      "    console.log('📋 Project ID: ' + jsonData.id);",
+                      "    console.log('🔖 Project Code: ' + jsonData.code);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"E-Commerce Platform Redesign\",\n  \"code\": \"ECOM-2024\",\n  \"description\": \"Complete redesign of the e-commerce platform with modern UI/UX, improved performance, and new features including AI-powered recommendations and advanced analytics.\",\n  \"client\": \"TechStore Inc.\",\n  \"startDate\": \"2024-01-15T00:00:00.000Z\",\n  \"endDate\": \"2024-12-31T23:59:59.999Z\",\n  \"status\": \"PLANNING\",\n  \"priority\": \"HIGH\",\n  \"totalBudget\": 250000.00,\n  \"color\": \"#3B82F6\",\n  \"tags\": [\"e-commerce\", \"redesign\", \"high-priority\", \"2024\"]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects"]
+                },
+                "description": "Create a new project. The authenticated user becomes the project owner and is automatically added as a team member with OWNER role."
+              }
+            },
+            {
+              "name": "Get All Projects",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects?page=1&limit=10",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "status",
+                      "value": "ACTIVE",
+                      "disabled": true
+                    },
+                    {
+                      "key": "search",
+                      "value": "platform",
+                      "disabled": true
+                    }
+                  ]
+                },
+                "description": "Get all projects with pagination. Users see projects they own or are members of. Admins see all projects."
+              }
+            },
+            {
+              "name": "Get Project by ID",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}"]
+                },
+                "description": "Get detailed project information including team members, phases, tasks, and costs."
+              }
+            },
+            {
+              "name": "Update Project",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"E-Commerce Platform Redesign - Updated\",\n  \"status\": \"ACTIVE\",\n  \"priority\": \"URGENT\",\n  \"progress\": 25.5,\n  \"actualCost\": 75000.00,\n  \"description\": \"Updated project description with new requirements\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}"]
+                },
+                "description": "Update project details. Only project managers, owners, or admins can update projects."
+              }
+            },
+            {
+              "name": "Delete Project",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}"]
+                },
+                "description": "Soft delete a project. Only project owners or admins can delete projects. Status is set to ARCHIVED."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Team Members",
+          "item": [
+            {
+              "name": "Add Team Member",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('teamMemberId', jsonData.id);",
+                      "    console.log('✅ Team member added successfully');",
+                      "    console.log('👤 Member ID: ' + jsonData.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"MEMBER\",\n  \"permissions\": {\n    \"canEditTasks\": true,\n    \"canDeleteTasks\": false,\n    \"canManageBudget\": false\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/team-members",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "team-members"]
+                },
+                "description": "Add a team member to the project. Requires manager, owner, or admin permissions."
+              }
+            },
+            {
+              "name": "Get Team Members",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/team-members",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "team-members"]
+                },
+                "description": "Get all team members for a project including their roles and profiles."
+              }
+            },
+            {
+              "name": "Update Team Member",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"role\": \"LEAD\",\n  \"permissions\": {\n    \"canEditTasks\": true,\n    \"canDeleteTasks\": true,\n    \"canManageBudget\": true\n  }\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/team-members/{{teamMemberId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "team-members", "{{teamMemberId}}"]
+                },
+                "description": "Update team member role and permissions. Cannot modify the project owner."
+              }
+            },
+            {
+              "name": "Remove Team Member",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/team-members/{{teamMemberId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "team-members", "{{teamMemberId}}"]
+                },
+                "description": "Remove a team member from the project. Sets isActive to false. Cannot remove the project owner."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Project Phases",
+          "item": [
+            {
+              "name": "Create Phase",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    var jsonData = pm.response.json();",
+                      "    pm.environment.set('phaseId', jsonData.id);",
+                      "    console.log('✅ Phase created successfully');",
+                      "    console.log('📌 Phase ID: ' + jsonData.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Design & Planning\",\n  \"description\": \"Initial design mockups, user research, and technical planning phase\",\n  \"startDate\": \"2024-01-15T00:00:00.000Z\",\n  \"endDate\": \"2024-03-31T23:59:59.999Z\",\n  \"budget\": 50000.00,\n  \"status\": \"IN_PROGRESS\",\n  \"order\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/phases",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "phases"]
+                },
+                "description": "Create a new project phase. Phases help organize project work into manageable stages."
+              }
+            },
+            {
+              "name": "Get Project Phases",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/phases",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "phases"]
+                },
+                "description": "Get all phases for a project, ordered by the order field."
+              }
+            },
+            {
+              "name": "Update Phase",
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"COMPLETED\",\n  \"progress\": 100,\n  \"description\": \"Design phase completed with all deliverables approved\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/phases/{{phaseId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "phases", "{{phaseId}}"]
+                },
+                "description": "Update phase details including status and progress."
+              }
+            },
+            {
+              "name": "Delete Phase",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/projects/{{projectId}}/phases/{{phaseId}}",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["projects", "{{projectId}}", "phases", "{{phaseId}}"]
+                },
+                "description": "Delete a project phase. Cannot delete phases that have associated tasks or costs."
+              }
+            }
+          ]
         }
       ]
     }
