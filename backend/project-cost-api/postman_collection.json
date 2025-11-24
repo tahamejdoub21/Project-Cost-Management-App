@@ -1,9 +1,9 @@
 {
   "info": {
     "name": "Project Cost Management API",
-    "description": "Complete API collection with authentication, user management, project management, task management, statistics, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails. Now includes comprehensive task management with filtering, assignment, and status updates.",
+    "description": "Complete API collection with authentication, user management, project management, task management, statistics, and health monitoring. Includes Brevo email integration with verification, password reset, and welcome emails. Now includes comprehensive task management with filtering, assignment, and status updates. New modules: Time Entries, Task Comments, Task Attachments, Discussions & Chat, Notifications, Team Ratings, Cost Categories, Costs, Cost Templates, Project Attachments, User Profiles, User Settings, and Audit Logs.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "5.0.0"
+    "version": "6.0.0"
   },
   "variable": [
     {
@@ -44,6 +44,50 @@
     },
     {
       "key": "taskId",
+      "value": ""
+    },
+    {
+      "key": "timeEntryId",
+      "value": ""
+    },
+    {
+      "key": "commentId",
+      "value": ""
+    },
+    {
+      "key": "attachmentId",
+      "value": ""
+    },
+    {
+      "key": "discussionId",
+      "value": ""
+    },
+    {
+      "key": "messageId",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    },
+    {
+      "key": "ratingId",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "costId",
+      "value": ""
+    },
+    {
+      "key": "templateId",
+      "value": ""
+    },
+    {
+      "key": "logId",
       "value": ""
     }
   ],
@@ -2424,6 +2468,2063 @@
               ]
             },
             "description": "Get time tracking statistics including total hours, billable vs non-billable hours, breakdowns by user, and recent time entries."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Time Entries",
+      "description": "Time tracking and time entry management endpoints",
+      "item": [
+        {
+          "name": "Create Time Entry",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('timeEntryId', response.id);",
+                  "    pm.environment.set('timeEntryId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": \"{{taskId}}\",\n  \"startTime\": \"2024-11-24T09:00:00.000Z\",\n  \"endTime\": \"2024-11-24T12:30:00.000Z\",\n  \"description\": \"Working on user authentication implementation\",\n  \"billable\": true,\n  \"hourlyRate\": 75.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/time-entries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-entries"
+              ]
+            },
+            "description": "Create a new time entry for a task. Hours are automatically calculated from start and end times."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Time Entries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/time-entries?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-entries"
+              ],
+              "query": [
+                {
+                  "key": "taskId",
+                  "value": "{{taskId}}",
+                  "description": "Filter by task ID",
+                  "disabled": true
+                },
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by project ID",
+                  "disabled": true
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "Filter by user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "billable",
+                  "value": "true",
+                  "description": "Filter by billable status",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-11-01",
+                  "description": "Filter entries after this date",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-11-30",
+                  "description": "Filter entries before this date",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all time entries with filters for task, project, user, billable status, and date range."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Time Entries by Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/time-entries/task/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-entries",
+                "task",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Get all time entries for a specific task."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Task Time Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/time-entries/task/{{taskId}}/stats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-entries",
+                "task",
+                "{{taskId}}",
+                "stats"
+              ]
+            },
+            "description": "Get time tracking statistics for a specific task including total hours, billable hours, and cost breakdown."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Time Entry",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"endTime\": \"2024-11-24T13:00:00.000Z\",\n  \"description\": \"Updated: Completed authentication implementation and testing\",\n  \"billable\": true,\n  \"hourlyRate\": 80.00\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/time-entries/{{timeEntryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-entries",
+                "{{timeEntryId}}"
+              ]
+            },
+            "description": "Update a time entry. Only the creator can update their own time entries."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Time Entry",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/time-entries/{{timeEntryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "time-entries",
+                "{{timeEntryId}}"
+              ]
+            },
+            "description": "Delete a time entry. Only the creator can delete their own time entries."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task Comments",
+      "description": "Task comment management endpoints",
+      "item": [
+        {
+          "name": "Create Comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('commentId', response.id);",
+                  "    pm.environment.set('commentId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": \"{{taskId}}\",\n  \"content\": \"This is looking great! Just reviewed the authentication flow and it's working perfectly. One suggestion: consider adding rate limiting to the login endpoint.\",\n  \"mentions\": [\"{{userId}}\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/task-comments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-comments"
+              ]
+            },
+            "description": "Create a new comment on a task. Supports mentioning other users."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Comments by Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/task-comments/task/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-comments",
+                "task",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Get all comments for a specific task, ordered by creation date."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Comment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated comment: This is looking great! I've reviewed the authentication flow. Consider adding rate limiting and two-factor authentication for enhanced security.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/task-comments/{{commentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-comments",
+                "{{commentId}}"
+              ]
+            },
+            "description": "Update a comment. Only the comment author can update their comments."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/task-comments/{{commentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-comments",
+                "{{commentId}}"
+              ]
+            },
+            "description": "Delete a comment. Only the comment author or project managers can delete comments."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Task Attachments",
+      "description": "Task attachment management endpoints",
+      "item": [
+        {
+          "name": "Create Attachment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('attachmentId', response.id);",
+                  "    pm.environment.set('attachmentId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": \"{{taskId}}\",\n  \"fileName\": \"authentication-flow-diagram.png\",\n  \"fileUrl\": \"https://storage.example.com/files/auth-flow.png\",\n  \"fileSize\": 245760,\n  \"mimeType\": \"image/png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/task-attachments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-attachments"
+              ]
+            },
+            "description": "Create a new attachment for a task. File should be uploaded to storage first, then provide the URL."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Attachments by Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/task-attachments/task/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-attachments",
+                "task",
+                "{{taskId}}"
+              ]
+            },
+            "description": "Get all attachments for a specific task."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Attachment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fileName\": \"authentication-flow-diagram-v2.png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/task-attachments/{{attachmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-attachments",
+                "{{attachmentId}}"
+              ]
+            },
+            "description": "Update attachment metadata. Only the uploader can update their attachments."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Attachment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/task-attachments/{{attachmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "task-attachments",
+                "{{attachmentId}}"
+              ]
+            },
+            "description": "Delete an attachment. Only the uploader or project managers can delete attachments."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Discussions & Chat",
+      "description": "Project discussion and chat message management endpoints",
+      "item": [
+        {
+          "name": "Create Discussion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('discussionId', response.id);",
+                  "    pm.environment.set('discussionId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"title\": \"Architecture Review Meeting\",\n  \"description\": \"Discussion thread for the upcoming architecture review meeting. Please share your thoughts on the proposed microservices approach.\",\n  \"type\": \"GENERAL\",\n  \"isPinned\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/discussions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions"
+              ]
+            },
+            "description": "Create a new discussion thread for a project."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Discussions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discussions?projectId={{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions"
+              ],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by project ID"
+                }
+              ]
+            },
+            "description": "Get all discussions with optional filter by project."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Discussion by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discussions/{{discussionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "{{discussionId}}"
+              ]
+            },
+            "description": "Get a specific discussion with its messages."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Discussion",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Architecture Review Meeting - Updated\",\n  \"isPinned\": true,\n  \"isClosed\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/discussions/{{discussionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "{{discussionId}}"
+              ]
+            },
+            "description": "Update a discussion. Only the creator or project managers can update discussions."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Discussion",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discussions/{{discussionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "{{discussionId}}"
+              ]
+            },
+            "description": "Delete a discussion. Only the creator or project managers can delete discussions."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Chat Message",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('messageId', response.id);",
+                  "    pm.environment.set('messageId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"discussionId\": \"{{discussionId}}\",\n  \"content\": \"I think the microservices approach makes sense for our scale. We should consider using API Gateway for centralized authentication and rate limiting.\",\n  \"mentions\": [\"{{userId}}\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/discussions/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "messages"
+              ]
+            },
+            "description": "Create a new message in a discussion thread."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Messages",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discussions/messages?discussionId={{discussionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "messages"
+              ],
+              "query": [
+                {
+                  "key": "discussionId",
+                  "value": "{{discussionId}}",
+                  "description": "Filter by discussion ID",
+                  "disabled": true
+                },
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by project ID",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get messages with optional filters for discussion or project."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Message",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated: I think the microservices approach makes sense. We should use API Gateway and implement circuit breakers for resilience.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/discussions/messages/{{messageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "messages",
+                "{{messageId}}"
+              ]
+            },
+            "description": "Update a message. Only the message author can update their messages."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discussions/messages/{{messageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "messages",
+                "{{messageId}}"
+              ]
+            },
+            "description": "Delete a message. Only the message author or project managers can delete messages."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Message as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/discussions/messages/{{messageId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "discussions",
+                "messages",
+                "{{messageId}}",
+                "read"
+              ]
+            },
+            "description": "Mark a message as read by the current user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "User notification management endpoints",
+      "item": [
+        {
+          "name": "Get All Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ],
+              "query": [
+                {
+                  "key": "isRead",
+                  "value": "false",
+                  "description": "Filter by read status",
+                  "disabled": true
+                },
+                {
+                  "key": "type",
+                  "value": "TASK_ASSIGNED",
+                  "description": "Filter by notification type",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-11-01",
+                  "description": "Filter notifications after this date",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-11-30",
+                  "description": "Filter notifications before this date",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get all notifications for the current user with filters for read status, type, and date range."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "unread"
+              ]
+            },
+            "description": "Get all unread notifications for the current user."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "count"
+              ]
+            },
+            "description": "Get the count of unread notifications for the current user."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
+            },
+            "description": "Mark a specific notification as read."
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/mark-all-read",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "mark-all-read"
+              ]
+            },
+            "description": "Mark all notifications as read for the current user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Team Ratings",
+      "description": "Team member rating and feedback endpoints",
+      "item": [
+        {
+          "name": "Create/Update Rating",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('ratingId', response.id);",
+                  "    pm.environment.set('ratingId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"ratedUserId\": \"{{userId}}\",\n  \"rating\": 5,\n  \"feedback\": \"Excellent work on the authentication module! Very clean code, well-documented, and delivered ahead of schedule. Great team player and always willing to help others.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/team-ratings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "team-ratings"
+              ]
+            },
+            "description": "Create or update a rating for a team member on a project. Rating must be between 1 and 5."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project Ratings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/team-ratings/project/{{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "team-ratings",
+                "project",
+                "{{projectId}}"
+              ]
+            },
+            "description": "Get all ratings for a specific project."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Ratings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/team-ratings/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "team-ratings",
+                "user",
+                "{{userId}}"
+              ]
+            },
+            "description": "Get all ratings received by a specific user across all projects."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Rating",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/team-ratings/{{ratingId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "team-ratings",
+                "{{ratingId}}"
+              ]
+            },
+            "description": "Delete a rating. Only the rater can delete their own ratings."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cost Categories",
+      "description": "Cost category management endpoints",
+      "item": [
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('categoryId', response.id);",
+                  "    pm.environment.set('categoryId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Software Licenses\",\n  \"description\": \"Software subscriptions and license fees\",\n  \"color\": \"#3B82F6\",\n  \"icon\": \"software\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cost-categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-categories"
+              ]
+            },
+            "description": "Create a new cost category for organizing project expenses."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cost-categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-categories"
+              ]
+            },
+            "description": "Get all cost categories."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cost-categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Get a specific cost category by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Software Licenses & Subscriptions\",\n  \"description\": \"All software-related subscriptions, licenses, and SaaS fees\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cost-categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Update a cost category. Only admins and managers can update categories."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cost-categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-categories",
+                "{{categoryId}}"
+              ]
+            },
+            "description": "Delete a cost category. Cannot delete categories with associated costs."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Costs",
+      "description": "Project cost and expense management endpoints",
+      "item": [
+        {
+          "name": "Create Cost",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('costId', response.id);",
+                  "    pm.environment.set('costId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"title\": \"AWS Cloud Services - November 2024\",\n  \"description\": \"Monthly AWS infrastructure costs including EC2, RDS, S3, and CloudFront\",\n  \"amount\": 1250.00,\n  \"currency\": \"USD\",\n  \"costType\": \"EXPENSE\",\n  \"status\": \"APPROVED\",\n  \"costDate\": \"2024-11-01T00:00:00.000Z\",\n  \"isRecurring\": true,\n  \"recurringPeriod\": \"MONTHLY\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/costs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "costs"
+              ]
+            },
+            "description": "Create a new cost entry for a project."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Costs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/costs?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "costs"
+              ],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by project ID",
+                  "disabled": true
+                },
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "description": "Filter by category ID",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "APPROVED",
+                  "description": "Filter by status (DRAFT, PENDING, APPROVED, REJECTED, PAID, CANCELLED)",
+                  "disabled": true
+                },
+                {
+                  "key": "costType",
+                  "value": "EXPENSE",
+                  "description": "Filter by cost type (EXPENSE, INCOME, INVESTMENT)",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-11-01",
+                  "description": "Filter costs after this date",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-11-30",
+                  "description": "Filter costs before this date",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all costs with filters for project, category, status, type, and date range."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cost by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/costs/{{costId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "costs",
+                "{{costId}}"
+              ]
+            },
+            "description": "Get a specific cost entry by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Project Cost Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/costs/project/{{projectId}}/summary",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "costs",
+                "project",
+                "{{projectId}}",
+                "summary"
+              ]
+            },
+            "description": "Get cost summary for a project including totals by type, status, and category."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Cost",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"AWS Cloud Services - November 2024 (Updated)\",\n  \"amount\": 1375.50,\n  \"status\": \"PAID\",\n  \"paidDate\": \"2024-11-15T10:30:00.000Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/costs/{{costId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "costs",
+                "{{costId}}"
+              ]
+            },
+            "description": "Update a cost entry. Only project managers and owners can update costs."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Cost",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/costs/{{costId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "costs",
+                "{{costId}}"
+              ]
+            },
+            "description": "Delete a cost entry. Only project managers and owners can delete costs."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Cost Templates",
+      "description": "Reusable cost template management endpoints",
+      "item": [
+        {
+          "name": "Create Template",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('templateId', response.id);",
+                  "    pm.environment.set('templateId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoryId\": \"{{categoryId}}\",\n  \"name\": \"Monthly AWS Infrastructure\",\n  \"description\": \"Standard monthly AWS cloud infrastructure costs\",\n  \"defaultAmount\": 1200.00,\n  \"currency\": \"USD\",\n  \"costType\": \"EXPENSE\",\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cost-templates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-templates"
+              ]
+            },
+            "description": "Create a reusable cost template for recurring expenses."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Templates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cost-templates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-templates"
+              ],
+              "query": [
+                {
+                  "key": "categoryId",
+                  "value": "{{categoryId}}",
+                  "description": "Filter by category ID",
+                  "disabled": true
+                },
+                {
+                  "key": "isActive",
+                  "value": "true",
+                  "description": "Filter by active status",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all cost templates with optional filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Template by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cost-templates/{{templateId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-templates",
+                "{{templateId}}"
+              ]
+            },
+            "description": "Get a specific cost template by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Template",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Monthly AWS Infrastructure - Updated\",\n  \"defaultAmount\": 1350.00,\n  \"isActive\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cost-templates/{{templateId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-templates",
+                "{{templateId}}"
+              ]
+            },
+            "description": "Update a cost template. Only admins and managers can update templates."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Template",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/cost-templates/{{templateId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cost-templates",
+                "{{templateId}}"
+              ]
+            },
+            "description": "Delete a cost template. Only admins and managers can delete templates."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Project Attachments",
+      "description": "Project-level attachment management endpoints",
+      "item": [
+        {
+          "name": "Create Attachment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('attachmentId', response.id);",
+                  "    pm.environment.set('attachmentId', response.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"fileName\": \"project-charter-v1.pdf\",\n  \"fileUrl\": \"https://storage.example.com/projects/charter-v1.pdf\",\n  \"fileSize\": 524288,\n  \"mimeType\": \"application/pdf\",\n  \"description\": \"Initial project charter document with scope and objectives\",\n  \"category\": \"DOCUMENT\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/project-attachments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "project-attachments"
+              ]
+            },
+            "description": "Create a new attachment for a project."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Attachments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/project-attachments?projectId={{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "project-attachments"
+              ],
+              "query": [
+                {
+                  "key": "projectId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by project ID"
+                }
+              ]
+            },
+            "description": "Get all project attachments with optional project filter."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Attachment by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/project-attachments/{{attachmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "project-attachments",
+                "{{attachmentId}}"
+              ]
+            },
+            "description": "Get a specific project attachment by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Attachment",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/project-attachments/{{attachmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "project-attachments",
+                "{{attachmentId}}"
+              ]
+            },
+            "description": "Delete a project attachment. Only the uploader or project managers can delete attachments."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Profiles",
+      "description": "User profile management endpoints",
+      "item": [
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user-profiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user-profiles"
+              ]
+            },
+            "description": "Get the current user's profile with detailed information."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Profile by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user-profiles/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user-profiles",
+                "{{userId}}"
+              ]
+            },
+            "description": "Get a specific user's profile by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Current User Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Senior Full Stack Developer with 10+ years of experience in building scalable web applications. Passionate about clean code and modern architecture.\",\n  \"phone\": \"+1-555-123-4567\",\n  \"location\": \"San Francisco, CA\",\n  \"skills\": [\"JavaScript\", \"TypeScript\", \"Node.js\", \"NestJS\", \"React\", \"Angular\", \"PostgreSQL\", \"Docker\", \"AWS\"],\n  \"experience\": 10,\n  \"hourlyRate\": 150.00,\n  \"website\": \"https://johndoe.dev\",\n  \"socialLinks\": {\n    \"github\": \"https://github.com/johndoe\",\n    \"linkedin\": \"https://linkedin.com/in/johndoe\",\n    \"twitter\": \"https://twitter.com/johndoe\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user-profiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user-profiles"
+              ]
+            },
+            "description": "Update the current user's profile information."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Settings",
+      "description": "User settings and preferences management endpoints",
+      "item": [
+        {
+          "name": "Get Current User Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user-settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user-settings"
+              ]
+            },
+            "description": "Get the current user's settings and preferences."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"dark\",\n  \"language\": \"en\",\n  \"timezone\": \"America/New_York\",\n  \"dateFormat\": \"MM/DD/YYYY\",\n  \"timeFormat\": \"12h\",\n  \"emailNotifications\": true,\n  \"pushNotifications\": true,\n  \"notificationSettings\": {\n    \"taskAssigned\": true,\n    \"taskDueSoon\": true,\n    \"projectUpdates\": true,\n    \"mentions\": true,\n    \"comments\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/user-settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user-settings"
+              ]
+            },
+            "description": "Update user settings and notification preferences."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "description": "System audit log and activity tracking endpoints",
+      "item": [
+        {
+          "name": "Get All Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/audit-logs?page=1&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audit-logs"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "Filter by user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "action",
+                  "value": "CREATE",
+                  "description": "Filter by action (CREATE, UPDATE, DELETE, LOGIN, LOGOUT, etc.)",
+                  "disabled": true
+                },
+                {
+                  "key": "entityType",
+                  "value": "PROJECT",
+                  "description": "Filter by entity type (PROJECT, TASK, USER, COST, etc.)",
+                  "disabled": true
+                },
+                {
+                  "key": "entityId",
+                  "value": "{{projectId}}",
+                  "description": "Filter by entity ID",
+                  "disabled": true
+                },
+                {
+                  "key": "startDate",
+                  "value": "2024-11-01",
+                  "description": "Filter logs after this date",
+                  "disabled": true
+                },
+                {
+                  "key": "endDate",
+                  "value": "2024-11-30",
+                  "description": "Filter logs before this date",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            },
+            "description": "Get audit logs with filters for user, action, entity type, entity ID, and date range. Admin access required."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logs by Entity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/audit-logs/entity/PROJECT/{{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "audit-logs",
+                "entity",
+                "PROJECT",
+                "{{projectId}}"
+              ]
+            },
+            "description": "Get all audit logs for a specific entity (e.g., PROJECT, TASK, USER). Shows the complete history of actions performed on that entity."
           },
           "response": []
         }

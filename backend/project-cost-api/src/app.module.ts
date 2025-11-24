@@ -14,6 +14,20 @@ import { ProjectsModule } from './projects/projects.module';
 import { StatisticsModule } from './statistics/statistics.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { TasksModule } from './tasks/tasks.module';
+import { TimeEntriesModule } from './time-entries/time-entries.module';
+import { TaskCommentsModule } from './task-comments/task-comments.module';
+import { TaskAttachmentsModule } from './task-attachments/task-attachments.module';
+import { DiscussionsModule } from './discussions/discussions.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { TeamRatingsModule } from './team-ratings/team-ratings.module';
+import { CostCategoriesModule } from './cost-categories/cost-categories.module';
+import { CostsModule } from './costs/costs.module';
+import { CostTemplatesModule } from './cost-templates/cost-templates.module';
+import { ProjectAttachmentsModule } from './project-attachments/project-attachments.module';
+import { UserProfilesModule } from './user-profiles/user-profiles.module';
+import { UserSettingsModule } from './user-settings/user-settings.module';
+import { AuditLogsModule } from './audit-logs/audit-logs.module';
+import { WebSocketModule } from './websocket/websocket.module';
 
 @Module({
   imports: [
@@ -29,6 +43,20 @@ import { TasksModule } from './tasks/tasks.module';
     ProjectsModule,
     StatisticsModule,
     TasksModule,
+    TimeEntriesModule,
+    TaskCommentsModule,
+    TaskAttachmentsModule,
+    DiscussionsModule,
+    NotificationsModule,
+    TeamRatingsModule,
+    CostCategoriesModule,
+    CostsModule,
+    CostTemplatesModule,
+    ProjectAttachmentsModule,
+    UserProfilesModule,
+    UserSettingsModule,
+    AuditLogsModule,
+    WebSocketModule,
   ],
   controllers: [AppController],
   providers: [

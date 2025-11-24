@@ -17,7 +17,8 @@ export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createTaskDto: CreateTaskDto, userId: string) {
-    const { projectId, phaseId, assigneeId, parentTaskId, ...taskData } = createTaskDto;
+    const { projectId, phaseId, assigneeId, parentTaskId, ...taskData } =
+      createTaskDto;
 
     // Verify project exists and user has access
     const project = await this.prisma.project.findUnique({
@@ -31,7 +32,9 @@ export class TasksService {
 
     // Check if user is project owner or team member
     const isProjectOwner = project.userId === userId;
-    const isTeamMember = project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
 
     if (!isProjectOwner && !isTeamMember) {
       throw new ForbiddenException('You do not have access to this project');
@@ -44,7 +47,9 @@ export class TasksService {
       });
 
       if (!phase) {
-        throw new NotFoundException(`Phase with ID ${phaseId} not found in this project`);
+        throw new NotFoundException(
+          `Phase with ID ${phaseId} not found in this project`,
+        );
       }
     }
 
@@ -66,7 +71,9 @@ export class TasksService {
       });
 
       if (!parentTask) {
-        throw new NotFoundException(`Parent task with ID ${parentTaskId} not found in this project`);
+        throw new NotFoundException(
+          `Parent task with ID ${parentTaskId} not found in this project`,
+        );
       }
     }
 
@@ -101,8 +108,12 @@ export class TasksService {
       include: {
         project: { select: { id: true, name: true, code: true } },
         phase: { select: { id: true, name: true } },
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
-        creator: { select: { id: true, name: true, email: true, avatar: true } },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
+        creator: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
         parentTask: { select: { id: true, title: true } },
         subtasks: { select: { id: true, title: true, status: true } },
       },
@@ -137,10 +148,7 @@ export class TasksService {
     } else {
       // If no projectId specified, only show tasks from user's projects
       where.project = {
-        OR: [
-          { userId },
-          { teamMembers: { some: { userId } } },
-        ],
+        OR: [{ userId }, { teamMembers: { some: { userId } } }],
       };
     }
 
@@ -201,8 +209,12 @@ export class TasksService {
         include: {
           project: { select: { id: true, name: true, code: true } },
           phase: { select: { id: true, name: true } },
-          assignee: { select: { id: true, name: true, email: true, avatar: true } },
-          creator: { select: { id: true, name: true, email: true, avatar: true } },
+          assignee: {
+            select: { id: true, name: true, email: true, avatar: true },
+          },
+          creator: {
+            select: { id: true, name: true, email: true, avatar: true },
+          },
           parentTask: { select: { id: true, title: true } },
           subtasks: { select: { id: true, title: true, status: true } },
           _count: {
@@ -242,8 +254,12 @@ export class TasksService {
           },
         },
         phase: { select: { id: true, name: true } },
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
-        creator: { select: { id: true, name: true, email: true, avatar: true } },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
+        creator: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
         parentTask: { select: { id: true, title: true } },
         subtasks: {
           select: {
@@ -304,7 +320,9 @@ export class TasksService {
 
     // Check if user has access to this task's project
     const isProjectOwner = task.project.userId === userId;
-    const isTeamMember = task.project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = task.project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
 
     if (!isProjectOwner && !isTeamMember) {
       throw new ForbiddenException('You do not have access to this task');
@@ -333,10 +351,14 @@ export class TasksService {
 
     // Check if user has access to modify this task
     const isProjectOwner = task.project.userId === userId;
-    const isTeamMember = task.project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = task.project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
 
     if (!isProjectOwner && !isTeamMember && task.assigneeId !== userId) {
-      throw new ForbiddenException('You do not have permission to update this task');
+      throw new ForbiddenException(
+        'You do not have permission to update this task',
+      );
     }
 
     // Verify phase belongs to project if being updated
@@ -346,23 +368,33 @@ export class TasksService {
       });
 
       if (!phase) {
-        throw new NotFoundException(`Phase with ID ${updateTaskDto.phaseId} not found in this project`);
+        throw new NotFoundException(
+          `Phase with ID ${updateTaskDto.phaseId} not found in this project`,
+        );
       }
     }
 
     // Verify assignee exists if being updated
-    if (updateTaskDto.assigneeId !== undefined && updateTaskDto.assigneeId !== null) {
+    if (
+      updateTaskDto.assigneeId !== undefined &&
+      updateTaskDto.assigneeId !== null
+    ) {
       const assignee = await this.prisma.user.findUnique({
         where: { id: updateTaskDto.assigneeId },
       });
 
       if (!assignee) {
-        throw new NotFoundException(`User with ID ${updateTaskDto.assigneeId} not found`);
+        throw new NotFoundException(
+          `User with ID ${updateTaskDto.assigneeId} not found`,
+        );
       }
     }
 
     // Verify parent task if being updated
-    if (updateTaskDto.parentTaskId !== undefined && updateTaskDto.parentTaskId !== null) {
+    if (
+      updateTaskDto.parentTaskId !== undefined &&
+      updateTaskDto.parentTaskId !== null
+    ) {
       if (updateTaskDto.parentTaskId === id) {
         throw new BadRequestException('A task cannot be its own parent');
       }
@@ -372,26 +404,43 @@ export class TasksService {
       });
 
       if (!parentTask) {
-        throw new NotFoundException(`Parent task with ID ${updateTaskDto.parentTaskId} not found in this project`);
+        throw new NotFoundException(
+          `Parent task with ID ${updateTaskDto.parentTaskId} not found in this project`,
+        );
       }
     }
 
     const updateData: any = {};
 
-    if (updateTaskDto.title !== undefined) updateData.title = updateTaskDto.title;
-    if (updateTaskDto.description !== undefined) updateData.description = updateTaskDto.description;
-    if (updateTaskDto.status !== undefined) updateData.status = updateTaskDto.status;
-    if (updateTaskDto.priority !== undefined) updateData.priority = updateTaskDto.priority;
-    if (updateTaskDto.dueDate !== undefined) updateData.dueDate = updateTaskDto.dueDate ? new Date(updateTaskDto.dueDate) : null;
-    if (updateTaskDto.estimatedHours !== undefined) updateData.estimatedHours = updateTaskDto.estimatedHours;
-    if (updateTaskDto.actualHours !== undefined) updateData.actualHours = updateTaskDto.actualHours;
-    if (updateTaskDto.progress !== undefined) updateData.progress = updateTaskDto.progress;
-    if (updateTaskDto.order !== undefined) updateData.order = updateTaskDto.order;
+    if (updateTaskDto.title !== undefined)
+      updateData.title = updateTaskDto.title;
+    if (updateTaskDto.description !== undefined)
+      updateData.description = updateTaskDto.description;
+    if (updateTaskDto.status !== undefined)
+      updateData.status = updateTaskDto.status;
+    if (updateTaskDto.priority !== undefined)
+      updateData.priority = updateTaskDto.priority;
+    if (updateTaskDto.dueDate !== undefined)
+      updateData.dueDate = updateTaskDto.dueDate
+        ? new Date(updateTaskDto.dueDate)
+        : null;
+    if (updateTaskDto.estimatedHours !== undefined)
+      updateData.estimatedHours = updateTaskDto.estimatedHours;
+    if (updateTaskDto.actualHours !== undefined)
+      updateData.actualHours = updateTaskDto.actualHours;
+    if (updateTaskDto.progress !== undefined)
+      updateData.progress = updateTaskDto.progress;
+    if (updateTaskDto.order !== undefined)
+      updateData.order = updateTaskDto.order;
     if (updateTaskDto.tags !== undefined) updateData.tags = updateTaskDto.tags;
-    if (updateTaskDto.metadata !== undefined) updateData.metadata = updateTaskDto.metadata;
-    if (updateTaskDto.phaseId !== undefined) updateData.phaseId = updateTaskDto.phaseId;
-    if (updateTaskDto.assigneeId !== undefined) updateData.assigneeId = updateTaskDto.assigneeId;
-    if (updateTaskDto.parentTaskId !== undefined) updateData.parentTaskId = updateTaskDto.parentTaskId;
+    if (updateTaskDto.metadata !== undefined)
+      updateData.metadata = updateTaskDto.metadata;
+    if (updateTaskDto.phaseId !== undefined)
+      updateData.phaseId = updateTaskDto.phaseId;
+    if (updateTaskDto.assigneeId !== undefined)
+      updateData.assigneeId = updateTaskDto.assigneeId;
+    if (updateTaskDto.parentTaskId !== undefined)
+      updateData.parentTaskId = updateTaskDto.parentTaskId;
 
     return this.prisma.task.update({
       where: { id },
@@ -399,8 +448,12 @@ export class TasksService {
       include: {
         project: { select: { id: true, name: true, code: true } },
         phase: { select: { id: true, name: true } },
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
-        creator: { select: { id: true, name: true, email: true, avatar: true } },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
+        creator: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
         parentTask: { select: { id: true, title: true } },
         subtasks: { select: { id: true, title: true, status: true } },
       },
@@ -428,11 +481,15 @@ export class TasksService {
     const isProjectOwner = task.project.userId === userId;
     const isTaskCreator = task.creatorId === userId;
     const isManager = task.project.teamMembers.some(
-      (member) => member.userId === userId && ['OWNER', 'MANAGER', 'LEAD'].includes(member.role),
+      (member) =>
+        member.userId === userId &&
+        ['OWNER', 'MANAGER', 'LEAD'].includes(member.role),
     );
 
     if (!isProjectOwner && !isTaskCreator && !isManager) {
-      throw new ForbiddenException('You do not have permission to delete this task');
+      throw new ForbiddenException(
+        'You do not have permission to delete this task',
+      );
     }
 
     await this.prisma.task.delete({ where: { id } });
@@ -459,10 +516,14 @@ export class TasksService {
 
     // Check if user has access to modify this task
     const isProjectOwner = task.project.userId === userId;
-    const isTeamMember = task.project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = task.project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
 
     if (!isProjectOwner && !isTeamMember) {
-      throw new ForbiddenException('You do not have permission to assign this task');
+      throw new ForbiddenException(
+        'You do not have permission to assign this task',
+      );
     }
 
     // Verify assignee exists
@@ -471,14 +532,18 @@ export class TasksService {
     });
 
     if (!assignee) {
-      throw new NotFoundException(`User with ID ${assignTaskDto.assigneeId} not found`);
+      throw new NotFoundException(
+        `User with ID ${assignTaskDto.assigneeId} not found`,
+      );
     }
 
     return this.prisma.task.update({
       where: { id },
       data: { assigneeId: assignTaskDto.assigneeId },
       include: {
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
       },
     });
   }
@@ -502,10 +567,14 @@ export class TasksService {
 
     // Check if user has access to modify this task
     const isProjectOwner = task.project.userId === userId;
-    const isTeamMember = task.project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = task.project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
 
     if (!isProjectOwner && !isTeamMember) {
-      throw new ForbiddenException('You do not have permission to unassign this task');
+      throw new ForbiddenException(
+        'You do not have permission to unassign this task',
+      );
     }
 
     return this.prisma.task.update({
@@ -514,7 +583,11 @@ export class TasksService {
     });
   }
 
-  async updateStatus(id: string, updateStatusDto: UpdateStatusDto, userId: string) {
+  async updateStatus(
+    id: string,
+    updateStatusDto: UpdateStatusDto,
+    userId: string,
+  ) {
     const task = await this.prisma.task.findUnique({
       where: { id },
       include: {
@@ -533,18 +606,24 @@ export class TasksService {
 
     // Check if user has access to modify this task
     const isProjectOwner = task.project.userId === userId;
-    const isTeamMember = task.project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = task.project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
     const isAssignee = task.assigneeId === userId;
 
     if (!isProjectOwner && !isTeamMember && !isAssignee) {
-      throw new ForbiddenException('You do not have permission to update this task status');
+      throw new ForbiddenException(
+        'You do not have permission to update this task status',
+      );
     }
 
     return this.prisma.task.update({
       where: { id },
       data: { status: updateStatusDto.status },
       include: {
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
       },
     });
   }
@@ -561,7 +640,9 @@ export class TasksService {
     }
 
     const isProjectOwner = project.userId === userId;
-    const isTeamMember = project.teamMembers.some((member) => member.userId === userId);
+    const isTeamMember = project.teamMembers.some(
+      (member) => member.userId === userId,
+    );
 
     if (!isProjectOwner && !isTeamMember) {
       throw new ForbiddenException('You do not have access to this project');
@@ -572,8 +653,12 @@ export class TasksService {
       orderBy: { order: 'asc' },
       include: {
         phase: { select: { id: true, name: true } },
-        assignee: { select: { id: true, name: true, email: true, avatar: true } },
-        creator: { select: { id: true, name: true, email: true, avatar: true } },
+        assignee: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
+        creator: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
         subtasks: { select: { id: true, title: true, status: true } },
         _count: {
           select: {
@@ -601,7 +686,9 @@ export class TasksService {
       include: {
         project: { select: { id: true, name: true, code: true } },
         phase: { select: { id: true, name: true } },
-        creator: { select: { id: true, name: true, email: true, avatar: true } },
+        creator: {
+          select: { id: true, name: true, email: true, avatar: true },
+        },
         _count: {
           select: {
             comments: true,

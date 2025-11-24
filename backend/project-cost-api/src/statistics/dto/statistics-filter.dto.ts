@@ -1,5 +1,10 @@
 import { IsOptional, IsDateString, IsEnum, IsString } from 'class-validator';
-import { ProjectStatus, TaskStatus, CostStatus, CostType } from '@prisma/client';
+import {
+  ProjectStatus,
+  TaskStatus,
+  CostStatus,
+  CostType,
+} from '@prisma/client';
 
 export class BaseStatisticsFilterDto {
   @IsOptional()
