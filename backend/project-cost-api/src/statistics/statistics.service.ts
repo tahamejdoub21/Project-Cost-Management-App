@@ -31,7 +31,10 @@ export class StatisticsService {
       where.status = filters.status;
     }
 
-    if (filters.userId && (userRole === UserRole.SUPER_ADMIN || userRole === UserRole.ADMIN)) {
+    if (
+      filters.userId &&
+      (userRole === UserRole.SUPER_ADMIN || userRole === UserRole.ADMIN)
+    ) {
       where.userId = filters.userId;
     }
 
@@ -49,25 +52,29 @@ export class StatisticsService {
       where.id = filters.projectId;
     }
 
-    const [totalProjects, projectsByStatus, projectsByPriority, budgetAnalysis] =
-      await Promise.all([
-        this.prisma.project.count({ where }),
-        this.prisma.project.groupBy({
-          by: ['status'],
-          where,
-          _count: { _all: true },
-        }),
-        this.prisma.project.groupBy({
-          by: ['priority'],
-          where,
-          _count: { _all: true },
-        }),
-        this.prisma.project.aggregate({
-          where,
-          _sum: { totalBudget: true, actualCost: true },
-          _avg: { progress: true },
-        }),
-      ]);
+    const [
+      totalProjects,
+      projectsByStatus,
+      projectsByPriority,
+      budgetAnalysis,
+    ] = await Promise.all([
+      this.prisma.project.count({ where }),
+      this.prisma.project.groupBy({
+        by: ['status'],
+        where,
+        _count: { _all: true },
+      }),
+      this.prisma.project.groupBy({
+        by: ['priority'],
+        where,
+        _count: { _all: true },
+      }),
+      this.prisma.project.aggregate({
+        where,
+        _sum: { totalBudget: true, actualCost: true },
+        _avg: { progress: true },
+      }),
+    ]);
 
     const topProjects = await this.prisma.project.findMany({
       where,
@@ -109,10 +116,7 @@ export class StatisticsService {
 
     if (userRole !== UserRole.SUPER_ADMIN && userRole !== UserRole.ADMIN) {
       where.project = {
-        OR: [
-          { userId },
-          { teamMembers: { some: { userId, isActive: true } } },
-        ],
+        OR: [{ userId }, { teamMembers: { some: { userId, isActive: true } } }],
       };
     }
 
@@ -146,33 +150,38 @@ export class StatisticsService {
       }
     }
 
-    const [totalCosts, costsByType, costsByStatus, costsByCategory, costSummary] =
-      await Promise.all([
-        this.prisma.cost.count({ where }),
-        this.prisma.cost.groupBy({
-          by: ['type'],
-          where,
-          _count: { _all: true },
-          _sum: { amount: true },
-        }),
-        this.prisma.cost.groupBy({
-          by: ['status'],
-          where,
-          _count: { _all: true },
-          _sum: { amount: true },
-        }),
-        this.prisma.cost.groupBy({
-          by: ['categoryId'],
-          where,
-          _count: { _all: true },
-          _sum: { amount: true },
-        }),
-        this.prisma.cost.aggregate({
-          where,
-          _sum: { amount: true },
-          _avg: { amount: true },
-        }),
-      ]);
+    const [
+      totalCosts,
+      costsByType,
+      costsByStatus,
+      costsByCategory,
+      costSummary,
+    ] = await Promise.all([
+      this.prisma.cost.count({ where }),
+      this.prisma.cost.groupBy({
+        by: ['type'],
+        where,
+        _count: { _all: true },
+        _sum: { amount: true },
+      }),
+      this.prisma.cost.groupBy({
+        by: ['status'],
+        where,
+        _count: { _all: true },
+        _sum: { amount: true },
+      }),
+      this.prisma.cost.groupBy({
+        by: ['categoryId'],
+        where,
+        _count: { _all: true },
+        _sum: { amount: true },
+      }),
+      this.prisma.cost.aggregate({
+        where,
+        _sum: { amount: true },
+        _avg: { amount: true },
+      }),
+    ]);
 
     const categoriesWithNames = await Promise.all(
       costsByCategory.map(async (item) => {
@@ -232,10 +241,7 @@ export class StatisticsService {
 
     if (userRole !== UserRole.SUPER_ADMIN && userRole !== UserRole.ADMIN) {
       where.project = {
-        OR: [
-          { userId },
-          { teamMembers: { some: { userId, isActive: true } } },
-        ],
+        OR: [{ userId }, { teamMembers: { some: { userId, isActive: true } } }],
       };
     }
 
@@ -308,7 +314,7 @@ export class StatisticsService {
         .filter((item) => item.assigneeId)
         .map(async (item) => {
           const user = await this.prisma.user.findUnique({
-            where: { id: item.assigneeId! },
+            where: { id: item.assigneeId },
             select: { name: true, email: true },
           });
           return {
@@ -352,10 +358,7 @@ export class StatisticsService {
 
     if (userRole !== UserRole.SUPER_ADMIN && userRole !== UserRole.ADMIN) {
       where.project = {
-        OR: [
-          { userId },
-          { teamMembers: { some: { userId, isActive: true } } },
-        ],
+        OR: [{ userId }, { teamMembers: { some: { userId, isActive: true } } }],
       };
     }
 
@@ -562,10 +565,7 @@ export class StatisticsService {
 
     if (userRole !== UserRole.SUPER_ADMIN && userRole !== UserRole.ADMIN) {
       const accessCondition = {
-        OR: [
-          { userId },
-          { teamMembers: { some: { userId, isActive: true } } },
-        ],
+        OR: [{ userId }, { teamMembers: { some: { userId, isActive: true } } }],
       };
       projectWhere.OR = accessCondition.OR;
       taskWhere.project = accessCondition;
