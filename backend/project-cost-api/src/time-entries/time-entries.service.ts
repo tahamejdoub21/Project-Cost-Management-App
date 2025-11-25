@@ -109,27 +109,46 @@ export class TimeEntriesService {
       where.billable = query.billable;
     }
 
-    return this.prisma.timeEntry.findMany({
-      where,
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            avatar: true,
+    const page = query.page || 1;
+    const limit = query.limit || 10;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.timeEntry.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              avatar: true,
+            },
+          },
+          task: {
+            select: {
+              id: true,
+              title: true,
+              projectId: true,
+            },
           },
         },
-        task: {
-          select: {
-            id: true,
-            title: true,
-            projectId: true,
-          },
-        },
+        orderBy: { startTime: 'desc' },
+      }),
+      this.prisma.timeEntry.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-      orderBy: { startTime: 'desc' },
-    });
+    };
   }
 
   async findOne(id: string, userId: string) {

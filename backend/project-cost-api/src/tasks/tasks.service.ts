@@ -33,7 +33,7 @@ export class TasksService {
     // Check if user is project owner or team member
     const isProjectOwner = project.userId === userId;
     const isTeamMember = project.teamMembers.some(
-      (member) => member.userId === userId,
+      (member) => member.userId === userId && member.isActive,
     );
 
     if (!isProjectOwner && !isTeamMember) {

@@ -251,6 +251,7 @@ export class DiscussionsService {
         ...createDto,
         userId,
         readBy: [userId],
+        mentions: createDto.mentions || [],
       },
       include: {
         user: {
@@ -313,5 +314,71 @@ export class DiscussionsService {
     }
 
     return message;
+  }
+
+  async updateMessage(
+    messageId: string,
+    userId: string,
+    updateDto: { content?: string; mentions?: string[] },
+  ) {
+    const message = await this.prisma.chatMessage.findUnique({
+      where: { id: messageId },
+      include: {
+        discussion: { include: { project: { include: { teamMembers: true } } } },
+        project: { include: { teamMembers: true } },
+      },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    if (message.userId !== userId) {
+      throw new ForbiddenException('Not authorized to update this message');
+    }
+
+    const updatedMessage = await this.prisma.chatMessage.update({
+      where: { id: messageId },
+      data: {
+        content: updateDto.content,
+        mentions: updateDto.mentions,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+          },
+        },
+      },
+    });
+
+    if (message.discussionId) {
+      this.chatGateway.sendMessageToDiscussion(message.discussionId, updatedMessage);
+    } else if (message.projectId) {
+      this.chatGateway.sendMessageToProject(message.projectId, updatedMessage);
+    }
+
+    return updatedMessage;
+  }
+
+  async deleteMessage(messageId: string, userId: string) {
+    const message = await this.prisma.chatMessage.findUnique({
+      where: { id: messageId },
+    });
+
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+
+    if (message.userId !== userId) {
+      throw new ForbiddenException('Not authorized to delete this message');
+    }
+
+    return this.prisma.chatMessage.delete({
+      where: { id: messageId },
+    });
   }
 }
