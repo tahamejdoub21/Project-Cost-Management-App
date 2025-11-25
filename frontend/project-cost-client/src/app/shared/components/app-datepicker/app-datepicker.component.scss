@@ -1,0 +1,587 @@
+@use '../../../../styles/variables' as *;
+
+// ============================================
+// DATE PICKER - MATCHING IMAGE DESIGN
+// Clean, Modern Calendar UI
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: $font-family-primary;
+}
+
+// ============================================
+// CONTAINER
+// ============================================
+
+.datepicker-container {
+  position: relative;
+  width: 100%;
+  font-family: $font-family-primary;
+}
+
+// ============================================
+// LABEL
+// ============================================
+
+.datepicker-label {
+  display: block;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  letter-spacing: 0.01em;
+
+  .required-asterisk {
+    color: #ef4444;
+    margin-left: 4px;
+    font-weight: 700;
+  }
+}
+
+// ============================================
+// INPUT WRAPPER
+// ============================================
+
+.datepicker-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover:not(.disabled) {
+    border-color: #9ca3af;
+  }
+
+  &.focused {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+  }
+
+  &.has-error {
+    border-color: $error-500;
+
+    &.focused {
+      box-shadow: 0 0 0 3px rgba($error-500, 0.1);
+    }
+  }
+
+  &.disabled {
+    background-color: #f9fafb;
+    border-color: #e5e7eb;
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.datepicker-input {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: #111827;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+
+  // Remove all focus styles - wrapper handles focus state
+  &:focus,
+  &:focus-visible,
+  &:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  &::placeholder {
+    color: #6b7280;
+    font-weight: 400;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: #6b7280;
+  }
+}
+
+.datepicker-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.clear-button,
+.calendar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    transition: all 0.15s ease;
+  }
+
+  &:not([disabled]):hover {
+    background-color: #f3f4f6;
+
+    mat-icon {
+      color: #374151;
+    }
+  }
+
+  &:not([disabled]):active {
+    background-color: #e5e7eb;
+    transform: scale(0.95);
+  }
+
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.clear-button {
+  &:hover {
+    background-color: #fee2e2;
+
+    mat-icon {
+      color: #dc2626;
+    }
+  }
+
+  &:active {
+    background-color: #fecaca;
+  }
+}
+
+// ============================================
+// DROPDOWN CALENDAR
+// ============================================
+
+.datepicker-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: $z-dropdown;
+  width: 100%;
+  min-width: 320px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// CALENDAR VIEW - DAY PICKER
+// ============================================
+
+.calendar-view {
+  padding: 16px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 8px;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+
+    mat-icon {
+      color: #374151;
+    }
+  }
+
+  &:active {
+    background: #e5e7eb;
+  }
+}
+
+.header-selectors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+.month-selector,
+.year-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: none;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #6b7280;
+  }
+
+  &:hover {
+    background: #f1f5f9;
+    color: $primary-600;
+
+    mat-icon {
+      color: $primary-600;
+    }
+  }
+
+  &:active {
+    background: #e2e8f0;
+  }
+}
+
+.year-selector {
+  background: transparent;
+  color: #374151;
+  padding: 8px;
+
+  &:hover {
+    background: #f8fafc;
+  }
+}
+
+// ============================================
+// WEEK DAYS
+// ============================================
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.weekday {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  font-family: $font-family-primary;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-align: center;
+}
+
+// ============================================
+// CALENDAR DAYS GRID
+// ============================================
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:not(.disabled):hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+  }
+
+  &.other-month {
+    color: #d1d5db;
+  }
+
+  &.today:not(.selected) {
+    border-color: $primary-500;
+    background: transparent;
+    color: $primary-600;
+    font-weight: 500;
+  }
+
+  &.selected {
+    background: $primary-500;
+    color: white;
+    font-weight: 500;
+    border-color: $primary-500;
+
+    &:hover {
+      background: $primary-600;
+      border-color: $primary-600;
+    }
+  }
+
+  &.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.4;
+
+    &:hover {
+      background: transparent;
+      border-color: transparent;
+    }
+  }
+}
+
+// ============================================
+// MONTH VIEW
+// ============================================
+
+.month-view,
+.year-view {
+  padding: 16px;
+}
+
+.view-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+  }
+
+  &:hover {
+    background: #f3f4f6;
+
+    mat-icon {
+      color: #374151;
+    }
+  }
+
+  &:active {
+    background: #e5e7eb;
+  }
+}
+
+.view-title {
+  font-family: $font-family-primary;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.month-grid,
+.year-grid {
+  display: grid;
+  gap: 8px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.month-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.year-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.month-option,
+.year-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border: 1px solid transparent;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &.hover:hover {
+    background: #f1f5f9;
+    border-color: #d1d5db;
+    color: #111827;
+  }
+
+  &.selected {
+    background: $primary-500;
+    color: white;
+    font-weight: 600;
+    border-color: $primary-500;
+
+    &:hover {
+      background: $primary-600;
+      border-color: $primary-600;
+    }
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.year-option {
+  padding: 10px;
+  font-size: 13px;
+}
+
+// ============================================
+// FOOTER MESSAGES
+// ============================================
+
+.datepicker-footer {
+  margin-top: 6px;
+  min-height: 20px;
+  font-family: $font-family-primary;
+}
+
+.hint-message,
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.hint-message {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.error-message {
+  color: #dc2626;
+  font-weight: 500;
+
+  .message-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #ef4444;
+  }
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+@media (max-width: $breakpoint-sm) {
+  .datepicker-dropdown {
+    min-width: 280px;
+  }
+
+  .calendar-view {
+    padding: 12px;
+  }
+
+  .calendar-day {
+    font-size: 13px;
+  }
+
+  .month-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .year-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

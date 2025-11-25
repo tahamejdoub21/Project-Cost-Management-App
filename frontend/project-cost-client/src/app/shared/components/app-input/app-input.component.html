@@ -1,0 +1,333 @@
+<!-- Custom Input - Clean & Modern Design -->
+<div class="custom-input-container" [attr.data-state]="getState()" [class]="class">
+  <!-- Label -->
+  <label *ngIf="label" [for]="id" class="custom-input-label">
+    {{ label }}
+    <span *ngIf="required" class="required-asterisk">*</span>
+  </label>
+
+  <!-- Phone Number Input with Country Code -->
+  <div *ngIf="type === 'tel' && enablePhoneFormat" class="phone-input-container">
+    <div class="phone-input-wrapper custom-input-wrapper"
+         [class.focused]="isFocused()"
+         [class.has-error]="!!getErrorMessage()"
+         [class.disabled]="disabled"
+         [class.readonly]="readonly">
+      
+      <!-- Left Icon -->
+      <button
+        *ngIf="iconLeft"
+        type="button"
+        class="input-icon input-icon-left"
+        [disabled]="!iconLeft.clickable || disabled"
+        (click)="onLeftIconClick($event)"
+        [matTooltip]="iconLeft.tooltip || ''"
+        [attr.aria-label]="iconLeft.tooltip || 'Left icon'"
+        tabindex="-1"
+      >
+        <mat-icon [style.color]="iconLeft.color || null">{{ iconLeft.name }}</mat-icon>
+      </button>
+
+      <!-- Country Code Selector -->
+      <div class="country-code-selector"
+           [class.focused]="isCountryDropdownOpen()"
+           (click)="toggleCountryDropdown()">
+        <span class="country-flag">{{ selectedCountry().flag }}</span>
+        <span class="country-code">{{ selectedCountry().dialCode }}</span>
+        <mat-icon class="country-chevron" [class.open]="isCountryDropdownOpen()">
+          expand_more
+        </mat-icon>
+      </div>
+
+      <!-- Phone Number Input -->
+      <input
+        #phoneInputElement
+        type="tel"
+        [id]="id"
+        [name]="name"
+        [placeholder]="placeholder"
+        [value]="formattedPhoneNumber()"
+        [required]="required"
+        [readonly]="readonly"
+        [disabled]="disabled || loading"
+        [attr.autocomplete]="autocomplete"
+        [attr.autofocus]="autofocus || null"
+        [attr.maxlength]="maxlength || null"
+        [attr.aria-label]="ariaLabel || label || null"
+        [attr.aria-describedby]="ariaDescribedBy || null"
+        [attr.aria-invalid]="ariaInvalid || !!getErrorMessage() || null"
+        [attr.aria-required]="ariaRequired || required || null"
+        [attr.inputmode]="inputmode || null"
+        class="phone-number-input custom-input-field"
+        (input)="onPhoneInput($event)"
+        (change)="onChange_Event($event)"
+        (focus)="onFocus($event)"
+        (blur)="onBlur($event)"
+        (keydown)="onKeyDown($event)"
+        (keyup)="onKeyUp($event)"
+        (click)="onClick($event)">
+
+      <!-- Right Icons -->
+      <div class="input-icons-right">
+        <!-- Loading Spinner -->
+        <div *ngIf="loading" class="loading-spinner-wrapper">
+          <span class="loading-spinner"></span>
+        </div>
+
+        <!-- Clear Button -->
+        <button
+          *ngIf="showClearButton() && !loading"
+          type="button"
+          class="input-icon input-icon-clear"
+          (click)="onClearClick()"
+          [matTooltip]="'Clear'"
+          aria-label="Clear input"
+          tabindex="-1"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+
+        <!-- Right Icon -->
+        <button
+          *ngIf="iconRight && !loading"
+          type="button"
+          class="input-icon input-icon-right"
+          [disabled]="!iconRight.clickable || disabled"
+          (click)="onRightIconClick($event)"
+          [matTooltip]="iconRight.tooltip || ''"
+          [attr.aria-label]="iconRight.tooltip || 'Right icon'"
+          tabindex="-1"
+        >
+          <mat-icon [style.color]="iconRight.color || null">{{ iconRight.name }}</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Country Dropdown -->
+    <div *ngIf="isCountryDropdownOpen()" class="country-dropdown">
+      <div class="country-search">
+        <input
+          type="text"
+          placeholder="Search countries..."
+          [value]="phoneSearchQuery()"
+          (input)="phoneSearchQuery.set($any($event.target).value)"
+          (click)="$event.stopPropagation()">
+      </div>
+      <div class="country-list">
+        <div *ngFor="let country of filteredCountries()"
+             class="country-option"
+             [class.selected]="country.code === selectedCountry().code"
+             (click)="selectCountry(country)">
+          <span class="country-flag">{{ country.flag }}</span>
+          <div class="country-info">
+            <span class="country-name">{{ country.name }}</span>
+            <span class="country-dial-code">{{ country.dialCode }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Regular Input (Non-Phone) -->
+  <div *ngIf="type !== 'tel' || !enablePhoneFormat"
+       class="custom-input-wrapper"
+       [class.variant-outline]="variant === 'outline'"
+       [class.variant-fill]="variant === 'fill'"
+       [class.focused]="isFocused()"
+       [class.has-error]="!!getErrorMessage()"
+       [class.disabled]="disabled"
+       [class.readonly]="readonly"
+       [style.width]="width || null">
+    
+    <!-- Left Icon -->
+    <button
+      *ngIf="iconLeft"
+      type="button"
+      class="input-icon input-icon-left"
+      [disabled]="!iconLeft.clickable || disabled"
+      (click)="onLeftIconClick($event)"
+      [matTooltip]="iconLeft.tooltip || ''"
+      [attr.aria-label]="iconLeft.tooltip || 'Left icon'"
+      tabindex="-1"
+    >
+      <mat-icon [style.color]="iconLeft.color || null">{{ iconLeft.name }}</mat-icon>
+    </button>
+
+    <!-- Input Element -->
+    <input
+      *ngIf="type !== 'date'"
+      #inputElement
+      [type]="currentType()"
+      [id]="id"
+      [name]="name"
+      [placeholder]="placeholder"
+      [value]="value()"
+      [required]="required"
+      [readonly]="readonly"
+      [disabled]="disabled || loading"
+      [attr.autocomplete]="autocomplete"
+      [attr.autofocus]="autofocus || null"
+      [attr.spellcheck]="spellcheck"
+      [attr.minlength]="minlength || null"
+      [attr.maxlength]="maxlength || null"
+      [attr.pattern]="pattern || null"
+      [attr.min]="min || null"
+      [attr.max]="max || null"
+      [attr.step]="step || null"
+      [attr.aria-label]="ariaLabel || label || null"
+      [attr.aria-describedby]="ariaDescribedBy || null"
+      [attr.aria-labelledby]="ariaLabelledBy || null"
+      [attr.aria-invalid]="ariaInvalid || !!getErrorMessage() || null"
+      [attr.aria-required]="ariaRequired || required || null"
+      [attr.inputmode]="inputmode || null"
+      [attr.enterkeyhint]="enterkeyhint || null"
+      [attr.autocapitalize]="autocapitalize"
+      [attr.autocorrect]="autocorrect ? 'on' : 'off'"
+      [attr.dir]="dir"
+      [attr.size]="size || null"
+      [attr.lang]="locale || null"
+      class="custom-input-field"
+      [style.height]="height || null"
+      (input)="onInput($event)"
+      (change)="onChange_Event($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (keydown)="onKeyDown($event)"
+      (keyup)="onKeyUp($event)"
+      (click)="onClick($event)">
+
+    <!-- Date Input with Datepicker -->
+    <input
+      *ngIf="type === 'date'"
+      #inputElement
+      type="text"
+      [id]="id"
+      [name]="name"
+      [placeholder]="placeholder"
+      [value]="value()"
+      [required]="required"
+      [readonly]="readonly"
+      [disabled]="disabled || loading"
+      [matDatepicker]="myDatepicker"
+      [attr.autocomplete]="autocomplete"
+      [attr.autofocus]="autofocus || null"
+      [attr.spellcheck]="spellcheck"
+      [attr.minlength]="minlength || null"
+      [attr.maxlength]="maxlength || null"
+      [attr.pattern]="pattern || null"
+      [attr.min]="min || null"
+      [attr.max]="max || null"
+      [attr.step]="step || null"
+      [attr.aria-label]="ariaLabel || label || null"
+      [attr.aria-describedby]="ariaDescribedBy || null"
+      [attr.aria-labelledby]="ariaLabelledBy || null"
+      [attr.aria-invalid]="ariaInvalid || !!getErrorMessage() || null"
+      [attr.aria-required]="ariaRequired || required || null"
+      [attr.inputmode]="inputmode || null"
+      [attr.enterkeyhint]="enterkeyhint || null"
+      [attr.autocapitalize]="autocapitalize"
+      [attr.autocorrect]="autocorrect ? 'on' : 'off'"
+      [attr.dir]="dir"
+      [attr.size]="size || null"
+      [attr.lang]="locale || null"
+      class="custom-input-field"
+      [style.height]="height || null"
+      (input)="onInput($event)"
+      (change)="onChange_Event($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (keydown)="onKeyDown($event)"
+      (keyup)="onKeyUp($event)"
+      (click)="onClick($event)">
+
+    <!-- Datepicker for date inputs with unique ID -->
+    <mat-datepicker #myDatepicker></mat-datepicker>
+
+    <!-- Right Icons -->
+    <div class="input-icons-right">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="loading-spinner-wrapper">
+        <span class="loading-spinner"></span>
+      </div>
+
+      <!-- Password Toggle -->
+      <button
+        *ngIf="type === 'password' && showPasswordToggle && !loading"
+        type="button"
+        class="input-icon"
+        (click)="togglePasswordVisibility()"
+        [matTooltip]="passwordVisible() ? 'Hide password' : 'Show password'"
+        [attr.aria-label]="passwordVisible() ? 'Hide password' : 'Show password'"
+        tabindex="-1"
+      >
+        <mat-icon>{{ passwordVisible() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+
+      <!-- Clear Button -->
+      <button
+        *ngIf="showClearButton() && !loading"
+        type="button"
+        class="input-icon input-icon-clear"
+        (click)="onClearClick()"
+        [matTooltip]="'Clear'"
+        aria-label="Clear input"
+        tabindex="-1"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <!-- Calendar Icon for Date Input -->
+      <button
+        *ngIf="type === 'date' && !loading"
+        type="button"
+        class="input-icon input-icon-calendar"
+        [disabled]="disabled || readonly"
+        (click)="openDatepicker()"
+        [matTooltip]="'Choose date'"
+        aria-label="Open calendar"
+        tabindex="-1"
+      >
+        <mat-icon>calendar_today</mat-icon>
+      </button>
+
+      <!-- Right Icon -->
+      <button
+        *ngIf="iconRight && !loading"
+        type="button"
+        class="input-icon input-icon-right"
+        [disabled]="!iconRight.clickable || disabled"
+        (click)="onRightIconClick($event)"
+        [matTooltip]="iconRight.tooltip || ''"
+        [attr.aria-label]="iconRight.tooltip || 'Right icon'"
+        tabindex="-1"
+      >
+        <mat-icon [style.color]="iconRight.color || null">{{ iconRight.name }}</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Helper Text / Character Counter / Error Message -->
+  <div class="custom-input-footer" *ngIf="hint || getErrorMessage() || successMessage || showCounter">
+    <!-- Hint / Error Message -->
+    <div class="footer-left">
+      <span *ngIf="getErrorMessage()" class="error-message">
+        <mat-icon class="message-icon">error</mat-icon>
+        {{ getErrorMessage() }}
+      </span>
+      <span *ngIf="!getErrorMessage() && successMessage && hasValue()" class="success-message">
+        <mat-icon class="message-icon">check_circle</mat-icon>
+        {{ successMessage }}
+      </span>
+      <span *ngIf="!getErrorMessage() && !successMessage && hint" class="hint-message">
+        {{ hint }}
+      </span>
+    </div>
+
+    <!-- Character Counter -->
+    <div class="footer-right">
+      <span *ngIf="showCounter && maxlength" class="character-counter">
+        {{ characterCount() }}/{{ maxlength }}
+      </span>
+    </div>
+  </div>
+</div>

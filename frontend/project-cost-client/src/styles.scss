@@ -1,1 +1,545 @@
-/* You can add global styles to this file, and also import other style files */
+// ============================================
+// GLOBAL STYLES
+// Project Cost Management Application
+// ============================================
+
+// Import Design System
+@use 'styles/variables' as *;
+@use 'styles/typography';
+@use 'styles/utilities';
+
+// ============================================
+// RESET & BASE STYLES
+// ============================================
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-normal;
+  color: $text-primary;
+  background-color: $bg-primary;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+// ============================================
+// SELECTION STYLES
+// ============================================
+
+::selection {
+  background-color: $primary-200;
+  color: $primary-900;
+}
+
+::-moz-selection {
+  background-color: $primary-200;
+  color: $primary-900;
+}
+
+// ============================================
+// SCROLLBAR STYLES
+// ============================================
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $neutral-100;
+  border-radius: $radius-sm;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $neutral-400;
+  border-radius: $radius-sm;
+  border: 2px solid $neutral-100;
+
+  &:hover {
+    background-color: $neutral-500;
+  }
+
+  &:active {
+    background-color: $neutral-600;
+  }
+}
+
+// ============================================
+// FOCUS STYLES
+// ============================================
+
+:focus-visible {
+  outline: 2px solid $primary-500;
+  outline-offset: 2px;
+  border-radius: $radius-sm;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid $primary-500;
+  outline-offset: 2px;
+}
+
+// ============================================
+// FORM ELEMENTS
+// ============================================
+
+input,
+textarea,
+select,
+button {
+  font-family: $font-family-primary;
+  font-size: $font-size-base;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+textarea,
+select {
+  appearance: none;
+  background-color: $bg-primary;
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  padding: $spacing-3 $spacing-4;
+  color: $text-primary;
+  transition: $transition-all;
+  width: 100%;
+
+  &:hover {
+    border-color: $border-medium;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+  }
+
+  &:disabled {
+    background-color: $neutral-100;
+    color: $text-disabled;
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: $text-tertiary;
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+// Checkbox & Radio
+input[type="checkbox"],
+input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid $border-medium;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  position: relative;
+  transition: $transition-all;
+
+  &:hover {
+    border-color: $primary-500;
+  }
+
+  &:checked {
+    background-color: $primary-500;
+    border-color: $primary-500;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 2px;
+      width: 5px;
+      height: 9px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+input[type="radio"] {
+  border-radius: $radius-full;
+
+  &:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: $radius-full;
+    background-color: white;
+    border: none;
+  }
+}
+
+// Buttons
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: inherit;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+// ============================================
+// IMAGES & MEDIA
+// ============================================
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+// ============================================
+// TABLES
+// ============================================
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: $font-family-primary;
+}
+
+thead {
+  background-color: $neutral-100;
+  border-bottom: 2px solid $border-medium;
+}
+
+th {
+  font-weight: $font-weight-semibold;
+  text-align: left;
+  padding: $spacing-3 $spacing-4;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  letter-spacing: $letter-spacing-wide;
+  text-transform: uppercase;
+}
+
+td {
+  padding: $spacing-3 $spacing-4;
+  border-bottom: 1px solid $border-light;
+  color: $text-primary;
+}
+
+tbody tr {
+  transition: $transition-fast;
+
+  &:hover {
+    background-color: $neutral-50;
+  }
+}
+
+// ============================================
+// HORIZONTAL RULE
+// ============================================
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: $border-light;
+  margin: $spacing-6 0;
+}
+
+// ============================================
+// LOADING STATE
+// ============================================
+
+.loading {
+  pointer-events: none;
+  opacity: 0.6;
+  cursor: wait;
+}
+
+// ============================================
+// DISABLED STATE
+// ============================================
+
+.disabled,
+[disabled] {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+// ============================================
+// SCREEN READER ONLY
+// ============================================
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// ============================================
+// MATERIAL DATEPICKER CUSTOM STYLING
+// ============================================
+
+// Datepicker Panel
+.mat-datepicker-content {
+  border-radius: 16px !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05) !important;
+  padding: 12px !important;
+  background: #ffffff !important;
+}
+
+// Calendar Header
+.mat-calendar-header {
+  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, $primary-500 0%, $primary-600 100%) !important;
+  color: white !important;
+  margin-bottom: 16px !important;
+}
+
+.mat-calendar-controls {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.mat-calendar-period-button {
+  font-family: $font-family-primary !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+  }
+}
+
+.mat-calendar-arrow {
+  fill: white !important;
+}
+
+.mat-calendar-previous-button,
+.mat-calendar-next-button {
+  color: white !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+  }
+}
+
+// Calendar Body
+.mat-calendar-body {
+  font-family: $font-family-primary !important;
+}
+
+.mat-calendar-table-header {
+  th {
+    font-family: $font-family-primary !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #6b7280 !important;
+    padding: 8px 0 !important;
+  }
+}
+
+// Calendar Cells
+.mat-calendar-body-cell {
+  border-radius: 10px !important;
+  position: relative !important;
+  transition: all 0.2s ease !important;
+}
+
+.mat-calendar-body-cell-content {
+  font-family: $font-family-primary !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #1f2937 !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover .mat-calendar-body-cell-content {
+  background-color: rgba($primary-500, 0.1) !important;
+  transform: scale(1.05) !important;
+}
+
+// Selected Date
+.mat-calendar-body-selected {
+  background-color: transparent !important;
+
+  .mat-calendar-body-cell-content {
+    background: linear-gradient(135deg, $primary-500 0%, $primary-600 100%) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba($primary-500, 0.3) !important;
+    transform: scale(1.08) !important;
+  }
+
+  &:hover .mat-calendar-body-cell-content {
+    background: linear-gradient(135deg, $primary-600 0%, $primary-700 100%) !important;
+  }
+}
+
+// Today's Date
+.mat-calendar-body-today:not(.mat-calendar-body-selected) {
+  .mat-calendar-body-cell-content {
+    border: 2px solid $primary-500 !important;
+    color: $primary-600 !important;
+    font-weight: 600 !important;
+  }
+}
+
+// Disabled Dates
+.mat-calendar-body-disabled {
+  .mat-calendar-body-cell-content {
+    color: #d1d5db !important;
+    font-weight: 400 !important;
+  }
+}
+
+// Range/Multi-select preview
+.mat-calendar-body-in-range .mat-calendar-body-cell-content {
+  background-color: rgba($primary-500, 0.15) !important;
+  color: $primary-700 !important;
+}
+
+// Month/Year View
+.mat-calendar-body-label {
+  font-family: $font-family-primary !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #6b7280 !important;
+}
+
+// Backdrop
+.cdk-overlay-backdrop.cdk-overlay-dark-backdrop {
+  background: rgba(0, 0, 0, 0.45) !important;
+}
+
+// Animation
+.mat-datepicker-content {
+  animation: datepickerFadeIn 0.2s ease-out !important;
+}
+
+@keyframes datepickerFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// ============================================
+// PRINT STYLES
+// ============================================
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}

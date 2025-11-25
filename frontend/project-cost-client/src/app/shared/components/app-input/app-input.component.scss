@@ -1,0 +1,1074 @@
+// app-input.component.scss
+@use '../../../../styles/variables' as *;
+
+// ============================================
+// CUSTOM INPUT COMPONENT - MATCHING IMAGE DESIGN
+// Clean, Modern, User-Friendly Design
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: $font-family-primary;
+  margin-bottom: $spacing-4;
+}
+
+// ============================================
+// CONTAINER
+// ============================================
+
+.custom-input-container {
+  width: 100%;
+  font-family: $font-family-primary;
+}
+
+// ============================================
+// LABEL - MATCHING IMAGE STYLE
+// ============================================
+
+.custom-input-label {
+  display: block;
+  font-family: $font-family-primary;
+  font-size: 13px;
+  font-weight: 600;
+  color: $neutral-800;
+  margin-bottom: 6px;
+  letter-spacing: 0;
+  transition: color 0.2s ease;
+
+  .required-asterisk {
+    color: $error-500;
+    margin-left: 2px;
+    font-weight: 700;
+  }
+}
+
+// ============================================
+// INPUT WRAPPER - MATCHING IMAGE DESIGN
+// ============================================
+
+.custom-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 44px;
+  background-color: $bg-primary;
+  border-radius: 6px;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: $font-family-primary;
+  border: 1.5px solid $neutral-300;
+  padding: 0 12px;
+
+  // Focus state
+  &.focused {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.08);
+  }
+
+  // Error state
+  &.has-error {
+    border-color: $error-500;
+
+    &.focused {
+      box-shadow: 0 0 0 3px rgba($error-500, 0.08);
+    }
+  }
+
+  // Disabled state
+  &.disabled {
+    background-color: $neutral-50;
+    border-color: $neutral-200;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  // Readonly state
+  &.readonly {
+    background-color: $neutral-50;
+    border-color: $neutral-200;
+    cursor: default;
+  }
+
+  // Hover state
+  &:hover:not(.disabled):not(.readonly):not(.focused) {
+    border-color: $neutral-400;
+  }
+}
+
+// ============================================
+// INPUT FIELD - CLEAN DESIGN
+// ============================================
+
+.custom-input-field {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $neutral-800;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  line-height: 1.5;
+  transition: none;
+
+  // Remove ALL focus styles - wrapper handles focus state
+  &:focus,
+  &:focus-visible,
+  &:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  &::placeholder {
+    color: $neutral-400;
+    font-weight: 400;
+    opacity: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: $neutral-400;
+  }
+
+  &:read-only {
+    cursor: default;
+    color: $neutral-600;
+  }
+
+  // Remove default browser styling
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+  }
+
+  &[type='search']::-webkit-search-decoration,
+  &[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  // Fix for date input with matDatepicker
+  &[matDatepicker] {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+
+    &:focus,
+    &:focus-visible,
+    &:active {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+  }
+}
+
+// ============================================
+// ICONS - MATCHING IMAGE STYLE
+// ============================================
+
+.input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $neutral-500;
+    transition: all 0.15s ease;
+  }
+
+  &:not([disabled]):hover {
+    background-color: $neutral-100;
+
+    mat-icon {
+      color: $neutral-700;
+    }
+  }
+
+  &:not([disabled]):active {
+    background-color: $neutral-200;
+    transform: scale(0.95);
+  }
+
+  &[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &.input-icon-left {
+    margin-right: 8px;
+  }
+
+  &.input-icon-right {
+    margin-left: 4px;
+  }
+
+  &.input-icon-clear {
+    &:hover {
+      background-color: $error-100;
+
+      mat-icon {
+        color: $error-600;
+      }
+    }
+
+    &:active {
+      background-color: $error-200;
+    }
+  }
+}
+
+.input-icons-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+// ============================================
+// LOADING SPINNER
+// ============================================
+
+.loading-spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $spacing-2;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid $neutral-100;
+  border-top-color: $primary-500;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// FOOTER (Hints / Errors / Counter)
+// ============================================
+
+.custom-input-footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 6px;
+  min-height: 20px;
+  font-family: $font-family-primary;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.footer-left {
+  flex: 1;
+}
+
+// ============================================
+// MESSAGES - MATCHING IMAGE STYLE
+// ============================================
+
+.hint-message,
+.error-message,
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  font-family: $font-family-primary;
+  transition: all 0.2s ease;
+}
+
+.hint-message {
+  color: $neutral-500;
+  font-weight: 400;
+}
+
+.error-message {
+  color: $error-600;
+  font-weight: 500;
+
+  .message-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: $error-500;
+  }
+}
+
+.success-message {
+  color: $success-600;
+  font-weight: 500;
+
+  .message-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: $success-500;
+  }
+}
+
+// ============================================
+// CHARACTER COUNTER
+// ============================================
+
+.character-counter {
+  font-size: 12px;
+  color: $neutral-500;
+  font-weight: 400;
+}
+
+// ============================================
+// CALENDAR IMPROVEMENTS
+// ============================================
+
+.input-icon-calendar {
+  mat-icon {
+    color: $neutral-500 !important;
+  }
+
+  &:hover:not([disabled]) {
+    background-color: $neutral-100;
+
+    mat-icon {
+      color: $neutral-700 !important;
+    }
+  }
+
+  &:active:not([disabled]) {
+    background-color: $neutral-200;
+  }
+}
+
+// Enhanced Datepicker Styles
+::ng-deep {
+  .mat-datepicker-content {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid $neutral-200;
+  }
+
+  .mat-calendar {
+    font-family: $font-family-primary !important;
+    border-radius: 12px !important;
+  }
+
+  .mat-calendar-header {
+    background: $neutral-50 !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 16px !important;
+  }
+
+  .mat-calendar-controls {
+    margin: 0 !important;
+  }
+
+  .mat-calendar-period-button {
+    font-weight: 600 !important;
+    color: $neutral-900 !important;
+    font-size: 16px !important;
+  }
+
+  .mat-calendar-arrow {
+    border-top-color: $neutral-500 !important;
+  }
+
+  .mat-calendar-table-header {
+    color: $neutral-500 !important;
+    font-weight: 500 !important;
+    font-size: 12px !important;
+  }
+
+  .mat-calendar-body-cell {
+    border-radius: 8px !important;
+  }
+
+  .mat-calendar-body-cell-content {
+    border: 1px solid transparent !important;
+    color: $neutral-700 !important;
+    font-weight: 400 !important;
+    transition: all 0.15s ease !important;
+  }
+
+  .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover > .mat-calendar-body-cell-content {
+    background: $neutral-100 !important;
+    border-color: $neutral-300 !important;
+    color: $neutral-900 !important;
+  }
+
+  .mat-calendar-body-selected {
+    background: $primary-500 !important;
+    color: white !important;
+    font-weight: 500 !important;
+  }
+
+  .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+    border-color: $primary-500 !important;
+    background: transparent !important;
+    color: $primary-600 !important;
+  }
+
+  .mat-calendar-body-disabled > .mat-calendar-body-cell-content {
+    color: $neutral-300 !important;
+  }
+
+  .mat-datepicker-toggle {
+    color: $neutral-500 !important;
+  }
+
+  .mat-datepicker-actions {
+    padding: 16px !important;
+    border-top: 1px solid $neutral-200 !important;
+    background: $neutral-50 !important;
+    border-radius: 0 0 12px 12px !important;
+
+    button {
+      border-radius: 8px !important;
+      font-weight: 500 !important;
+      font-family: $font-family-primary !important;
+      transition: all 0.15s ease !important;
+    }
+
+    .mat-button {
+      color: $neutral-500 !important;
+
+      &:hover {
+        background: $neutral-200 !important;
+        color: $neutral-700 !important;
+      }
+    }
+
+    .mat-primary {
+      background: $primary-500 !important;
+      color: white !important;
+
+      &:hover {
+        background: $primary-600 !important;
+      }
+    }
+  }
+
+  // Fix for Material Datepicker input - remove inner border
+  .mat-datepicker-input {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+
+    &:focus,
+    &:focus-visible,
+    &:active {
+      border: none !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+    }
+  }
+
+  // Fix for mat-form-field wrapper that might add borders
+  .mat-form-field-appearance-fill,
+  .mat-form-field-appearance-outline {
+    .mat-form-field-flex {
+      border: none !important;
+      background: transparent !important;
+    }
+
+    .mat-form-field-outline {
+      display: none !important;
+    }
+
+    .mat-form-field-underline {
+      display: none !important;
+    }
+  }
+}
+
+// ============================================
+// DROPDOWN STYLES (For select-like inputs)
+// ============================================
+
+.custom-input-dropdown {
+  position: relative;
+
+  &::after {
+    content: '▼';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: $neutral-500;
+    pointer-events: none;
+  }
+}
+
+// ============================================
+// SEARCH SPECIFIC STYLES
+// ============================================
+
+.custom-input-wrapper[data-type="search"] {
+  background: $neutral-50;
+
+  &.focused {
+    background: $bg-primary;
+  }
+}
+
+// ============================================
+// PASSWORD STRENGTH INDICATOR
+// ============================================
+
+.password-strength {
+  margin-top: 8px;
+
+  .strength-bar {
+    height: 4px;
+    background: $neutral-200;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 4px;
+
+    .strength-fill {
+      height: 100%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+
+      &.weak { background: $error-500; width: 25%; }
+      &.fair { background: $warning-500; width: 50%; }
+      &.good { background: $warning-400; width: 75%; }
+      &.strong { background: $success-500; width: 100%; }
+    }
+  }
+
+  .strength-text {
+    font-size: 12px;
+    color: $neutral-500;
+  }
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+@media (max-width: $breakpoint-sm) {
+  .custom-input-wrapper {
+    height: 44px;
+    padding: 0 $spacing-3;
+  }
+
+  .custom-input-field {
+    font-size: 16px; // Prevent zoom on iOS
+  }
+
+  .input-icon {
+    width: 30px;
+    height: 30px;
+
+    mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  // Mobile Calendar/Datepicker Responsive Styles
+  ::ng-deep {
+    .mat-datepicker-content {
+      max-width: calc(100vw - 32px) !important;
+      margin: 0 16px !important;
+    }
+
+    .mat-calendar {
+      width: 100% !important;
+      max-width: 340px !important;
+      min-width: 280px !important;
+    }
+
+    .mat-calendar-header {
+      padding: 12px !important;
+    }
+
+    .mat-calendar-period-button {
+      font-size: 14px !important;
+      padding: 8px !important;
+    }
+
+    .mat-calendar-previous-button,
+    .mat-calendar-next-button {
+      width: 36px !important;
+      height: 36px !important;
+
+      mat-icon {
+        font-size: 20px !important;
+      }
+    }
+
+    .mat-calendar-table-header th {
+      font-size: 11px !important;
+      padding: 4px 0 !important;
+    }
+
+    .mat-calendar-body-cell {
+      padding: 2px !important;
+    }
+
+    .mat-calendar-body-cell-content {
+      width: 36px !important;
+      height: 36px !important;
+      line-height: 36px !important;
+      font-size: 13px !important;
+    }
+
+    .mat-calendar-body-label {
+      padding: 8px 0 !important;
+      font-size: 12px !important;
+    }
+
+    .mat-datepicker-actions {
+      padding: 12px !important;
+
+      button {
+        font-size: 13px !important;
+        padding: 8px 16px !important;
+        min-width: auto !important;
+      }
+    }
+  }
+
+  // Phone Input Mobile Styles
+  .phone-input-wrapper {
+    height: 44px;
+    padding: 0 10px;
+  }
+
+  .country-code-selector {
+    min-width: 90px;
+    margin-right: 8px;
+    padding: 0 6px;
+    height: 34px;
+  }
+
+  .country-flag {
+    width: 18px;
+    height: 18px;
+    font-size: 14px;
+  }
+
+  .country-code {
+    font-size: 13px;
+  }
+
+  .phone-number-input {
+    font-size: 16px; // Prevent zoom on iOS
+  }
+
+  .country-dropdown {
+    max-height: 70vh !important;
+    margin-top: 4px;
+  }
+
+  .country-search {
+    padding: 10px;
+
+    input {
+      font-size: 16px; // Prevent zoom on iOS
+      padding: 10px;
+    }
+  }
+
+  .country-option {
+    padding: 12px 10px;
+
+    .country-name {
+      font-size: 13px;
+    }
+
+    .country-dial-code {
+      font-size: 13px;
+    }
+  }
+
+  // Footer Messages Mobile Styles
+  .custom-input-footer {
+    margin-top: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .hint-message,
+  .error-message,
+  .success-message {
+    font-size: 11px;
+  }
+
+  .character-counter {
+    font-size: 11px;
+  }
+
+  // Label Mobile Styles
+  .custom-input-label {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+}
+
+// Extra small devices (very small phones)
+@media (max-width: 360px) {
+  ::ng-deep {
+    .mat-calendar {
+      max-width: 280px !important;
+      min-width: 260px !important;
+    }
+
+    .mat-calendar-body-cell-content {
+      width: 32px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+      font-size: 12px !important;
+    }
+
+    .mat-calendar-period-button {
+      font-size: 13px !important;
+    }
+  }
+
+  .country-code-selector {
+    min-width: 80px;
+  }
+}
+
+// ============================================
+// RTL SUPPORT
+// ============================================
+
+[dir='rtl'] {
+  .input-icon-left {
+    margin-right: 0;
+    margin-left: 8px;
+  }
+
+  .input-icon-right {
+    margin-left: 0;
+    margin-right: 4px;
+  }
+
+  .input-icons-right {
+    flex-direction: row-reverse;
+  }
+
+  .required-asterisk {
+    margin-left: 0;
+    margin-right: 4px;
+  }
+}
+
+// ============================================
+// OVERRIDE GLOBAL STYLES
+// ============================================
+
+.custom-input-wrapper .custom-input-field {
+  // Force remove all global input styling
+  appearance: none !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  width: 100% !important;
+
+  &:hover,
+  &:focus,
+  &:focus-visible,
+  &:active {
+    appearance: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    outline-offset: 0 !important;
+  }
+}
+// Phone Number Input Specific Styles
+.phone-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.phone-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  background-color: $bg-primary;
+  border: 1px solid $neutral-300;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  padding: 0 12px;
+
+  &:hover:not(.disabled):not(.readonly) {
+    border-color: $neutral-400;
+  }
+
+  &.focused {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+  }
+
+  &.has-error {
+    border-color: $error-500;
+
+    &.focused {
+      box-shadow: 0 0 0 3px rgba($error-500, 0.1);
+    }
+  }
+}
+
+// Country Code Dropdown
+.country-code-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 8px;
+  background: $neutral-50;
+  border: 1px solid $neutral-200;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 100px;
+  margin-right: 12px;
+  height: 36px;
+
+  &:hover:not(.disabled) {
+    background: $neutral-100;
+    border-color: $neutral-300;
+  }
+
+  &.focused {
+    border-color: $primary-500;
+    background: $primary-50;
+  }
+}
+
+.country-flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.country-code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: $neutral-700;
+  white-space: nowrap;
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.country-chevron {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 18px !important;
+  color: $neutral-500;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}
+
+// Phone Number Input
+.phone-number-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: $neutral-900;
+  font-family: $font-family-primary;
+
+  &::placeholder {
+    color: $neutral-500;
+  }
+
+  &:disabled {
+    color: $neutral-500;
+    cursor: not-allowed;
+  }
+}
+
+// Country Dropdown Menu
+.country-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid $neutral-200;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.country-search {
+  padding: 12px;
+  border-bottom: 1px solid $neutral-100;
+
+  input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid $neutral-300;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: $font-family-primary;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-500;
+    }
+  }
+}
+
+.country-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.country-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid $neutral-50;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $neutral-50;
+  }
+
+  &.selected {
+    background: $primary-50;
+  }
+
+  .country-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .country-name {
+    font-size: 14px;
+    color: $neutral-700;
+    font-weight: 400;
+  }
+
+  .country-dial-code {
+    font-size: 14px;
+    color: $neutral-500;
+    font-weight: 500;
+  }
+}
+
+// Formatted Phone Number Display
+.formatted-phone {
+  font-size: 14px;
+  color: $neutral-900;
+  font-family: $font-family-primary;
+  white-space: nowrap;
+}
+
+// Specific styles for the template
+.phone-input-compact {
+  .country-code-selector {
+    min-width: 80px;
+    margin-right: 8px;
+    padding: 6px 8px 6px 6px;
+  }
+  
+  .country-code {
+    font-size: 13px;
+  }
+}
+// ============================================
+// PRINT STYLES
+// ============================================
+
+@media print {
+  .custom-input-wrapper {
+    border: 1px solid #000 !important;
+    background: transparent !important;
+  }
+
+  .input-icon,
+  .loading-spinner-wrapper {
+    display: none !important;
+  }
+}

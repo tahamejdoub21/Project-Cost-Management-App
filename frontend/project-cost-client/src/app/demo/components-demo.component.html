@@ -1,0 +1,357 @@
+<div class="demo-container">
+  <div class="demo-header">
+    <h1>Design System Components</h1>
+    <p>Form input components matching the design specifications</p>
+  </div>
+
+  <div class="demo-content">
+    <!-- INPUTS Section -->
+    <section class="demo-section">
+      <h2 class="section-title">INPUTS</h2>
+      <div class="demo-grid">
+        <!-- Label -->
+        <div class="demo-item">
+          <span class="demo-label">Label</span>
+          <app-input
+            label="Label"
+            placeholder="you@example.com">
+          </app-input>
+        </div>
+
+        <!-- Description -->
+        <div class="demo-item">
+          <span class="demo-label">Description</span>
+          <app-input
+            label="Description"
+            placeholder="Make your password short and easy to guess."
+            hint="Your password must be less than 4 characters.">
+          </app-input>
+        </div>
+
+        <!-- Error -->
+        <div class="demo-item">
+          <span class="demo-label">Error</span>
+          <app-input
+            label="Error"
+            placeholder="you@example.com"
+            errorMessage="Your password must be less than 4 characters.">
+          </app-input>
+        </div>
+
+        <!-- Basic -->
+        <div class="demo-item">
+          <span class="demo-label">Basic</span>
+          <app-input
+            label="Basic"
+            placeholder="you@example.com">
+          </app-input>
+        </div>
+
+        <!-- Hint -->
+        <div class="demo-item">
+          <span class="demo-label">Hint</span>
+          <app-input
+            label="Hint"
+            placeholder="you@example.com"
+            hint="OPTIONAL">
+          </app-input>
+        </div>
+
+        <!-- Loading icon -->
+        <div class="demo-item">
+          <span class="demo-label">Loading icon</span>
+          <app-input
+            label="Loading icon"
+            placeholder="you@example.com"
+            [iconLeft]="{ name: 'email', clickable: false }">
+          </app-input>
+        </div>
+
+        <!-- Trailing icon -->
+        <div class="demo-item">
+          <span class="demo-label">Trailing icon</span>
+          <app-input
+            label="Trailing icon"
+            placeholder="000-00-0000"
+            [iconRight]="{ name: 'help_outline', clickable: true, tooltip: 'Help' }">
+          </app-input>
+        </div>
+
+        <!-- Inline leading and trailing button -->
+        <div class="demo-item">
+          <span class="demo-label">Leading icon and trailing button</span>
+          <app-input
+            label="Inline leading dropdown"
+            placeholder="you@example.com"
+            [iconLeft]="{ name: 'language', clickable: false }"
+            [iconRight]="{ name: 'content_copy', clickable: true, tooltip: 'Copy' }">
+          </app-input>
+        </div>
+
+        <!-- Trailing dropdown -->
+        <div class="demo-item">
+          <span class="demo-label">Trailing dropdown</span>
+          <app-input
+            label="Trailing dropdown"
+            placeholder="$ 0.00"
+            [iconLeft]="{ name: 'attach_money', clickable: false }">
+          </app-input>
+        </div>
+
+        <!-- Search candidates -->
+        <div class="demo-item">
+          <span class="demo-label">Search candidates</span>
+          <app-input
+            label="Search candidates"
+            type="search"
+            placeholder="Search..."
+            [iconLeft]="{ name: 'people', clickable: false }"
+            [clearable]="true">
+          </app-input>
+        </div>
+
+        <!-- Insert label -->
+        <div class="demo-item">
+          <span class="demo-label">Insert label</span>
+          <app-input
+            label="Insert label"
+            placeholder="Jane Doe">
+          </app-input>
+        </div>
+
+        <!-- Insert label and shared borders -->
+        <div class="demo-item">
+          <span class="demo-label">Insert label and shared borders</span>
+          <app-input
+            label="Insert label and shared borders"
+            placeholder="Jane Doe">
+          </app-input>
+        </div>
+
+        <!-- Addon -->
+        <div class="demo-item">
+          <span class="demo-label">Addon</span>
+          <app-input
+            label="Addon"
+            placeholder="www.example.com"
+            [iconLeft]="{ name: 'language', clickable: false }">
+          </app-input>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATE PICKER Section -->
+    <section class="demo-section">
+      <h2 class="section-title">DATE PICKER</h2>
+      <div class="demo-grid demo-grid-compact">
+        <!-- Regular -->
+        <div class="demo-item">
+          <span class="demo-label">REGULAR</span>
+          <app-datepicker
+            label="Date Picker"
+            placeholder="Select date">
+          </app-datepicker>
+        </div>
+
+        <!-- Inactive -->
+        <div class="demo-item">
+          <span class="demo-label">INACTIVE</span>
+          <app-datepicker
+            label="Date Picker"
+            placeholder="Select date"
+            [disabled]="true">
+          </app-datepicker>
+        </div>
+
+        <!-- Selected -->
+        <div class="demo-item">
+          <span class="demo-label">SELECTED</span>
+          <app-datepicker
+            label="Date Picker"
+            placeholder="Select date">
+          </app-datepicker>
+        </div>
+
+        <!-- Current Day -->
+        <div class="demo-item">
+          <span class="demo-label">CURRENT DAY</span>
+          <app-datepicker
+            label="Date Picker"
+            placeholder="Select date">
+          </app-datepicker>
+        </div>
+
+        <!-- Hover -->
+        <div class="demo-item">
+          <span class="demo-label">HOVER</span>
+          <app-datepicker
+            label="Date Picker"
+            placeholder="Select date"
+            hint="menu item">
+          </app-datepicker>
+        </div>
+      </div>
+
+      <!-- Calendar Views -->
+      <div class="calendar-views">
+        <div class="view-item">
+          <span class="demo-label">YEAR SELECT - EXPANDED</span>
+          <p class="view-description">Click on the year in the calendar header to see year selection view</p>
+        </div>
+
+        <div class="view-item">
+          <span class="demo-label">MONTH SELECT - EXPANDED</span>
+          <p class="view-description">Click on the month in the calendar header to see month selection view</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Complete Form Example -->
+    <section class="demo-section">
+      <h2 class="section-title">COMPLETE FORM EXAMPLE</h2>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="demo-form">
+        <div class="form-grid">
+          <!-- Name -->
+          <app-input
+            label="Name"
+            formControlName="name"
+            placeholder="Jane Doe"
+            [required]="true"
+            [errorMessage]="getErrorMessage('name')">
+          </app-input>
+
+          <!-- Email -->
+          <app-input
+            label="Email"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            [iconLeft]="{ name: 'email', clickable: false }"
+            [required]="true"
+            [errorMessage]="getErrorMessage('email')">
+          </app-input>
+
+          <!-- Password -->
+          <app-input
+            label="Password"
+            type="password"
+            formControlName="password"
+            placeholder="Enter your password"
+            [showPasswordToggle]="true"
+            [required]="true"
+            hint="Must be at least 8 characters"
+            [errorMessage]="getErrorMessage('password')">
+          </app-input>
+
+          <!-- Phone Number -->
+          <app-input
+            label="Phone Number"
+            type="tel"
+            formControlName="phone"
+            placeholder="(555) 987-6543"
+            [enablePhoneFormat]="true"
+            [defaultCountry]="'US'">
+          </app-input>
+
+          <!-- Country -->
+          <app-select
+            label="Country"
+            formControlName="country"
+            placeholder="Select country"
+            [options]="countryOptions"
+            [required]="true"
+            [searchable]="true"
+            [errorMessage]="getErrorMessage('country')">
+          </app-select>
+
+          <!-- Currency -->
+          <app-select
+            label="Currency"
+            formControlName="currency"
+            placeholder="Select currency"
+            [options]="currencyOptions"
+            [clearable]="true">
+          </app-select>
+
+          <!-- Timezone (Grouped) -->
+          <app-select
+            label="Timezone"
+            formControlName="timezone"
+            placeholder="Select timezone"
+            [options]="timezoneOptions"
+            [searchable]="true"
+            [clearable]="true"
+            hint="Grouped by region">
+          </app-select>
+
+          <!-- Date of Birth -->
+          <app-datepicker
+            label="Date of Birth"
+            formControlName="dob"
+            placeholder="MM/DD/YYYY"
+            [maxDate]="minDate">
+          </app-datepicker>
+
+          <!-- Start Date -->
+          <app-datepicker
+            label="Start Date"
+            formControlName="startDate"
+            placeholder="Select date"
+            [required]="true"
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            [errorMessage]="getErrorMessage('startDate')">
+          </app-datepicker>
+
+          <!-- Price -->
+          <app-input
+            label="Price"
+            type="number"
+            formControlName="price"
+            placeholder="0.00"
+            [iconLeft]="{ name: 'attach_money', clickable: false }"
+            [errorMessage]="getErrorMessage('price')">
+          </app-input>
+
+          <!-- Quantity -->
+          <app-input
+            label="Quantity"
+            type="number"
+            formControlName="quantity"
+            placeholder="1"
+            [required]="true"
+            [errorMessage]="getErrorMessage('quantity')">
+          </app-input>
+
+          <!-- Website -->
+          <app-input
+            label="Website"
+            type="url"
+            formControlName="website"
+            placeholder="www.example.com"
+            [iconLeft]="{ name: 'language', clickable: false }">
+          </app-input>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="onReset()">
+            Reset
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!form.valid">
+            Submit Form
+          </button>
+        </div>
+
+        <!-- Form Status -->
+        <div class="form-status" *ngIf="form.touched">
+          <div class="status-item" [class.valid]="form.valid" [class.invalid]="!form.valid">
+            <span class="status-label">Form Status:</span>
+            <span class="status-value">{{ form.valid ? 'Valid ✓' : 'Invalid ✗' }}</span>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</div>

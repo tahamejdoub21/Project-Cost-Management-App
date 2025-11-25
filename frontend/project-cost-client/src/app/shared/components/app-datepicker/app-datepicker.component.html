@@ -1,0 +1,169 @@
+<!-- Date Picker Component - Matching Design -->
+<div class="datepicker-container">
+  <!-- Label -->
+  <label *ngIf="label" class="datepicker-label">
+    {{ label }}
+    <span *ngIf="required" class="required-asterisk">*</span>
+  </label>
+
+  <!-- Input Field -->
+  <div
+    class="datepicker-input-wrapper"
+    [class.focused]="isFocused() || isOpen()"
+    [class.disabled]="disabled"
+    [class.has-error]="!!errorMessage"
+    (click)="togglePicker()">
+
+    <input
+      type="text"
+      class="datepicker-input"
+      [value]="formattedDate()"
+      [placeholder]="placeholder"
+      [disabled]="disabled"
+      [required]="required"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      readonly>
+
+    <div class="datepicker-actions">
+      <button
+        *ngIf="selectedDate()"
+        type="button"
+        class="clear-button"
+        (click)="clear(); $event.stopPropagation()"
+        [disabled]="disabled">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <button
+        type="button"
+        class="calendar-button"
+        [disabled]="disabled">
+        <mat-icon>calendar_today</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dropdown Calendar -->
+  <div *ngIf="isOpen()" class="datepicker-dropdown">
+
+    <!-- Day View -->
+    <div *ngIf="currentView() === 'day'" class="calendar-view">
+      <!-- Header -->
+      <div class="calendar-header">
+        <button
+          type="button"
+          class="nav-button"
+          (click)="previousMonth(); $event.stopPropagation()">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+
+        <div class="header-selectors">
+          <button
+            type="button"
+            class="month-selector"
+            (click)="toggleMonthView(); $event.stopPropagation()">
+            {{ displayMonth() }}
+            <mat-icon class="chevron">expand_more</mat-icon>
+          </button>
+
+          <button
+            type="button"
+            class="year-selector"
+            (click)="toggleYearView(); $event.stopPropagation()">
+            {{ displayYear() }}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="nav-button"
+          (click)="nextMonth(); $event.stopPropagation()">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <!-- Week Days -->
+      <div class="calendar-weekdays">
+        <div *ngFor="let day of weekDays" class="weekday">{{ day }}</div>
+      </div>
+
+      <!-- Calendar Days -->
+      <div class="calendar-days">
+        <button
+          *ngFor="let calendarDay of calendarDays()"
+          type="button"
+          class="calendar-day"
+          [class.other-month]="!calendarDay.isCurrentMonth"
+          [class.today]="calendarDay.isToday"
+          [class.selected]="calendarDay.isSelected"
+          [class.disabled]="calendarDay.isDisabled"
+          (click)="selectDay(calendarDay); $event.stopPropagation()"
+          [disabled]="calendarDay.isDisabled">
+          {{ calendarDay.day }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Month View -->
+    <div *ngIf="currentView() === 'month'" class="month-view">
+      <div class="view-header">
+        <button
+          type="button"
+          class="back-button"
+          (click)="currentView.set('day'); $event.stopPropagation()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="view-title">Month</span>
+      </div>
+
+      <div class="month-grid">
+        <button
+          *ngFor="let month of monthOptions()"
+          type="button"
+          class="month-option"
+          [class.selected]="month.selected"
+          [class.hover]="!month.selected"
+          (click)="selectMonth(month.value); $event.stopPropagation()">
+          {{ month.label }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Year View -->
+    <div *ngIf="currentView() === 'year'" class="year-view">
+      <div class="view-header">
+        <button
+          type="button"
+          class="back-button"
+          (click)="currentView.set('month'); $event.stopPropagation()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <span class="view-title">Year</span>
+      </div>
+
+      <div class="year-grid">
+        <button
+          *ngFor="let year of yearOptions()"
+          type="button"
+          class="year-option"
+          [class.selected]="year.selected"
+          [class.hover]="!year.selected"
+          (click)="selectYear(year.value); $event.stopPropagation()">
+          {{ year.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Messages -->
+  <div class="datepicker-footer" *ngIf="hint || errorMessage">
+    <span *ngIf="errorMessage" class="error-message">
+      <mat-icon class="message-icon">error</mat-icon>
+      {{ errorMessage }}
+    </span>
+    <span *ngIf="!errorMessage && hint" class="hint-message">
+      {{ hint }}
+    </span>
+  </div>
+</div>
