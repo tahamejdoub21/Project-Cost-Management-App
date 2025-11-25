@@ -12,6 +12,7 @@ import { DiscussionsService } from './discussions.service';
 import { CreateDiscussionDto } from './dto/create-discussion.dto';
 import { UpdateDiscussionDto } from './dto/update-discussion.dto';
 import { CreateChatMessageDto } from './dto/create-chat-message.dto';
+import { UpdateChatMessageDto } from './dto/update-chat-message.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
@@ -74,5 +75,22 @@ export class DiscussionsController {
     @CurrentUser('id') userId: string,
   ) {
     return this.discussionsService.markMessageAsRead(messageId, userId);
+  }
+
+  @Patch('messages/:messageId')
+  updateMessage(
+    @Param('messageId') messageId: string,
+    @CurrentUser('id') userId: string,
+    @Body() updateDto: UpdateChatMessageDto,
+  ) {
+    return this.discussionsService.updateMessage(messageId, userId, updateDto);
+  }
+
+  @Delete('messages/:messageId')
+  deleteMessage(
+    @Param('messageId') messageId: string,
+    @CurrentUser('id') userId: string,
+  ) {
+    return this.discussionsService.deleteMessage(messageId, userId);
   }
 }

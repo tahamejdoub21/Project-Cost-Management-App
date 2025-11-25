@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsBoolean } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateDiscussionDto {
   @IsNotEmpty()
@@ -12,4 +13,9 @@ export class CreateDiscussionDto {
   @IsNotEmpty()
   @IsString()
   projectId: string;
+
+  @IsOptional()
+  @IsBoolean()
+  @Type(() => Boolean)
+  isPinned?: boolean;
 }

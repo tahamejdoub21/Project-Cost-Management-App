@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsOptional, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional, IsEnum, IsArray } from 'class-validator';
 
 enum MessageType {
   TEXT = 'TEXT',
@@ -25,4 +25,9 @@ export class CreateChatMessageDto {
 
   @IsOptional()
   attachments?: any;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  mentions?: string[];
 }

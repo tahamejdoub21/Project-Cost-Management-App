@@ -31,6 +31,11 @@ export class CreateTimeEntryDto {
   duration?: number;
 
   @IsOptional()
+  @IsNumber()
+  @Min(0)
+  hourlyRate?: number;
+
+  @IsOptional()
   @IsBoolean()
   billable?: boolean;
 }

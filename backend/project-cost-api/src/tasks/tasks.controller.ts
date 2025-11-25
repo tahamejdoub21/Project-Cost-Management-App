@@ -48,14 +48,14 @@ export class TasksController {
     description: 'Project, phase, or assignee not found',
   })
   create(@Body() createTaskDto: CreateTaskDto, @Request() req) {
-    return this.tasksService.create(createTaskDto, req.user.sub);
+    return this.tasksService.create(createTaskDto, req.user.id);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get all tasks with filtering and pagination' })
   @ApiResponse({ status: 200, description: 'Tasks retrieved successfully' })
   findAll(@Query() query: QueryTaskDto, @Request() req) {
-    return this.tasksService.findAll(query, req.user.sub);
+    return this.tasksService.findAll(query, req.user.id);
   }
 
   @Get('my-tasks')
@@ -68,7 +68,7 @@ export class TasksController {
   })
   getMyTasks(@Query('status') status: string, @Request() req) {
     return this.tasksService.getMyTasks(
-      req.user.sub,
+      req.user.id,
       status ? { status } : undefined,
     );
   }
@@ -86,7 +86,7 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Project not found' })
   getTasksByProject(@Param('projectId') projectId: string, @Request() req) {
-    return this.tasksService.getTasksByProject(projectId, req.user.sub);
+    return this.tasksService.getTasksByProject(projectId, req.user.id);
   }
 
   @Get(':id')
@@ -99,7 +99,7 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   findOne(@Param('id') id: string, @Request() req) {
-    return this.tasksService.findOne(id, req.user.sub);
+    return this.tasksService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
@@ -118,7 +118,7 @@ export class TasksController {
     @Body() updateTaskDto: UpdateTaskDto,
     @Request() req,
   ) {
-    return this.tasksService.update(id, updateTaskDto, req.user.sub);
+    return this.tasksService.update(id, updateTaskDto, req.user.id);
   }
 
   @Delete(':id')
@@ -133,7 +133,7 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   remove(@Param('id') id: string, @Request() req) {
-    return this.tasksService.remove(id, req.user.sub);
+    return this.tasksService.remove(id, req.user.id);
   }
 
   @Patch(':id/assign')
@@ -151,7 +151,7 @@ export class TasksController {
     @Body() assignTaskDto: AssignTaskDto,
     @Request() req,
   ) {
-    return this.tasksService.assignTask(id, assignTaskDto, req.user.sub);
+    return this.tasksService.assignTask(id, assignTaskDto, req.user.id);
   }
 
   @Patch(':id/unassign')
@@ -166,7 +166,7 @@ export class TasksController {
   })
   @ApiResponse({ status: 404, description: 'Task not found' })
   unassignTask(@Param('id') id: string, @Request() req) {
-    return this.tasksService.unassignTask(id, req.user.sub);
+    return this.tasksService.unassignTask(id, req.user.id);
   }
 
   @Patch(':id/status')
@@ -184,6 +184,6 @@ export class TasksController {
     @Body() updateStatusDto: UpdateStatusDto,
     @Request() req,
   ) {
-    return this.tasksService.updateStatus(id, updateStatusDto, req.user.sub);
+    return this.tasksService.updateStatus(id, updateStatusDto, req.user.id);
   }
 }
