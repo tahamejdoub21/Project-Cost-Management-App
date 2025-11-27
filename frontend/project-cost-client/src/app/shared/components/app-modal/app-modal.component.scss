@@ -1,0 +1,680 @@
+@use '../../../../styles/variables' as *;
+
+// ============================================
+// MODAL ROOT & WRAPPER
+// ============================================
+
+.modal-root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: $z-modal-backdrop;
+}
+
+.modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  padding: $spacing-4;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: 0;
+    align-items: flex-end;
+  }
+}
+
+// ============================================
+// BACKDROP
+// ============================================
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity;
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.65);
+    }
+  }
+}
+
+// ============================================
+// MODAL CONTAINER BASE
+// ============================================
+
+.modal-container {
+  position: relative;
+  background: $bg-primary;
+  border-radius: $radius-xl;
+  box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.3),
+              0 10px 30px -15px rgba(0, 0, 0, 0.2),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
+  max-height: calc(100vh - #{$spacing-8});
+  height: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalFadeIn 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  transform-origin: center center;
+
+  // Size variants for dialog
+  &--dialog {
+    &.modal-container--xs {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    &.modal-container--sm {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    &.modal-container--md {
+      width: 100%;
+      max-width: 560px;
+    }
+
+    &.modal-container--lg {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    &.modal-container--xl {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    &.modal-container--full {
+      width: calc(100vw - #{$spacing-8});
+      height: calc(100vh - #{$spacing-8});
+      max-width: none;
+      max-height: none;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+      max-width: 100%;
+      max-height: 90vh;
+      border-radius: $radius-xl $radius-xl 0 0;
+      margin: 0;
+    }
+  }
+
+  // Alert is always small centered
+  &--alert {
+    width: 100%;
+    max-width: 400px;
+
+    @media (max-width: $breakpoint-sm) {
+      width: 100%;
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: $radius-xl $radius-xl 0 0;
+      margin: 0;
+    }
+  }
+
+  // Drawer variants
+  &--drawer-right,
+  &--drawer-left {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    box-shadow: 0 0 60px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(0, 0, 0, 0.15);
+
+    &.modal-container--sm {
+      width: 320px;
+    }
+
+    &.modal-container--md {
+      width: 420px;
+    }
+
+    &.modal-container--lg {
+      width: 560px;
+    }
+
+    &.modal-container--xl {
+      width: 720px;
+    }
+
+    &.modal-container--full {
+      width: 100%;
+    }
+
+    @media (max-width: $breakpoint-sm) {
+      width: 100% !important;
+      max-width: 100%;
+    }
+  }
+
+  &--drawer-right {
+    right: 0;
+    animation: slideInRight 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &--drawer-left {
+    left: 0;
+    animation: slideInLeft 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+// ============================================
+// DIALOG MODAL
+// ============================================
+
+.modal-dialog {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: 100%;
+  height: 100%;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-6 $spacing-6 $spacing-5;
+  border-bottom: 1px solid $border-light;
+  flex-shrink: 0;
+  background: linear-gradient(to bottom, $bg-primary 0%, rgba($neutral-50, 0.3) 100%);
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-4 $spacing-4 $spacing-3;
+  }
+}
+
+.modal-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0;
+  line-height: $line-height-tight;
+  letter-spacing: -0.01em;
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: $radius-full;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  margin-left: $spacing-4;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: $radius-full;
+    background: $neutral-100;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover {
+    color: $text-primary;
+
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+
+    &::before {
+      background: $neutral-200;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $spacing-6;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-4;
+  }
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $neutral-100;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $neutral-300;
+    border-radius: $radius-full;
+    transition: background 200ms ease;
+
+    &:hover {
+      background: $neutral-400;
+    }
+
+    &:active {
+      background: $neutral-500;
+    }
+  }
+
+  // Firefox scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: $neutral-300 $neutral-100;
+}
+
+.modal-content-text {
+  font-size: $font-size-base;
+  color: $text-secondary;
+  line-height: $line-height-relaxed;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $spacing-3;
+  padding: $spacing-6;
+  border-top: 1px solid $border-light;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-4;
+    flex-direction: column-reverse;
+
+    app-button {
+      width: 100%;
+    }
+  }
+}
+
+// ============================================
+// ALERT MODAL
+// ============================================
+
+.modal-alert {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: $spacing-8 $spacing-6 $spacing-6;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-6 $spacing-4 $spacing-4;
+  }
+}
+
+.alert-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: $radius-full;
+  margin-bottom: $spacing-5;
+  flex-shrink: 0;
+  position: relative;
+  animation: iconPulse 600ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: $radius-full;
+    opacity: 0.2;
+    animation: iconRipple 1.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+
+  &--success {
+    background: linear-gradient(135deg, $success-100 0%, $success-50 100%);
+    color: $success-600;
+
+    &::before {
+      background: $success-200;
+    }
+  }
+
+  &--warning {
+    background: linear-gradient(135deg, $warning-100 0%, $warning-50 100%);
+    color: $warning-600;
+
+    &::before {
+      background: $warning-200;
+    }
+  }
+
+  &--error {
+    background: linear-gradient(135deg, $error-100 0%, $error-50 100%);
+    color: $error-600;
+
+    &::before {
+      background: $error-200;
+    }
+  }
+
+  &--info {
+    background: linear-gradient(135deg, $info-100 0%, $info-50 100%);
+    color: $info-600;
+
+    &::before {
+      background: $info-200;
+    }
+  }
+}
+
+.alert-icon-symbol {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.alert-content {
+  margin-bottom: $spacing-6;
+}
+
+.alert-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0 0 $spacing-3 0;
+  line-height: $line-height-tight;
+}
+
+.alert-message {
+  font-size: $font-size-base;
+  color: $text-secondary;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.alert-actions {
+  display: flex;
+  gap: $spacing-3;
+  width: 100%;
+
+  @media (max-width: $breakpoint-sm) {
+    flex-direction: column-reverse;
+  }
+}
+
+// ============================================
+// DRAWER MODAL
+// ============================================
+
+.modal-drawer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-6;
+  border-bottom: 1px solid $border-light;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-4;
+  }
+}
+
+.drawer-title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0;
+  line-height: $line-height-tight;
+}
+
+.drawer-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: $radius-md;
+  color: $text-secondary;
+  cursor: pointer;
+  transition: all $transition-base;
+  flex-shrink: 0;
+  margin-left: $spacing-4;
+
+  &:hover {
+    background: $neutral-100;
+    color: $text-primary;
+  }
+
+  &:active {
+    background: $neutral-200;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.drawer-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: $spacing-6;
+  -webkit-overflow-scrolling: touch;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-4;
+  }
+
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $neutral-100;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $neutral-300;
+    border-radius: $radius-full;
+    transition: background 200ms ease;
+
+    &:hover {
+      background: $neutral-400;
+    }
+
+    &:active {
+      background: $neutral-500;
+    }
+  }
+
+  // Firefox scrollbar
+  scrollbar-width: thin;
+  scrollbar-color: $neutral-300 $neutral-100;
+}
+
+.drawer-content-text {
+  font-size: $font-size-base;
+  color: $text-secondary;
+  line-height: $line-height-relaxed;
+}
+
+.drawer-footer {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  padding: $spacing-6;
+  border-top: 1px solid $border-light;
+  flex-shrink: 0;
+
+  @media (max-width: $breakpoint-sm) {
+    padding: $spacing-4;
+  }
+}
+
+// ============================================
+// ANIMATIONS
+// ============================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(-20px);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes iconPulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes iconRipple {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+// ============================================
+// ACCESSIBILITY
+// ============================================
+
+// Focus visible styles
+*:focus-visible {
+  outline: 2px solid $primary-500;
+  outline-offset: 2px;
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-container,
+  .modal-close,
+  .drawer-close {
+    animation: none !important;
+    transition: none !important;
+  }
+}

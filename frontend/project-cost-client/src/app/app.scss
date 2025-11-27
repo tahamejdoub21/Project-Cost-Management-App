@@ -1,0 +1,12 @@
+@use '../styles/variables' as *;
+
+// ============================================
+// ROOT APP COMPONENT
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  font-family: $font-family-primary;
+}

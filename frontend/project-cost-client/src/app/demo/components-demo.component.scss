@@ -1,0 +1,359 @@
+@use '../../styles/variables' as *;
+
+// ============================================
+// DEMO PAGE STYLES
+// ============================================
+
+.demo-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
+}
+
+.demo-header {
+  max-width: 1400px;
+  margin: 0 auto 40px;
+  text-align: center;
+
+  h1 {
+    font-family: $font-family-primary;
+    font-size: 42px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+  }
+
+  p {
+    font-family: $font-family-primary;
+    font-size: 18px;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0;
+  }
+}
+
+.demo-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+// ============================================
+// SECTIONS
+// ============================================
+
+.demo-section {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+// ============================================
+// DEMO GRID
+// ============================================
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 32px;
+}
+
+.demo-grid-compact {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.demo-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.demo-label {
+  font-family: $font-family-primary;
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// ============================================
+// CALENDAR VIEWS
+// ============================================
+
+.calendar-views {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+  padding-top: 32px;
+  border-top: 2px solid #f3f4f6;
+}
+
+.view-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.view-description {
+  font-family: $font-family-primary;
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 3px solid $primary-500;
+}
+
+// ============================================
+// BUTTON SHOWCASE
+// ============================================
+
+.subsection {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.subsection-title {
+  font-family: $font-family-primary;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 20px;
+}
+
+.button-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.showcase-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  flex-wrap: wrap;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.showcase-label {
+  font-family: $font-family-primary;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+// ============================================
+// FORM EXAMPLE
+// ============================================
+
+.demo-form {
+  margin-top: 24px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 2px solid #f3f4f6;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-family: $font-family-primary;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:active {
+      transform: none;
+    }
+  }
+}
+
+.btn-primary {
+  background: $primary-500;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: $primary-600;
+    box-shadow: 0 4px 12px rgba($primary-500, 0.3);
+  }
+}
+
+.btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+
+  &:hover:not(:disabled) {
+    background: #e5e7eb;
+  }
+}
+
+// ============================================
+// FORM STATUS
+// ============================================
+
+.form-status {
+  margin-top: 24px;
+  padding: 16px 20px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 4px solid #d1d5db;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &.valid {
+    border-left-color: $success-500;
+    background: #f0fdf4;
+
+    .status-value {
+      color: $success-600;
+      font-weight: 600;
+    }
+  }
+
+  &.invalid {
+    border-left-color: $error-500;
+    background: #fef2f2;
+
+    .status-value {
+      color: $error-600;
+      font-weight: 600;
+    }
+  }
+}
+
+.status-label {
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.status-value {
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+@media (max-width: $breakpoint-lg) {
+  .demo-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-views {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: $breakpoint-md) {
+  .demo-container {
+    padding: 24px 16px;
+  }
+
+  .demo-header {
+    margin-bottom: 32px;
+
+    h1 {
+      font-size: 32px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  }
+
+  .demo-section {
+    padding: 24px 16px;
+    margin-bottom: 24px;
+  }
+
+  .demo-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-sm) {
+  .demo-header h1 {
+    font-size: 28px;
+  }
+
+  .section-title {
+    font-size: 12px;
+  }
+}

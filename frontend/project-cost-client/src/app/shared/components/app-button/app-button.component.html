@@ -1,0 +1,29 @@
+<button
+  [type]="type"
+  [class]="buttonClasses"
+  [disabled]="disabled || loading"
+  (click)="handleClick($event)"
+>
+  <!-- Loading Spinner -->
+  <span *ngIf="loading" class="app-button__spinner">
+    <svg class="spinner-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <circle class="spinner-track" cx="12" cy="12" r="10" fill="none" stroke-width="3"/>
+      <circle class="spinner-indicator" cx="12" cy="12" r="10" fill="none" stroke-width="3"/>
+    </svg>
+  </span>
+
+  <!-- Left Icon -->
+  <span *ngIf="showLeftIcon && !loading" class="app-button__icon app-button__icon--left">
+    <span class="material-icons-round">{{ icon }}</span>
+  </span>
+
+  <!-- Button Content -->
+  <span *ngIf="!iconOnly" class="app-button__content">
+    <ng-content></ng-content>
+  </span>
+
+  <!-- Right Icon -->
+  <span *ngIf="showRightIcon && !loading" class="app-button__icon app-button__icon--right">
+    <span class="material-icons-round">{{ icon }}</span>
+  </span>
+</button>

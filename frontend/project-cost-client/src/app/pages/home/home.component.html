@@ -1,0 +1,239 @@
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="gradient-text">Design System</span>
+        <br>Component Library
+      </h1>
+      <p class="hero-subtitle">
+        Beautiful, accessible, and production-ready components built with Angular 21
+      </p>
+      <div class="hero-actions">
+        <a routerLink="/inputs" class="btn btn-primary">
+          <mat-icon>widgets</mat-icon>
+          View Components
+        </a>
+        <a href="COMPONENT_USAGE_EXAMPLES.md" target="_blank" class="btn btn-secondary">
+          <mat-icon>description</mat-icon>
+          Documentation
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Color System -->
+  <section class="section">
+    <div class="section-header">
+      <mat-icon class="section-icon">palette</mat-icon>
+      <h2 class="section-title">Color System</h2>
+      <p class="section-description">
+        Professional color palette designed for clarity and accessibility
+      </p>
+    </div>
+
+    <div class="color-system">
+      <div *ngFor="let group of colorGroups" class="color-group">
+        <h3 class="group-title">{{ group.name }}</h3>
+        <div class="color-grid">
+          <div
+            *ngFor="let color of group.colors"
+            class="color-card"
+            (click)="copyToClipboard(color.value)">
+            <div class="color-preview" [style.background-color]="color.value"></div>
+            <div class="color-info">
+              <span class="color-name">{{ color.name }}</span>
+              <span class="color-value">{{ color.value }}</span>
+              <code class="color-variable">{{ color.variable }}</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Typography System -->
+  <section class="section">
+    <div class="section-header">
+      <mat-icon class="section-icon">text_fields</mat-icon>
+      <h2 class="section-title">Typography System</h2>
+      <p class="section-description">
+        Poppins font family with carefully selected weights and sizes
+      </p>
+    </div>
+
+    <div class="typography-system">
+      <!-- Font Family -->
+      <div class="typo-section">
+        <h3 class="subsection-title">Font Family</h3>
+        <div class="font-family-demo">
+          <p class="font-sample">
+            Poppins, sans-serif
+          </p>
+          <code class="variable-code">$font-family-primary</code>
+        </div>
+      </div>
+
+      <!-- Font Weights -->
+      <div class="typo-section">
+        <h3 class="subsection-title">Font Weights</h3>
+        <div class="weight-grid">
+          <div
+            *ngFor="let weight of fontWeights"
+            class="weight-card"
+            (click)="copyToClipboard(weight.variable)">
+            <p class="weight-sample" [ngClass]="weight.class">
+              The quick brown fox jumps over the lazy dog
+            </p>
+            <div class="weight-info">
+              <span class="weight-name">{{ weight.name }}</span>
+              <span class="weight-value">{{ weight.value }}</span>
+              <code class="weight-variable">{{ weight.variable }}</code>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Font Sizes -->
+      <div class="typo-section">
+        <h3 class="subsection-title">Font Sizes</h3>
+        <div class="size-grid">
+          <div
+            *ngFor="let size of fontSizes"
+            class="size-card"
+            (click)="copyToClipboard(size.variable)">
+            <p class="size-sample" [ngClass]="size.class">
+              Aa
+            </p>
+            <div class="size-info">
+              <span class="size-name">{{ size.name }}</span>
+              <span class="size-value">{{ size.value }}</span>
+              <code class="size-variable">{{ size.variable }}</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Component Showcase -->
+  <section class="section">
+    <div class="section-header">
+      <mat-icon class="section-icon">extension</mat-icon>
+      <h2 class="section-title">Component Showcase</h2>
+      <p class="section-description">
+        Production-ready components with consistent design and behavior
+      </p>
+    </div>
+
+    <div class="component-grid">
+      <!-- App Input -->
+      <a routerLink="/inputs" class="component-card">
+        <div class="component-icon">
+          <mat-icon>input</mat-icon>
+        </div>
+        <h3 class="component-name">Input Fields</h3>
+        <p class="component-description">
+          Text inputs with icons, validation, and phone formatting
+        </p>
+        <div class="component-features">
+          <span class="feature-badge">Icons</span>
+          <span class="feature-badge">Validation</span>
+          <span class="feature-badge">Phone Format</span>
+        </div>
+      </a>
+
+      <!-- App Datepicker -->
+      <a routerLink="/inputs" class="component-card">
+        <div class="component-icon">
+          <mat-icon>calendar_today</mat-icon>
+        </div>
+        <h3 class="component-name">Date Picker</h3>
+        <p class="component-description">
+          Beautiful calendar with month/year selection
+        </p>
+        <div class="component-features">
+          <span class="feature-badge">Calendar</span>
+          <span class="feature-badge">Min/Max</span>
+          <span class="feature-badge">Clearable</span>
+        </div>
+      </a>
+
+      <!-- App Select -->
+      <a routerLink="/inputs" class="component-card">
+        <div class="component-icon">
+          <mat-icon>arrow_drop_down_circle</mat-icon>
+        </div>
+        <h3 class="component-name">Select Dropdown</h3>
+        <p class="component-description">
+          Searchable dropdown with groups and multiple selection
+        </p>
+        <div class="component-features">
+          <span class="feature-badge">Search</span>
+          <span class="feature-badge">Groups</span>
+          <span class="feature-badge">Multiple</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="section features-section">
+    <div class="section-header">
+      <mat-icon class="section-icon">verified</mat-icon>
+      <h2 class="section-title">Features</h2>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-item">
+        <mat-icon class="feature-icon">accessibility</mat-icon>
+        <h4>Accessible</h4>
+        <p>Full ARIA support and keyboard navigation</p>
+      </div>
+
+      <div class="feature-item">
+        <mat-icon class="feature-icon">phone_iphone</mat-icon>
+        <h4>Responsive</h4>
+        <p>Works perfectly on all devices and screen sizes</p>
+      </div>
+
+      <div class="feature-item">
+        <mat-icon class="feature-icon">check_circle</mat-icon>
+        <h4>Validated</h4>
+        <p>Built-in validation with custom error messages</p>
+      </div>
+
+      <div class="feature-item">
+        <mat-icon class="feature-icon">integration_instructions</mat-icon>
+        <h4>Reactive Forms</h4>
+        <p>Full ControlValueAccessor implementation</p>
+      </div>
+
+      <div class="feature-item">
+        <mat-icon class="feature-icon">speed</mat-icon>
+        <h4>Performant</h4>
+        <p>Optimized with Angular signals and OnPush</p>
+      </div>
+
+      <div class="feature-item">
+        <mat-icon class="feature-icon">palette</mat-icon>
+        <h4>Themeable</h4>
+        <p>Consistent design system with SCSS variables</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Ready to get started?</h2>
+      <p class="cta-description">
+        Explore our components and start building beautiful forms
+      </p>
+      <a routerLink="/inputs" class="btn btn-cta">
+        <mat-icon>rocket_launch</mat-icon>
+        Explore Components
+      </a>
+    </div>
+  </section>
+</div>

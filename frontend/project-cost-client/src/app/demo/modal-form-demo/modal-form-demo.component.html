@@ -1,0 +1,158 @@
+<form [formGroup]="form" class="modal-form">
+  <!-- Personal Information Section -->
+  <div class="form-section">
+    <h3 class="section-title">Personal Information</h3>
+    <div class="form-grid">
+      <app-input
+        label="Full Name"
+        formControlName="fullName"
+        placeholder="John Doe"
+        [required]="true"
+        [errorMessage]="getErrorMessage('fullName')">
+      </app-input>
+
+      <app-input
+        label="Email Address"
+        type="email"
+        formControlName="email"
+        placeholder="john@example.com"
+        [iconLeft]="{ name: 'email', clickable: false }"
+        [required]="true"
+        [errorMessage]="getErrorMessage('email')">
+      </app-input>
+
+      <app-input
+        label="Phone Number"
+        type="tel"
+        formControlName="phone"
+        placeholder="(555) 123-4567"
+        [enablePhoneFormat]="true"
+        [defaultCountry]="'US'"
+        [iconLeft]="{ name: 'phone', clickable: false }">
+      </app-input>
+    </div>
+  </div>
+
+  <!-- Address Section -->
+  <div class="form-section">
+    <h3 class="section-title">Address Information</h3>
+    <div class="form-grid">
+      <app-input
+        label="Street Address"
+        formControlName="address"
+        placeholder="123 Main Street"
+        [iconLeft]="{ name: 'home', clickable: false }">
+      </app-input>
+
+      <app-input
+        label="City"
+        formControlName="city"
+        placeholder="New York">
+      </app-input>
+
+      <app-select
+        label="Country"
+        formControlName="country"
+        placeholder="Select country"
+        [options]="countryOptions"
+        [required]="true"
+        [searchable]="true"
+        [errorMessage]="getErrorMessage('country')">
+      </app-select>
+    </div>
+  </div>
+
+  <!-- Project Details Section -->
+  <div class="form-section">
+    <h3 class="section-title">Project Details</h3>
+    <div class="form-grid">
+      <app-input
+        label="Project Name"
+        formControlName="projectName"
+        placeholder="Enter project name"
+        [required]="true"
+        [iconLeft]="{ name: 'work', clickable: false }"
+        [errorMessage]="getErrorMessage('projectName')">
+      </app-input>
+
+      <app-select
+        label="Category"
+        formControlName="category"
+        placeholder="Select category"
+        [options]="categoryOptions"
+        [searchable]="true"
+        [clearable]="true">
+      </app-select>
+
+      <app-select
+        label="Priority"
+        formControlName="priority"
+        placeholder="Select priority"
+        [options]="priorityOptions">
+      </app-select>
+    </div>
+  </div>
+
+  <!-- Timeline Section -->
+  <div class="form-section">
+    <h3 class="section-title">Timeline</h3>
+    <div class="form-grid">
+      <app-datepicker
+        label="Start Date"
+        formControlName="startDate"
+        placeholder="Select start date"
+        [required]="true"
+        [minDate]="minDate"
+        [maxDate]="maxDate"
+        [errorMessage]="getErrorMessage('startDate')">
+      </app-datepicker>
+
+      <app-datepicker
+        label="End Date"
+        formControlName="endDate"
+        placeholder="Select end date"
+        [minDate]="minDate"
+        [maxDate]="maxDate">
+      </app-datepicker>
+    </div>
+  </div>
+
+  <!-- Additional Information Section -->
+  <div class="form-section">
+    <h3 class="section-title">Additional Information</h3>
+    <div class="form-grid">
+      <app-input
+        label="Budget"
+        type="number"
+        formControlName="budget"
+        placeholder="0.00"
+        [iconLeft]="{ name: 'attach_money', clickable: false }"
+        hint="Enter project budget"
+        [errorMessage]="getErrorMessage('budget')">
+      </app-input>
+
+      <app-input
+        label="Website"
+        type="url"
+        formControlName="website"
+        placeholder="www.example.com"
+        [iconLeft]="{ name: 'language', clickable: false }">
+      </app-input>
+
+      <app-input
+        label="Description"
+        formControlName="description"
+        placeholder="Brief project description"
+        hint="Optional">
+      </app-input>
+    </div>
+  </div>
+
+  <!-- Form Status Info -->
+  <div class="form-info">
+    <p class="info-text">
+      <span class="info-icon">ℹ️</span>
+      This form demonstrates scrolling inside the modal. The page behind stays locked at its current position.
+    </p>
+  </div>
+</form>

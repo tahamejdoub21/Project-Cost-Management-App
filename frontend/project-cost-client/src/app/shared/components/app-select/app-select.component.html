@@ -1,0 +1,131 @@
+<!-- Select Component - Matching Design -->
+<div class="select-container">
+  <!-- Label -->
+  <label *ngIf="label" class="select-label">
+    {{ label }}
+    <span *ngIf="required" class="required-asterisk">*</span>
+  </label>
+
+  <!-- Select Trigger -->
+  <div
+    class="select-trigger"
+    [class.focused]="isFocused() || isOpen()"
+    [class.disabled]="disabled"
+    [class.has-error]="!!errorMessage"
+    [class.has-value]="!!displayText()"
+    (click)="toggle()"
+    (focus)="onFocus()"
+    (blur)="onBlur()"
+    tabindex="0">
+
+    <!-- Display Text -->
+    <span class="select-display" [class.placeholder]="!displayText()">
+      {{ displayText() || placeholder }}
+    </span>
+
+    <!-- Actions -->
+    <div class="select-actions">
+      <button
+        *ngIf="clearable && displayText()"
+        type="button"
+        class="clear-button"
+        (click)="clear($event)"
+        [disabled]="disabled"
+        tabindex="-1">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <div class="chevron-icon" [class.open]="isOpen()">
+        <mat-icon>expand_more</mat-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dropdown -->
+  <div *ngIf="isOpen()" class="select-dropdown">
+
+    <!-- Search Input -->
+    <div *ngIf="searchable" class="select-search" (click)="stopPropagation($event)">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        (click)="stopPropagation($event)">
+    </div>
+
+    <!-- Options List -->
+    <div class="select-options">
+      <!-- No results -->
+      <div *ngIf="filteredOptions().length === 0" class="no-results">
+        No options found
+      </div>
+
+      <!-- Ungrouped options -->
+      <ng-container *ngIf="!hasGroups()">
+        <button
+          *ngFor="let option of filteredOptions()"
+          type="button"
+          class="select-option"
+          [class.selected]="isSelected(option)"
+          [class.disabled]="option.disabled"
+          [disabled]="option.disabled"
+          (click)="selectOption(option); $event.stopPropagation()">
+
+          <mat-icon *ngIf="multiple" class="checkbox-icon">
+            {{ isSelected(option) ? 'check_box' : 'check_box_outline_blank' }}
+          </mat-icon>
+
+          <span class="option-label">{{ option.label }}</span>
+
+          <mat-icon *ngIf="!multiple && isSelected(option)" class="check-icon">
+            check
+          </mat-icon>
+        </button>
+      </ng-container>
+
+      <!-- Grouped options -->
+      <ng-container *ngIf="hasGroups()">
+        <div *ngFor="let group of groupedOptions() | keyvalue" class="option-group">
+          <div *ngIf="group.key !== '_default'" class="group-label">
+            {{ group.key }}
+          </div>
+
+          <button
+            *ngFor="let option of group.value"
+            type="button"
+            class="select-option"
+            [class.selected]="isSelected(option)"
+            [class.disabled]="option.disabled"
+            [class.grouped]="group.key !== '_default'"
+            [disabled]="option.disabled"
+            (click)="selectOption(option); $event.stopPropagation()">
+
+            <mat-icon *ngIf="multiple" class="checkbox-icon">
+              {{ isSelected(option) ? 'check_box' : 'check_box_outline_blank' }}
+            </mat-icon>
+
+            <span class="option-label">{{ option.label }}</span>
+
+            <mat-icon *ngIf="!multiple && isSelected(option)" class="check-icon">
+              check
+            </mat-icon>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Footer Messages -->
+  <div class="select-footer" *ngIf="hint || errorMessage">
+    <span *ngIf="errorMessage" class="error-message">
+      <mat-icon class="message-icon">error</mat-icon>
+      {{ errorMessage }}
+    </span>
+    <span *ngIf="!errorMessage && hint" class="hint-message">
+      {{ hint }}
+    </span>
+  </div>
+</div>
