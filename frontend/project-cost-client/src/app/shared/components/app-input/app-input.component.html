@@ -31,7 +31,7 @@
       <!-- Country Code Selector -->
       <div class="country-code-selector"
            [class.focused]="isCountryDropdownOpen()"
-           (click)="toggleCountryDropdown()">
+           (click)="toggleCountryDropdown(); $event.stopPropagation()">
         <span class="country-flag">{{ selectedCountry().flag }}</span>
         <span class="country-code">{{ selectedCountry().dialCode }}</span>
         <mat-icon class="country-chevron" [class.open]="isCountryDropdownOpen()">
@@ -117,7 +117,7 @@
         <div *ngFor="let country of filteredCountries()"
              class="country-option"
              [class.selected]="country.code === selectedCountry().code"
-             (click)="selectCountry(country)">
+             (click)="selectCountry(country); $event.stopPropagation()">
           <span class="country-flag">{{ country.flag }}</span>
           <div class="country-info">
             <span class="country-name">{{ country.name }}</span>

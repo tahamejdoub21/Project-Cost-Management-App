@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   forwardRef,
+  OnDestroy,
   signal,
   computed,
 } from '@angular/core';
@@ -15,6 +16,7 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { OverlayManagerService } from '../../services/overlay-manager.service';
 
 export interface SelectOption {
   value: any;
@@ -42,7 +44,7 @@ export interface SelectOption {
     },
   ],
 })
-export class AppSelectComponent implements ControlValueAccessor {
+export class AppSelectComponent implements ControlValueAccessor, OnDestroy {
   @Input() label: string = '';
   @Input() placeholder: string = 'Select an option';
   @Input() options: SelectOption[] = [];
@@ -116,6 +118,16 @@ export class AppSelectComponent implements ControlValueAccessor {
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
+  private overlayId: string = '';
+
+  constructor(private overlayManager: OverlayManagerService) {
+    this.overlayId = `select-${Math.random().toString(36).substring(2, 11)}`;
+  }
+
+  ngOnDestroy(): void {
+    // Unregister overlay when component is destroyed
+    this.overlayManager.unregister(this.overlayId);
+  }
 
   // ControlValueAccessor methods
   writeValue(value: any): void {
@@ -137,14 +149,28 @@ export class AppSelectComponent implements ControlValueAccessor {
   // Actions
   toggle(): void {
     if (!this.disabled) {
-      this.isOpen.update(open => !open);
-      this.openChange.emit(this.isOpen());
+      const willOpen = !this.isOpen();
 
-      if (!this.isOpen()) {
-        this.searchQuery.set('');
-        this.onTouched();
+      if (willOpen) {
+        // Register with overlay manager before opening
+        this.overlayManager.register({
+          id: this.overlayId,
+          type: 'dropdown',
+          close: () => this.closeDropdown()
+        });
+        this.isOpen.set(true);
+        this.openChange.emit(true);
+      } else {
+        this.closeDropdown();
       }
     }
+  }
+
+  private closeDropdown(): void {
+    this.isOpen.set(false);
+    this.searchQuery.set('');
+    this.overlayManager.unregister(this.overlayId);
+    this.openChange.emit(false);
   }
 
   selectOption(option: SelectOption): void {
@@ -169,8 +195,7 @@ export class AppSelectComponent implements ControlValueAccessor {
       this.selectedValue.set(option.value);
       this.onChange(option.value);
       this.selectionChange.emit(option.value);
-      this.isOpen.set(false);
-      this.searchQuery.set('');
+      this.closeDropdown();
       this.onTouched();
     }
   }
@@ -192,8 +217,7 @@ export class AppSelectComponent implements ControlValueAccessor {
     this.selectedValue.set(newValue);
     this.onChange(newValue);
     this.selectionChange.emit(newValue);
-    this.isOpen.set(false);
-    this.searchQuery.set('');
+    this.closeDropdown();
   }
 
   onFocus(): void {
@@ -203,8 +227,7 @@ export class AppSelectComponent implements ControlValueAccessor {
   onBlur(): void {
     setTimeout(() => {
       this.isFocused.set(false);
-      this.isOpen.set(false);
-      this.searchQuery.set('');
+      this.closeDropdown();
     }, 200);
   }
 

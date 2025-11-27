@@ -31,6 +31,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+import { OverlayManagerService } from '../../services/overlay-manager.service';
 
 export type InputType =
   | 'text'
@@ -321,8 +322,13 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
   // Debounce subject
   private inputSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
+  private phoneDropdownOverlayId: string = '';
+  private datepickerOverlayId: string = '';
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private overlayManager: OverlayManagerService
+  ) {
     // Auto-generate ID if not provided
     effect(() => {
       if (!this.id) {
@@ -338,8 +344,10 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
       }
     });
 
-    // Generate unique datepicker ID
+    // Generate unique overlay IDs
     this.datepickerId = `datepicker-${Math.random().toString(36).substring(2, 11)}`;
+    this.phoneDropdownOverlayId = `phone-dropdown-${Math.random().toString(36).substring(2, 11)}`;
+    this.datepickerOverlayId = `datepicker-overlay-${Math.random().toString(36).substring(2, 11)}`;
   }
 
   ngOnInit(): void {
@@ -366,6 +374,9 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    // Unregister overlays when component is destroyed
+    this.overlayManager.unregister(this.phoneDropdownOverlayId);
+    this.overlayManager.unregister(this.datepickerOverlayId);
   }
 
   // ============================================
@@ -464,10 +475,10 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
     this.isTouched.set(true);
     this.onTouched();
     this.blurEvent.emit(event);
-    
+
     // Close country dropdown on blur
     setTimeout(() => {
-      this.isCountryDropdownOpen.set(false);
+      this.closeCountryDropdown();
     }, 200);
   }
 
@@ -529,7 +540,7 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
 
   selectCountry(country: CountryCode): void {
     this.selectedCountry.set(country);
-    this.isCountryDropdownOpen.set(false);
+    this.closeCountryDropdown();
     this.phoneSearchQuery.set('');
     this.updatePhoneValue();
     this.countryChange.emit(country);
@@ -543,8 +554,25 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
 
   toggleCountryDropdown(): void {
     if (!this.disabled && !this.readonly) {
-      this.isCountryDropdownOpen.update(open => !open);
+      const willOpen = !this.isCountryDropdownOpen();
+
+      if (willOpen) {
+        // Register with overlay manager before opening
+        this.overlayManager.register({
+          id: this.phoneDropdownOverlayId,
+          type: 'dropdown',
+          close: () => this.closeCountryDropdown()
+        });
+        this.isCountryDropdownOpen.set(true);
+      } else {
+        this.closeCountryDropdown();
+      }
     }
+  }
+
+  private closeCountryDropdown(): void {
+    this.isCountryDropdownOpen.set(false);
+    this.overlayManager.unregister(this.phoneDropdownOverlayId);
   }
 
   // ============================================
@@ -646,7 +674,20 @@ export class AppInputComponent implements ControlValueAccessor, OnInit, OnDestro
   // Open datepicker programmatically
   openDatepicker(): void {
     if (this.myDatepicker && !this.disabled && !this.readonly) {
+      // Register with overlay manager before opening
+      this.overlayManager.register({
+        id: this.datepickerOverlayId,
+        type: 'calendar',
+        close: () => this.closeDatepicker()
+      });
       this.myDatepicker.open();
+    }
+  }
+
+  private closeDatepicker(): void {
+    if (this.myDatepicker) {
+      this.myDatepicker.close();
+      this.overlayManager.unregister(this.datepickerOverlayId);
     }
   }
 }

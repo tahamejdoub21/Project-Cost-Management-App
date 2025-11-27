@@ -5,6 +5,7 @@ import {
   EventEmitter,
   forwardRef,
   OnInit,
+  OnDestroy,
   signal,
   computed,
 } from '@angular/core';
@@ -17,8 +18,10 @@ import {
 } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { OverlayManagerService } from '../../services/overlay-manager.service';
 
 export type DatePickerView = 'day' | 'month' | 'year';
+export type DateFormat = 'dd/MM/yyyy' | 'MM/dd/yyyy' | 'yyyy-MM-dd' | 'dd/MM/yy' | 'MM/dd/yy';
 
 interface CalendarDay {
   date: Date;
@@ -51,19 +54,64 @@ interface CalendarDay {
     },
   ],
 })
-export class AppDatepickerComponent implements ControlValueAccessor, OnInit {
+export class AppDatepickerComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  // ============================================
+  // BASIC IDENTIFICATION & APPEARANCE
+  // ============================================
   @Input() label: string = '';
-  @Input() placeholder: string = 'Select date';
+  @Input() placeholder: string = 'dd/MM/yy';
   @Input() disabled: boolean = false;
   @Input() required: boolean = false;
+  @Input() readonly: boolean = false;
+  @Input() id: string = '';
+  @Input() name: string = '';
+  @Input() class: string = '';
+
+  // ============================================
+  // DATE CONFIGURATION
+  // ============================================
+  @Input() format: DateFormat = 'dd/MM/yy';
   @Input() minDate?: Date;
   @Input() maxDate?: Date;
   @Input() startView: DatePickerView = 'day';
+  @Input() defaultValue?: Date;
+  @Input() clearable: boolean = true;
+
+  // ============================================
+  // VALIDATION & MESSAGES
+  // ============================================
   @Input() hint: string = '';
   @Input() errorMessage: string = '';
+  @Input() successMessage: string = '';
 
+  // ============================================
+  // ACCESSIBILITY
+  // ============================================
+  @Input() ariaLabel: string = '';
+  @Input() ariaDescribedBy: string = '';
+  @Input() ariaLabelledBy: string = '';
+
+  // ============================================
+  // BEHAVIOR
+  // ============================================
+  @Input() autoClose: boolean = true;
+  @Input() showWeekNumbers: boolean = false;
+  @Input() highlightToday: boolean = true;
+
+  // ============================================
+  // STYLING
+  // ============================================
+  @Input() width?: string;
+  @Input() variant: 'outline' | 'fill' = 'outline';
+
+  // ============================================
+  // OUTPUTS (EVENTS)
+  // ============================================
   @Output() dateChange = new EventEmitter<Date | null>();
   @Output() viewChange = new EventEmitter<DatePickerView>();
+  @Output() openChange = new EventEmitter<boolean>();
+  @Output() focusEvent = new EventEmitter<FocusEvent>();
+  @Output() blurEvent = new EventEmitter<FocusEvent>();
 
   // Signals
   selectedDate = signal<Date | null>(null);
@@ -107,9 +155,30 @@ export class AppDatepickerComponent implements ControlValueAccessor, OnInit {
 
   private onChange: (value: Date | null) => void = () => {};
   private onTouched: () => void = () => {};
+  private overlayId: string = '';
+
+  constructor(private overlayManager: OverlayManagerService) {
+    this.overlayId = `datepicker-${Math.random().toString(36).substring(2, 11)}`;
+
+    // Auto-generate ID if not provided
+    if (!this.id) {
+      this.id = `app-datepicker-${Math.random().toString(36).substring(2, 9)}`;
+    }
+  }
 
   ngOnInit(): void {
     this.currentView.set(this.startView);
+
+    // Set default value if provided
+    if (this.defaultValue && !this.selectedDate()) {
+      this.selectedDate.set(this.defaultValue);
+      this.displayDate.set(this.defaultValue);
+    }
+  }
+
+  ngOnDestroy(): void {
+    // Unregister overlay when component is destroyed
+    this.overlayManager.unregister(this.overlayId);
   }
 
   // ControlValueAccessor methods
@@ -246,20 +315,52 @@ export class AppDatepickerComponent implements ControlValueAccessor, OnInit {
   }
 
   private formatDate(date: Date): string {
-    const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${month}/${day}/${year}`;
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const fullYear = date.getFullYear();
+    const shortYear = String(fullYear).slice(-2);
+
+    switch (this.format) {
+      case 'dd/MM/yy':
+        return `${day}/${month}/${shortYear}`;
+      case 'dd/MM/yyyy':
+        return `${day}/${month}/${fullYear}`;
+      case 'MM/dd/yyyy':
+        return `${month}/${day}/${fullYear}`;
+      case 'MM/dd/yy':
+        return `${month}/${day}/${shortYear}`;
+      case 'yyyy-MM-dd':
+        return `${fullYear}-${month}-${day}`;
+      default:
+        return `${day}/${month}/${shortYear}`;
+    }
   }
 
   // Actions
   togglePicker(): void {
-    if (!this.disabled) {
-      this.isOpen.update((open) => !open);
-      if (this.isOpen()) {
+    if (!this.disabled && !this.readonly) {
+      const willOpen = !this.isOpen();
+
+      if (willOpen) {
+        // Register with overlay manager before opening
+        this.overlayManager.register({
+          id: this.overlayId,
+          type: 'calendar',
+          close: () => this.closePicker()
+        });
+        this.isOpen.set(true);
         this.currentView.set('day');
+        this.openChange.emit(true);
+      } else {
+        this.closePicker();
       }
     }
+  }
+
+  private closePicker(): void {
+    this.isOpen.set(false);
+    this.overlayManager.unregister(this.overlayId);
+    this.openChange.emit(false);
   }
 
   selectDay(calendarDay: CalendarDay): void {
@@ -268,7 +369,11 @@ export class AppDatepickerComponent implements ControlValueAccessor, OnInit {
       this.displayDate.set(calendarDay.date);
       this.onChange(calendarDay.date);
       this.dateChange.emit(calendarDay.date);
-      this.isOpen.set(false);
+
+      // Auto-close if enabled
+      if (this.autoClose) {
+        this.closePicker();
+      }
       this.onTouched();
     }
   }
@@ -309,19 +414,28 @@ export class AppDatepickerComponent implements ControlValueAccessor, OnInit {
     this.viewChange.emit(this.currentView());
   }
 
-  onFocus(): void {
+  onFocus(event?: FocusEvent): void {
     this.isFocused.set(true);
+    if (event) {
+      this.focusEvent.emit(event);
+    }
   }
 
-  onBlur(): void {
-    this.isFocused.set(false);
+  onBlur(event?: FocusEvent): void {
+    setTimeout(() => {
+      this.isFocused.set(false);
+      this.closePicker();
+    }, 200);
     this.onTouched();
+    if (event) {
+      this.blurEvent.emit(event);
+    }
   }
 
   clear(): void {
     this.selectedDate.set(null);
     this.onChange(null);
     this.dateChange.emit(null);
-    this.isOpen.set(false);
+    this.closePicker();
   }
 }

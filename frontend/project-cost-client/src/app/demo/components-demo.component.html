@@ -5,6 +5,198 @@
   </div>
 
   <div class="demo-content">
+    <!-- BUTTONS Section -->
+    <section class="demo-section">
+      <h2 class="section-title">BUTTONS</h2>
+
+      <!-- Size Variants -->
+      <div class="subsection">
+        <h3 class="subsection-title">Sizes</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Extra Small (xs)</span>
+            <app-button size="xs">Extra Small</app-button>
+            <app-button size="xs" icon="add">With Icon</app-button>
+            <app-button size="xs" icon="settings" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Small (sm)</span>
+            <app-button size="sm">Small</app-button>
+            <app-button size="sm" icon="add">With Icon</app-button>
+            <app-button size="sm" icon="settings" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Medium (md)</span>
+            <app-button size="md">Medium</app-button>
+            <app-button size="md" icon="add">With Icon</app-button>
+            <app-button size="md" icon="settings" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Large (lg)</span>
+            <app-button size="lg">Large</app-button>
+            <app-button size="lg" icon="add">With Icon</app-button>
+            <app-button size="lg" icon="settings" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Extra Large (xl)</span>
+            <app-button size="xl">Extra Large</app-button>
+            <app-button size="xl" icon="add">With Icon</app-button>
+            <app-button size="xl" icon="settings" iconPosition="only"></app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hierarchy Variants -->
+      <div class="subsection">
+        <h3 class="subsection-title">Hierarchy - Default State</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Primary</span>
+            <app-button hierarchy="primary">Primary</app-button>
+            <app-button hierarchy="primary" icon="check_circle">With Icon</app-button>
+            <app-button hierarchy="primary" icon="add" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Secondary</span>
+            <app-button hierarchy="secondary">Secondary</app-button>
+            <app-button hierarchy="secondary" icon="edit">With Icon</app-button>
+            <app-button hierarchy="secondary" icon="more_horiz" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Tertiary</span>
+            <app-button hierarchy="tertiary">Tertiary</app-button>
+            <app-button hierarchy="tertiary" icon="info">With Icon</app-button>
+            <app-button hierarchy="tertiary" icon="visibility" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Ghost</span>
+            <app-button hierarchy="ghost">Ghost</app-button>
+            <app-button hierarchy="ghost" icon="close">With Icon</app-button>
+            <app-button hierarchy="ghost" icon="more_vert" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Link</span>
+            <app-button hierarchy="link">Link Button</app-button>
+            <app-button hierarchy="link" icon="arrow_forward" iconPosition="right">Next</app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Destructive Variants -->
+      <div class="subsection">
+        <h3 class="subsection-title">Destructive Variants</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Primary</span>
+            <app-button hierarchy="primary" [destructive]="true">Delete</app-button>
+            <app-button hierarchy="primary" [destructive]="true" icon="delete">With Icon</app-button>
+            <app-button hierarchy="primary" [destructive]="true" icon="delete" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Secondary</span>
+            <app-button hierarchy="secondary" [destructive]="true">Remove</app-button>
+            <app-button hierarchy="secondary" [destructive]="true" icon="delete_outline">With Icon</app-button>
+            <app-button hierarchy="secondary" [destructive]="true" icon="delete_outline" iconPosition="only"></app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Tertiary</span>
+            <app-button hierarchy="tertiary" [destructive]="true">Cancel</app-button>
+            <app-button hierarchy="tertiary" [destructive]="true" icon="cancel">With Icon</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Ghost</span>
+            <app-button hierarchy="ghost" [destructive]="true">Discard</app-button>
+            <app-button hierarchy="ghost" [destructive]="true" icon="block">With Icon</app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- States -->
+      <div class="subsection">
+        <h3 class="subsection-title">States</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Loading</span>
+            <app-button [loading]="isLoading" (clicked)="simulateLoading()">
+              {{ isLoading ? 'Loading...' : 'Click to Load' }}
+            </app-button>
+            <app-button hierarchy="secondary" [loading]="true">Loading</app-button>
+            <app-button hierarchy="tertiary" [loading]="true" icon="save">Saving</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Disabled</span>
+            <app-button [disabled]="true">Disabled</app-button>
+            <app-button hierarchy="secondary" [disabled]="true">Disabled</app-button>
+            <app-button hierarchy="tertiary" [disabled]="true" icon="lock">Disabled</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Full Width</span>
+            <app-button [fullWidth]="true" icon="language" iconPosition="left">
+              Full Width Button
+            </app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Icon Positions -->
+      <div class="subsection">
+        <h3 class="subsection-title">Icon Positions</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Icon Left</span>
+            <app-button icon="arrow_back" iconPosition="left">Back</app-button>
+            <app-button hierarchy="secondary" icon="save" iconPosition="left">Save</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Icon Right</span>
+            <app-button icon="arrow_forward" iconPosition="right">Next</app-button>
+            <app-button hierarchy="secondary" icon="open_in_new" iconPosition="right">Open</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Icon Only</span>
+            <app-button icon="add" iconPosition="only"></app-button>
+            <app-button icon="edit" iconPosition="only" hierarchy="secondary"></app-button>
+            <app-button icon="delete" iconPosition="only" hierarchy="tertiary"></app-button>
+            <app-button icon="settings" iconPosition="only" hierarchy="ghost"></app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Common Use Cases -->
+      <div class="subsection">
+        <h3 class="subsection-title">Common Use Cases</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Navigation</span>
+            <app-button icon="arrow_back" iconPosition="left" hierarchy="ghost">
+              Back
+            </app-button>
+            <app-button icon="arrow_forward" iconPosition="right">
+              Continue
+            </app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Actions</span>
+            <app-button icon="add" iconPosition="left">
+              Create New
+            </app-button>
+            <app-button icon="save" iconPosition="left" hierarchy="secondary">
+              Save Draft
+            </app-button>
+            <app-button icon="delete" iconPosition="left" hierarchy="secondary" [destructive]="true">
+              Delete Item
+            </app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Language</span>
+            <app-button icon="language" iconPosition="left" size="xl">
+              Language
+            </app-button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- INPUTS Section -->
     <section class="demo-section">
       <h2 class="section-title">INPUTS</h2>
@@ -336,12 +528,24 @@
 
         <!-- Form Actions -->
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" (click)="onReset()">
+          <app-button
+            type="button"
+            size="lg"
+            hierarchy="ghost"
+            (clicked)="onReset()"
+            [disabled]="isSubmitting">
             Reset
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="!form.valid">
+          </app-button>
+          <app-button
+            type="submit"
+            size="lg"
+            hierarchy="primary"
+            icon="check_circle"
+            iconPosition="left"
+            [loading]="isSubmitting"
+            [disabled]="!form.valid">
             Submit Form
-          </button>
+          </app-button>
         </div>
 
         <!-- Form Status -->
@@ -353,5 +557,93 @@
         </div>
       </form>
     </section>
+
+    <!-- MODALS Section -->
+    <section class="demo-section">
+      <h2 class="section-title">MODALS & OVERLAYS</h2>
+
+      <!-- Dialog Modals -->
+      <div class="subsection">
+        <h3 class="subsection-title">Dialog Modals</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Sizes</span>
+            <app-button size="sm" (clicked)="openDialogModal('xs')">XS Dialog</app-button>
+            <app-button size="sm" (clicked)="openDialogModal('sm')">Small Dialog</app-button>
+            <app-button size="sm" (clicked)="openDialogModal('md')">Medium Dialog</app-button>
+            <app-button size="sm" (clicked)="openDialogModal('lg')">Large Dialog</app-button>
+            <app-button size="sm" (clicked)="openDialogModal('xl')">XL Dialog</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">With Actions</span>
+            <app-button (clicked)="openConfirmDialog()">Confirm Dialog</app-button>
+            <app-button (clicked)="openFormDialog()">Form Dialog</app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert Modals -->
+      <div class="subsection">
+        <h3 class="subsection-title">Alert Modals</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Alert Types</span>
+            <app-button hierarchy="primary" (clicked)="showSuccessAlert()">Success</app-button>
+            <app-button hierarchy="secondary" (clicked)="showInfoAlert()">Info</app-button>
+            <app-button hierarchy="tertiary" (clicked)="showWarningAlert()">Warning</app-button>
+            <app-button hierarchy="primary" [destructive]="true" (clicked)="showErrorAlert()">Error</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Confirmation</span>
+            <app-button (clicked)="showConfirmation()">Confirm Action</app-button>
+            <app-button [destructive]="true" (clicked)="showDeleteConfirmation()">Delete Confirmation</app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drawer/Side Panels -->
+      <div class="subsection">
+        <h3 class="subsection-title">Drawers & Side Panels</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Right Drawer</span>
+            <app-button size="sm" (clicked)="openDrawer('right', 'sm')">Small</app-button>
+            <app-button size="sm" (clicked)="openDrawer('right', 'md')">Medium</app-button>
+            <app-button size="sm" (clicked)="openDrawer('right', 'lg')">Large</app-button>
+            <app-button size="sm" (clicked)="openDrawer('right', 'xl')">Extra Large</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Left Drawer</span>
+            <app-button size="sm" (clicked)="openDrawer('left', 'sm')">Small</app-button>
+            <app-button size="sm" (clicked)="openDrawer('left', 'md')">Medium</app-button>
+            <app-button size="sm" (clicked)="openDrawer('left', 'lg')">Large</app-button>
+            <app-button size="sm" (clicked)="openDrawer('left', 'xl')">Extra Large</app-button>
+          </div>
+          <div class="showcase-row">
+            <span class="showcase-label">Use Cases</span>
+            <app-button (clicked)="openSettingsPanel()">Settings Panel</app-button>
+            <app-button (clicked)="openNotificationsPanel()">Notifications</app-button>
+            <app-button (clicked)="openFiltersPanel()">Filters</app-button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Advanced Examples -->
+      <div class="subsection">
+        <h3 class="subsection-title">Advanced Examples</h3>
+        <div class="button-showcase">
+          <div class="showcase-row">
+            <span class="showcase-label">Complex Scenarios</span>
+            <app-button (clicked)="openNestedModal()">Nested Modals</app-button>
+            <app-button (clicked)="openAsyncModal()">Async Action</app-button>
+            <app-button (clicked)="openScrollableModal()">Long Content</app-button>
+            <app-button (clicked)="openFullFormModal()" icon="edit_note" iconPosition="left">Full Form Modal</app-button>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
+
+<!-- Modal Container -->
+<app-modal></app-modal>

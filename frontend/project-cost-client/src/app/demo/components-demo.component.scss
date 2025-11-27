@@ -123,6 +123,55 @@
 }
 
 // ============================================
+// BUTTON SHOWCASE
+// ============================================
+
+.subsection {
+  margin-bottom: 32px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.subsection-title {
+  font-family: $font-family-primary;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 20px;
+}
+
+.button-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.showcase-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+  flex-wrap: wrap;
+
+  &:hover {
+    background: #f3f4f6;
+  }
+}
+
+.showcase-label {
+  font-family: $font-family-primary;
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 160px;
+  flex-shrink: 0;
+}
+
+// ============================================
 // FORM EXAMPLE
 // ============================================
 

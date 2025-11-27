@@ -1,0 +1,65 @@
+@use '../../../styles/variables' as *;
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-8;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-5;
+
+  &:not(:last-child) {
+    padding-bottom: $spacing-6;
+    border-bottom: 1px solid $border-light;
+  }
+}
+
+.section-title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0;
+  line-height: $line-height-tight;
+  letter-spacing: -0.01em;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-5;
+
+  @media (min-width: $breakpoint-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  // Full width items
+  app-input[label="Street Address"],
+  app-input[label="Description"] {
+    grid-column: 1 / -1;
+  }
+}
+
+.form-info {
+  padding: $spacing-4;
+  background: linear-gradient(135deg, $info-50 0%, rgba($info-100, 0.5) 100%);
+  border: 1px solid $info-200;
+  border-radius: $radius-lg;
+}
+
+.info-text {
+  display: flex;
+  align-items: center;
+  gap: $spacing-3;
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $info-700;
+  line-height: $line-height-relaxed;
+}
+
+.info-icon {
+  flex-shrink: 0;
+  font-size: $font-size-lg;
+}

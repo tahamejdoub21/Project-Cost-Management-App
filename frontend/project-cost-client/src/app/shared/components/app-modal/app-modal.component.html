@@ -1,0 +1,246 @@
+<!-- Modal Container -->
+<div class="modal-root" *ngIf="modals.length > 0">
+  <!-- Render each modal -->
+  <div
+    *ngFor="let modal of modals; trackBy: trackByModalId"
+    [id]="modal.config.id"
+    class="modal-wrapper"
+    [style.z-index]="1050 + modals.indexOf(modal)"
+  >
+    <!-- Backdrop -->
+    <div
+      class="modal-backdrop"
+      [class.modal-backdrop--clickable]="modal.config.closeOnBackdropClick"
+      (click)="onBackdropClick(modal, $event)"
+      [@backdropAnimation]
+    ></div>
+
+    <!-- Modal Content Container -->
+    <div
+      [ngClass]="getModalClasses(modal)"
+      [attr.role]="modal.config.type === 'alert' ? 'alertdialog' : 'dialog'"
+      [attr.aria-modal]="true"
+      [attr.aria-labelledby]="modal.config.title ? modal.config.id + '-title' : null"
+      [attr.aria-describedby]="modal.config.content ? modal.config.id + '-content' : null"
+      [@modalAnimation]="modal.config.type"
+      (@modalAnimation.done)="focusFirstElement(modal.config.id)"
+      #modalContent
+    >
+      <!-- DIALOG TYPE -->
+      <div *ngIf="modal.config.type === 'dialog'" class="modal-dialog">
+        <!-- Header -->
+        <div class="modal-header" *ngIf="modal.config.title || modal.config.showCloseButton">
+          <h2 class="modal-title" [id]="modal.config.id + '-title'" *ngIf="modal.config.title">
+            {{ modal.config.title }}
+          </h2>
+          <button
+            *ngIf="modal.config.showCloseButton"
+            type="button"
+            class="modal-close"
+            (click)="dismiss(modal)"
+            aria-label="Close modal"
+            #firstFocusable
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body">
+          <!-- Text content (shown when no component) -->
+          <div *ngIf="modal.config.content && !modal.config.component" [id]="modal.config.id + '-content'" class="modal-content-text">
+            {{ modal.config.content }}
+          </div>
+
+          <!-- Dynamic component injection -->
+          <ng-container *ngIf="modal.config.component">
+            <ng-container *ngComponentOutlet="modal.config.component"></ng-container>
+          </ng-container>
+        </div>
+
+        <!-- Footer (optional slot for custom actions) -->
+        <div class="modal-footer" *ngIf="modal.config.confirmText || modal.config.cancelText">
+          <app-button
+            *ngIf="modal.config.cancelText"
+            [hierarchy]="'tertiary'"
+            [size]="'md'"
+            [disabled]="isLoading(modal.config.id)"
+            (clicked)="handleCancel(modal)"
+          >
+            {{ modal.config.cancelText }}
+          </app-button>
+          <app-button
+            *ngIf="modal.config.confirmText"
+            [hierarchy]="'primary'"
+            [size]="'md'"
+            [loading]="isLoading(modal.config.id)"
+            (clicked)="handleConfirm(modal)"
+            #lastFocusable
+          >
+            {{ modal.config.confirmText }}
+          </app-button>
+        </div>
+      </div>
+
+      <!-- ALERT TYPE -->
+      <div *ngIf="modal.config.type === 'alert'" class="modal-alert">
+        <!-- Alert Icon -->
+        <div [ngClass]="getAlertIconClass(modal.config.alertType)">
+          <span class="alert-icon-symbol">{{ getAlertIcon(modal.config.alertType) }}</span>
+        </div>
+
+        <!-- Alert Content -->
+        <div class="alert-content">
+          <h2 class="alert-title" [id]="modal.config.id + '-title'" *ngIf="modal.config.title">
+            {{ modal.config.title }}
+          </h2>
+          <p class="alert-message" [id]="modal.config.id + '-content'" *ngIf="modal.config.content">
+            {{ modal.config.content }}
+          </p>
+        </div>
+
+        <!-- Alert Actions -->
+        <div class="alert-actions">
+          <app-button
+            *ngIf="modal.config.cancelText"
+            [hierarchy]="'secondary'"
+            [size]="'md'"
+            [fullWidth]="true"
+            [disabled]="isLoading(modal.config.id)"
+            (clicked)="handleCancel(modal)"
+          >
+            {{ modal.config.cancelText }}
+          </app-button>
+          <app-button
+            *ngIf="modal.config.confirmText"
+            [hierarchy]="'primary'"
+            [size]="'md'"
+            [fullWidth]="true"
+            [destructive]="modal.config.alertType === 'error'"
+            [loading]="isLoading(modal.config.id)"
+            (clicked)="handleConfirm(modal)"
+            #lastFocusable
+          >
+            {{ modal.config.confirmText }}
+          </app-button>
+        </div>
+      </div>
+
+      <!-- DRAWER RIGHT TYPE -->
+      <div *ngIf="modal.config.type === 'drawer-right'" class="modal-drawer">
+        <!-- Header -->
+        <div class="drawer-header">
+          <h2 class="drawer-title" [id]="modal.config.id + '-title'" *ngIf="modal.config.title">
+            {{ modal.config.title }}
+          </h2>
+          <button
+            *ngIf="modal.config.showCloseButton"
+            type="button"
+            class="drawer-close"
+            (click)="dismiss(modal)"
+            aria-label="Close drawer"
+            #firstFocusable
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="drawer-body">
+          <div *ngIf="modal.config.content" [id]="modal.config.id + '-content'" class="drawer-content-text">
+            {{ modal.config.content }}
+          </div>
+          <ng-container *ngIf="modal.config.component">
+            <!-- Dynamic component injection can be added here -->
+          </ng-container>
+        </div>
+
+        <!-- Footer -->
+        <div class="drawer-footer" *ngIf="modal.config.confirmText || modal.config.cancelText">
+          <app-button
+            *ngIf="modal.config.cancelText"
+            [hierarchy]="'secondary'"
+            [size]="'md'"
+            [fullWidth]="true"
+            [disabled]="isLoading(modal.config.id)"
+            (clicked)="handleCancel(modal)"
+          >
+            {{ modal.config.cancelText }}
+          </app-button>
+          <app-button
+            *ngIf="modal.config.confirmText"
+            [hierarchy]="'primary'"
+            [size]="'md'"
+            [fullWidth]="true"
+            [loading]="isLoading(modal.config.id)"
+            (clicked)="handleConfirm(modal)"
+            #lastFocusable
+          >
+            {{ modal.config.confirmText }}
+          </app-button>
+        </div>
+      </div>
+
+      <!-- DRAWER LEFT TYPE -->
+      <div *ngIf="modal.config.type === 'drawer-left'" class="modal-drawer">
+        <!-- Header -->
+        <div class="drawer-header">
+          <h2 class="drawer-title" [id]="modal.config.id + '-title'" *ngIf="modal.config.title">
+            {{ modal.config.title }}
+          </h2>
+          <button
+            *ngIf="modal.config.showCloseButton"
+            type="button"
+            class="drawer-close"
+            (click)="dismiss(modal)"
+            aria-label="Close drawer"
+            #firstFocusable
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div class="drawer-body">
+          <div *ngIf="modal.config.content" [id]="modal.config.id + '-content'" class="drawer-content-text">
+            {{ modal.config.content }}
+          </div>
+          <ng-container *ngIf="modal.config.component">
+            <!-- Dynamic component injection can be added here -->
+          </ng-container>
+        </div>
+
+        <!-- Footer -->
+        <div class="drawer-footer" *ngIf="modal.config.confirmText || modal.config.cancelText">
+          <app-button
+            *ngIf="modal.config.cancelText"
+            [hierarchy]="'secondary'"
+            [size]="'md'"
+            [fullWidth]="true"
+            [disabled]="isLoading(modal.config.id)"
+            (clicked)="handleCancel(modal)"
+          >
+            {{ modal.config.cancelText }}
+          </app-button>
+          <app-button
+            *ngIf="modal.config.confirmText"
+            [hierarchy]="'primary'"
+            [size]="'md'"
+            [fullWidth]="true"
+            [loading]="isLoading(modal.config.id)"
+            (clicked)="handleConfirm(modal)"
+            #lastFocusable
+          >
+            {{ modal.config.confirmText }}
+          </app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

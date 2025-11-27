@@ -1,7 +1,7 @@
 <!-- Date Picker Component - Matching Design -->
-<div class="datepicker-container">
+<div class="datepicker-container" [class]="class" [style.width]="width || null">
   <!-- Label -->
-  <label *ngIf="label" class="datepicker-label">
+  <label *ngIf="label" [for]="id" class="datepicker-label">
     {{ label }}
     <span *ngIf="required" class="required-asterisk">*</span>
   </label>
@@ -9,36 +9,48 @@
   <!-- Input Field -->
   <div
     class="datepicker-input-wrapper"
+    [class.variant-outline]="variant === 'outline'"
+    [class.variant-fill]="variant === 'fill'"
     [class.focused]="isFocused() || isOpen()"
     [class.disabled]="disabled"
+    [class.readonly]="readonly"
     [class.has-error]="!!errorMessage"
     (click)="togglePicker()">
 
     <input
       type="text"
+      [id]="id"
+      [name]="name"
       class="datepicker-input"
       [value]="formattedDate()"
       [placeholder]="placeholder"
       [disabled]="disabled"
+      [readonly]="true"
       [required]="required"
-      (focus)="onFocus()"
-      (blur)="onBlur()"
-      readonly>
+      [attr.aria-label]="ariaLabel || label || null"
+      [attr.aria-describedby]="ariaDescribedBy || null"
+      [attr.aria-labelledby]="ariaLabelledBy || null"
+      [attr.aria-invalid]="!!errorMessage || null"
+      [attr.aria-required]="required || null"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)">
 
     <div class="datepicker-actions">
       <button
-        *ngIf="selectedDate()"
+        *ngIf="selectedDate() && clearable"
         type="button"
         class="clear-button"
         (click)="clear(); $event.stopPropagation()"
-        [disabled]="disabled">
+        [disabled]="disabled || readonly"
+        aria-label="Clear date">
         <mat-icon>close</mat-icon>
       </button>
 
       <button
         type="button"
         class="calendar-button"
-        [disabled]="disabled">
+        [disabled]="disabled || readonly"
+        aria-label="Open calendar">
         <mat-icon>calendar_today</mat-icon>
       </button>
     </div>
@@ -157,12 +169,16 @@
   </div>
 
   <!-- Footer Messages -->
-  <div class="datepicker-footer" *ngIf="hint || errorMessage">
+  <div class="datepicker-footer" *ngIf="hint || errorMessage || successMessage">
     <span *ngIf="errorMessage" class="error-message">
       <mat-icon class="message-icon">error</mat-icon>
       {{ errorMessage }}
     </span>
-    <span *ngIf="!errorMessage && hint" class="hint-message">
+    <span *ngIf="!errorMessage && successMessage && selectedDate()" class="success-message">
+      <mat-icon class="message-icon">check_circle</mat-icon>
+      {{ successMessage }}
+    </span>
+    <span *ngIf="!errorMessage && !successMessage && hint" class="hint-message">
       {{ hint }}
     </span>
   </div>
