@@ -8,6 +8,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AppInputComponent } from './app-input.component';
+import { AppTextarea } from '../app-textarea/app-textarea';
 
 // ============================================
 // EXAMPLE 1: Simple Login Form
@@ -522,6 +523,91 @@ export class TimeEntryExample {
 }
 
 // ============================================
+// EXAMPLE 7: Feedback Form with Textarea
+// ============================================
+
+@Component({
+  selector: 'app-feedback-form',
+  standalone: true,
+  imports: [AppInputComponent, AppTextarea, ReactiveFormsModule],
+  template: `
+    <form [formGroup]="feedbackForm" (ngSubmit)="onSubmitFeedback()">
+      <!-- Subject -->
+      <app-input
+        label="Subject"
+        formControlName="subject"
+        placeholder="What is your feedback about?"
+        [required]="true"
+        [maxlength]="100"
+        [showCounter]="true"
+        [iconLeft]="{ name: 'subject', type: 'material' }"
+      >
+      </app-input>
+
+      <!-- Email -->
+      <app-input
+        label="Email"
+        type="email"
+        formControlName="email"
+        placeholder="your@email.com"
+        [required]="true"
+        [iconLeft]="{ name: 'email', type: 'material' }"
+        autocomplete="email"
+      >
+      </app-input>
+
+      <!-- Feedback Message (Textarea) -->
+      <app-textarea
+        label="Your Feedback"
+        formControlName="message"
+        placeholder="Tell us what you think..."
+        [required]="true"
+        [maxlength]="1000"
+        [showCounter]="true"
+        [rows]="6"
+        resize="vertical"
+        hint="Please provide detailed feedback"
+      >
+      </app-textarea>
+
+      <!-- Rating -->
+      <app-input
+        label="Rating (1-5)"
+        type="number"
+        formControlName="rating"
+        placeholder="5"
+        [required]="true"
+        [min]="1"
+        [max]="5"
+        inputmode="numeric"
+        [iconLeft]="{ name: 'star', type: 'material', color: '#f59e0b' }"
+      >
+      </app-input>
+
+      <button type="submit" [disabled]="!feedbackForm.valid">Submit Feedback</button>
+    </form>
+  `
+})
+export class FeedbackFormExample {
+  feedbackForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.feedbackForm = this.fb.group({
+      subject: ['', [Validators.required, Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email]],
+      message: ['', [Validators.required, Validators.maxLength(1000)]],
+      rating: [5, [Validators.required, Validators.min(1), Validators.max(5)]]
+    });
+  }
+
+  onSubmitFeedback() {
+    if (this.feedbackForm.valid) {
+      console.log('Feedback:', this.feedbackForm.value);
+    }
+  }
+}
+
+// ============================================
 // EXPORT ALL EXAMPLES
 // ============================================
 
@@ -531,5 +617,6 @@ export const APP_INPUT_EXAMPLES = {
   ProjectFormExample,
   SearchFilterExample,
   LocationInputExample,
-  TimeEntryExample
+  TimeEntryExample,
+  FeedbackFormExample
 };

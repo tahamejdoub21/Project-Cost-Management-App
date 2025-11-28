@@ -1,0 +1,187 @@
+<div class="inputs-demo-container">
+  <!-- Header -->
+  <div class="demo-header">
+    <h1 class="demo-title">Form Components Demo</h1>
+    <p class="demo-subtitle">Showcase of all form input components with the beautiful teal design system</p>
+  </div>
+
+  <!-- Demo Form -->
+  <form [formGroup]="demoForm" (ngSubmit)="onSubmit()" class="demo-form">
+
+    <!-- Text Inputs Section -->
+    <section class="form-section">
+      <h2 class="section-title">Text Input Fields</h2>
+      <div class="form-grid">
+        <!-- Text Field -->
+        <app-input
+          label="Text Field"
+          formControlName="textField"
+          placeholder="Input Text"
+          [required]="true"
+          [clearable]="true"
+          [iconLeft]="{ name: 'text_fields', type: 'material' }"
+          hint="Enter at least 3 characters"
+        ></app-input>
+
+        <!-- Email Field -->
+        <app-input
+          label="Email"
+          type="email"
+          formControlName="emailField"
+          placeholder="user@example.com"
+          [required]="true"
+          [iconLeft]="{ name: 'email', type: 'material' }"
+          autocomplete="email"
+        ></app-input>
+
+        <!-- Password Field -->
+        <app-input
+          label="Password"
+          type="password"
+          formControlName="passwordField"
+          placeholder="Enter password"
+          [required]="true"
+          [showPasswordToggle]="true"
+          [minlength]="8"
+          hint="Minimum 8 characters"
+        ></app-input>
+
+        <!-- Number Field -->
+        <app-input
+          label="Number (0-100)"
+          type="number"
+          formControlName="numberField"
+          placeholder="0"
+          [min]="0"
+          [max]="100"
+          [required]="true"
+          [iconLeft]="{ name: 'pin', type: 'material' }"
+          inputmode="numeric"
+        ></app-input>
+
+        <!-- Search Field -->
+        <app-input
+          label="Search"
+          type="search"
+          formControlName="searchField"
+          placeholder="Search..."
+          [clearable]="true"
+          [iconLeft]="{ name: 'search', type: 'material' }"
+        ></app-input>
+
+        <!-- Phone Field -->
+        <app-input
+          label="Phone Number"
+          type="tel"
+          formControlName="telField"
+          placeholder="(555) 123-4567"
+          [iconLeft]="{ name: 'phone', type: 'material' }"
+          autocomplete="tel"
+        ></app-input>
+
+        <!-- URL Field -->
+        <app-input
+          label="Website URL"
+          type="url"
+          formControlName="urlField"
+          placeholder="https://example.com"
+          [iconLeft]="{ name: 'link', type: 'material' }"
+        ></app-input>
+
+        <!-- Date Field -->
+        <app-input
+          label="Start Date"
+          type="date"
+          formControlName="dateField"
+          [iconLeft]="{ name: 'calendar_today', type: 'material' }"
+        ></app-input>
+      </div>
+    </section>
+
+    <!-- Select Dropdowns Section -->
+    <section class="form-section">
+      <h2 class="section-title">Select Field Dropdowns</h2>
+      <div class="form-grid">
+        <!-- Basic Select -->
+        <app-select
+          label="Select Field"
+          [options]="selectOptions"
+          formControlName="selectField"
+          placeholder="Select"
+          [clearable]="true"
+          hint="Select an option from the list"
+          tooltipText="This is a select field with icons"
+        ></app-select>
+
+        <!-- Select with Search -->
+        <app-select
+          label="Status (Searchable)"
+          [options]="statusOptions"
+          formControlName="statusField"
+          placeholder="Select status"
+          [searchable]="true"
+          [clearable]="true"
+          hint="Search and select status"
+        ></app-select>
+
+        <!-- Category Select -->
+        <app-select
+          label="Category"
+          [options]="categoryOptions"
+          formControlName="categoryField"
+          placeholder="Select category"
+          [searchable]="true"
+          [clearable]="true"
+        ></app-select>
+      </div>
+    </section>
+
+    <!-- Textarea Section -->
+    <section class="form-section">
+      <h2 class="section-title">Text Area</h2>
+      <div class="form-grid full-width">
+        <!-- Basic Textarea -->
+        <app-textarea
+          label="Text Area"
+          formControlName="textareaField"
+          placeholder="Text area"
+          [rows]="4"
+          [maxlength]="500"
+          [showCounter]="true"
+          [clearable]="true"
+          resize="vertical"
+          hint="Maximum 500 characters"
+        ></app-textarea>
+
+        <!-- Description Textarea -->
+        <app-textarea
+          label="Description"
+          formControlName="descriptionField"
+          placeholder="Enter detailed description..."
+          [rows]="6"
+          [clearable]="true"
+          resize="vertical"
+          hint="Provide a detailed description"
+        ></app-textarea>
+      </div>
+    </section>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">
+        <span class="btn-icon">check</span>
+        Submit Form
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="onReset()">
+        <span class="btn-icon">refresh</span>
+        Reset
+      </button>
+    </div>
+
+    <!-- Form Value Display -->
+    <div class="form-value-display" *ngIf="demoForm.value">
+      <h3 class="value-title">Form Value (JSON)</h3>
+      <pre class="value-content">{{ demoForm.value | json }}</pre>
+    </div>
+  </form>
+</div>
