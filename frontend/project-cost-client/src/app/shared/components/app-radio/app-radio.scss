@@ -1,0 +1,224 @@
+@use '../../../../styles/variables' as *;
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+  width: 100%;
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.radio-label-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.radio-group-label {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  line-height: $line-height-normal;
+}
+
+.required-indicator {
+  color: $error-500;
+  margin-left: $spacing-1;
+}
+
+.radio-options {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-3;
+
+  &.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: $spacing-4;
+  }
+}
+
+.radio-option {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-3;
+  cursor: pointer;
+  user-select: none;
+  padding: $spacing-2;
+  border-radius: $radius-md;
+  transition: background-color $transition-base;
+
+  &:hover:not(.disabled) {
+    background-color: $neutral-50;
+
+    .radio-circle {
+      border-color: $primary-500;
+    }
+  }
+
+  &.selected {
+    background-color: $primary-50;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.radio-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+
+  &:focus-visible + .radio-circle {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+
+  &:checked + .radio-circle {
+    border-color: $primary-500;
+    background-color: $bg-primary;
+  }
+
+  &:disabled + .radio-circle {
+    background-color: $neutral-100;
+    border-color: $neutral-300;
+    cursor: not-allowed;
+  }
+}
+
+.radio-circle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid $border-medium;
+  border-radius: $radius-full;
+  background-color: $bg-primary;
+  transition: all $transition-base;
+  margin-top: 2px;
+}
+
+.radio-dot {
+  border-radius: $radius-full;
+  background-color: $primary-500;
+  transition: all $transition-base;
+}
+
+.radio-content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  flex: 1;
+}
+
+.radio-option-label {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
+  line-height: $line-height-normal;
+}
+
+.radio-description {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-regular;
+  color: $text-secondary;
+  line-height: $line-height-normal;
+}
+
+.radio-error {
+  font-family: $font-family-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-regular;
+  color: $error-500;
+}
+
+// Size Variants
+.size-sm {
+  --radio-size: 16px;
+  --dot-size: 8px;
+
+  .radio-circle {
+    width: var(--radio-size);
+    height: var(--radio-size);
+  }
+
+  .radio-dot {
+    width: var(--dot-size);
+    height: var(--dot-size);
+  }
+
+  .radio-group-label {
+    font-size: $font-size-sm;
+  }
+
+  .radio-option-label {
+    font-size: $font-size-sm;
+  }
+
+  .radio-description {
+    font-size: $font-size-xs;
+  }
+}
+
+.size-md {
+  --radio-size: 20px;
+  --dot-size: 10px;
+
+  .radio-circle {
+    width: var(--radio-size);
+    height: var(--radio-size);
+  }
+
+  .radio-dot {
+    width: var(--dot-size);
+    height: var(--dot-size);
+  }
+
+  .radio-group-label {
+    font-size: $font-size-base;
+  }
+
+  .radio-option-label {
+    font-size: $font-size-base;
+  }
+
+  .radio-description {
+    font-size: $font-size-sm;
+  }
+}
+
+.size-lg {
+  --radio-size: 24px;
+  --dot-size: 12px;
+
+  .radio-circle {
+    width: var(--radio-size);
+    height: var(--radio-size);
+  }
+
+  .radio-dot {
+    width: var(--dot-size);
+    height: var(--dot-size);
+  }
+
+  .radio-group-label {
+    font-size: $font-size-lg;
+  }
+
+  .radio-option-label {
+    font-size: $font-size-lg;
+  }
+
+  .radio-description {
+    font-size: $font-size-base;
+  }
+}

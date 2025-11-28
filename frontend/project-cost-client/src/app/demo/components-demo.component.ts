@@ -3,11 +3,24 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AppInputComponent } from '../shared/components/app-input/app-input.component';
 import { AppDatepickerComponent } from '../shared/components/app-datepicker/app-datepicker.component';
-import { AppSelectComponent, SelectOption } from '../shared/components/app-select/app-select.component';
+import { AppSelect, SelectOption as NewSelectOption } from '../shared/components/app-select/app-select';
+import { AppTextarea } from '../shared/components/app-textarea/app-textarea';
 import { AppButtonComponent } from '../shared/components/app-button/app-button.component';
 import { AppModalComponent } from '../shared/components/app-modal/app-modal.component';
+import { AppMultiselect, MultiselectOption } from '../shared/components/app-multiselect/app-multiselect';
 import { ModalService, ModalSize } from '../shared/services/modal.service';
 import { ModalFormDemoComponent } from './modal-form-demo/modal-form-demo.component';
+import { AppCheckbox } from '../shared/components/app-checkbox/app-checkbox';
+import { AppRadio, RadioOption } from '../shared/components/app-radio/app-radio';
+import { AppSwitch } from '../shared/components/app-switch/app-switch';
+import { checkboxExamples, radioExamples, switchExamples } from '../shared/components/app-checkbox/app-checkbox.examples';
+
+// Re-export SelectOption for backward compatibility
+export interface SelectOption {
+  value: string;
+  label: string;
+  group?: string;
+}
 
 @Component({
   selector: 'app-components-demo',
@@ -17,9 +30,14 @@ import { ModalFormDemoComponent } from './modal-form-demo/modal-form-demo.compon
     ReactiveFormsModule,
     AppInputComponent,
     AppDatepickerComponent,
-    AppSelectComponent,
+    AppSelect,
+    AppMultiselect,
+    AppTextarea,
     AppButtonComponent,
     AppModalComponent,
+    AppCheckbox,
+    AppRadio,
+    AppSwitch,
   ],
   templateUrl: './components-demo.component.html',
   styleUrls: ['./components-demo.component.scss'],
@@ -59,6 +77,34 @@ export class ComponentsDemoComponent {
     { value: 'ist', label: 'Indian Standard Time', group: 'Asia' },
   ];
 
+  // Multiselect options
+  skillOptions: MultiselectOption[] = [
+    { value: 'js', label: 'JavaScript', icon: 'code' },
+    { value: 'ts', label: 'TypeScript', icon: 'code' },
+    { value: 'angular', label: 'Angular', icon: 'web' },
+    { value: 'react', label: 'React', icon: 'web' },
+    { value: 'vue', label: 'Vue.js', icon: 'web' },
+    { value: 'node', label: 'Node.js', icon: 'dns' },
+    { value: 'python', label: 'Python', icon: 'code' },
+    { value: 'java', label: 'Java', icon: 'code' },
+  ];
+
+  teamOptions: MultiselectOption[] = [
+    { value: '1', label: 'John Doe', icon: 'person', description: 'Frontend Developer' },
+    { value: '2', label: 'Jane Smith', icon: 'person', description: 'Backend Developer' },
+    { value: '3', label: 'Bob Johnson', icon: 'person', description: 'UI/UX Designer' },
+    { value: '4', label: 'Alice Williams', icon: 'person', description: 'Project Manager' },
+    { value: '5', label: 'Charlie Brown', icon: 'person', description: 'QA Engineer' },
+  ];
+
+  tagOptions: MultiselectOption[] = [
+    { value: 'urgent', label: 'Urgent', icon: 'priority_high' },
+    { value: 'bug', label: 'Bug Fix', icon: 'bug_report' },
+    { value: 'feature', label: 'Feature', icon: 'new_releases' },
+    { value: 'enhancement', label: 'Enhancement', icon: 'upgrade' },
+    { value: 'documentation', label: 'Documentation', icon: 'description' },
+  ];
+
   minDate = new Date();
   maxDate = new Date();
 
@@ -68,6 +114,11 @@ export class ComponentsDemoComponent {
   testSelect1: string = '';
   testSelect2: string = '';
   testPhoneCountry: string = 'US';
+
+  // Checkbox, Radio, Switch examples
+  checkboxExamples = checkboxExamples;
+  radioExamples = radioExamples;
+  switchExamples = switchExamples;
 
   constructor(
     private fb: FormBuilder,
@@ -101,6 +152,25 @@ export class ComponentsDemoComponent {
       // Numeric inputs
       price: ['', [Validators.min(0)]],
       quantity: [1, [Validators.required, Validators.min(1)]],
+
+      // Multiselect inputs
+      skills: [[]],
+      teamMembers: [[]],
+      tags: [[]],
+
+      // Checkbox inputs
+      termsAccepted: [false],
+      emailNotifications: [false],
+      smsNotifications: [false],
+
+      // Radio inputs
+      paymentMethod: [''],
+      subscriptionPlan: [''],
+
+      // Switch inputs
+      darkMode: [false],
+      notifications: [false],
+      autoSave: [true],
     });
   }
 

@@ -1,0 +1,163 @@
+<div class="app-multiselect-wrapper" [class]="class" [style.width]="width || '100%'">
+  <!-- Label -->
+  <label *ngIf="label" [for]="id" class="app-multiselect-label">
+    {{ label }}
+    <span *ngIf="required" class="required-asterisk">*</span>
+    <mat-icon
+      *ngIf="tooltipText"
+      class="label-tooltip"
+      [matTooltip]="tooltipText"
+      matTooltipPosition="right">
+      info
+    </mat-icon>
+  </label>
+
+  <!-- Multiselect Control -->
+  <div
+    #selectElement
+    class="app-multiselect-control"
+    [class.open]="isOpen()"
+    [class.focused]="isFocused()"
+    [class.disabled]="disabled"
+    [class.readonly]="readonly"
+    [class.has-value]="hasValue()"
+    [class.has-error]="errorMessage"
+    [class.has-success]="successMessage"
+    [attr.tabindex]="disabled || readonly ? -1 : 0"
+    (click)="toggleDropdown()"
+    (keydown)="onKeyDown($event)">
+
+    <!-- Display Area -->
+    <div class="select-display">
+      <!-- Selected Tags -->
+      <div *ngIf="hasValue()" class="selected-tags">
+        <span
+          *ngFor="let option of selectedOptions()"
+          class="tag"
+          (click)="removeTag(option.value, $event)">
+          <mat-icon *ngIf="option.icon" class="tag-icon">{{ option.icon }}</mat-icon>
+          <span class="tag-label">{{ option.label }}</span>
+          <mat-icon class="tag-remove">close</mat-icon>
+        </span>
+      </div>
+
+      <!-- Placeholder -->
+      <span *ngIf="!hasValue()" class="select-placeholder">
+        {{ placeholder }}
+      </span>
+    </div>
+
+    <!-- Icons -->
+    <div class="select-icons">
+      <!-- Loading Spinner -->
+      <mat-icon *ngIf="loading" class="loading-icon spin">
+        hourglass_empty
+      </mat-icon>
+
+      <!-- Clear Button -->
+      <mat-icon
+        *ngIf="showClearButton() && !loading"
+        class="clear-icon"
+        (click)="clearSelection($event)">
+        close
+      </mat-icon>
+
+      <!-- Dropdown Arrow -->
+      <mat-icon class="dropdown-icon" [class.rotate]="isOpen()">
+        expand_more
+      </mat-icon>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <div
+    *ngIf="isOpen()"
+    class="app-multiselect-dropdown"
+    (click)="preventClose($event)">
+
+    <!-- Search Input -->
+    <div *ngIf="searchable" class="dropdown-search" (click)="preventClose($event)">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        (click)="preventClose($event)"
+        (mousedown)="preventClose($event)" />
+    </div>
+
+    <!-- Select All Checkbox -->
+    <div
+      *ngIf="showSelectAll && filteredOptions().length > 0"
+      class="dropdown-item select-all-item"
+      (click)="toggleSelectAll($event)">
+      <div class="checkbox-wrapper">
+        <div
+          class="custom-checkbox"
+          [class.checked]="allSelected()"
+          [class.indeterminate]="someSelected()">
+          <mat-icon *ngIf="allSelected()">check</mat-icon>
+          <mat-icon *ngIf="someSelected() && !allSelected()">remove</mat-icon>
+        </div>
+      </div>
+      <span class="option-label">Select All</span>
+    </div>
+
+    <!-- Divider -->
+    <div *ngIf="showSelectAll && filteredOptions().length > 0" class="dropdown-divider"></div>
+
+    <!-- Options List (Scrollable) -->
+    <div class="dropdown-list" [style.max-height]="maxHeight">
+      <div
+        *ngFor="let option of filteredOptions()"
+        class="dropdown-item"
+        [class.selected]="isSelected(option)"
+        [class.disabled]="option.disabled"
+        (click)="toggleOption(option, $event)">
+
+        <!-- Checkbox -->
+        <div class="checkbox-wrapper">
+          <div class="custom-checkbox" [class.checked]="isSelected(option)">
+            <mat-icon *ngIf="isSelected(option)">check</mat-icon>
+          </div>
+        </div>
+
+        <!-- Option Content -->
+        <div class="option-content">
+          <div class="option-main">
+            <mat-icon *ngIf="option.icon" class="option-icon">{{ option.icon }}</mat-icon>
+            <span class="option-label">{{ option.label }}</span>
+          </div>
+          <span *ngIf="option.description" class="option-description">
+            {{ option.description }}
+          </span>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div *ngIf="filteredOptions().length === 0" class="no-results">
+        <mat-icon>search_off</mat-icon>
+        <span>No options found</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hint Text -->
+  <div *ngIf="hint && !errorMessage && !successMessage" class="hint-text">
+    {{ hint }}
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="error-message">
+    <mat-icon class="error-icon">error</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <!-- Success Message -->
+  <div *ngIf="successMessage && !errorMessage" class="success-message">
+    <mat-icon class="success-icon">check_circle</mat-icon>
+    <span>{{ successMessage }}</span>
+  </div>
+</div>

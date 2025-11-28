@@ -1,0 +1,432 @@
+@use '../../../../styles/variables' as *;
+
+// ============================================
+// SELECT COMPONENT - MATCHING SCREENSHOT DESIGN
+// ============================================
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: $font-family-primary;
+  margin-bottom: $spacing-4;
+}
+
+// ============================================
+// CONTAINER
+// ============================================
+
+.select-container {
+  width: 100%;
+  position: relative;
+}
+
+// ============================================
+// LABEL
+// ============================================
+
+.select-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: $font-family-primary;
+  font-size: 13px;
+  font-weight: 600;
+  color: $neutral-800;
+  margin-bottom: 6px;
+
+  .required-asterisk {
+    color: $error-500;
+    margin-left: 2px;
+    font-weight: 700;
+  }
+
+  .tooltip-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: $neutral-500;
+    cursor: help;
+  }
+}
+
+// ============================================
+// SELECT WRAPPER
+// ============================================
+
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 44px;
+  background-color: $bg-primary;
+  border-radius: 8px;
+  border: 1.5px solid $neutral-300;
+  padding: 0 12px;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+
+  &:hover:not(.disabled):not(.readonly) {
+    border-color: $neutral-400;
+  }
+
+  &.focused {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.08);
+  }
+
+  &.has-error {
+    border-color: $error-500;
+
+    &.focused {
+      box-shadow: 0 0 0 3px rgba($error-500, 0.08);
+    }
+  }
+
+  &.disabled {
+    background-color: $neutral-50;
+    border-color: $neutral-200;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.readonly {
+    background-color: $neutral-50;
+    border-color: $neutral-200;
+    cursor: default;
+  }
+}
+
+// ============================================
+// SELECT DISPLAY
+// ============================================
+
+.select-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  overflow: hidden;
+
+  .option-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $neutral-600;
+    flex-shrink: 0;
+  }
+}
+
+.select-text {
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $neutral-800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.placeholder {
+    color: $neutral-400;
+  }
+}
+
+// ============================================
+// SELECT ICONS
+// ============================================
+
+.select-icons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.select-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: $neutral-500;
+  }
+
+  &:hover {
+    background-color: $neutral-100;
+
+    mat-icon {
+      color: $neutral-700;
+    }
+  }
+}
+
+.dropdown-arrow {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: $neutral-600;
+  transition: transform 0.2s ease;
+
+  &.open {
+    transform: rotate(180deg);
+  }
+}
+
+// ============================================
+// LOADING SPINNER
+// ============================================
+
+.loading-spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid $neutral-200;
+  border-top-color: $primary-500;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ============================================
+// DROPDOWN
+// ============================================
+
+.select-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: $bg-primary;
+  border: 1.5px solid $neutral-200;
+  border-radius: 8px;
+  box-shadow: $shadow-md;
+  z-index: $z-dropdown;
+  overflow: hidden;
+  animation: dropdownSlideDown 0.2s ease-out;
+}
+
+@keyframes dropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ============================================
+// SEARCH WRAPPER
+// ============================================
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid $neutral-200;
+
+  .search-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $neutral-500;
+    flex-shrink: 0;
+  }
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  color: $neutral-800;
+  padding: 0;
+
+  &::placeholder {
+    color: $neutral-400;
+  }
+}
+
+// ============================================
+// OPTIONS LIST
+// ============================================
+
+.options-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $neutral-300;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: $neutral-400;
+    }
+  }
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  .option-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $neutral-600;
+    flex-shrink: 0;
+  }
+
+  .option-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .option-label {
+    font-family: $font-family-primary;
+    font-size: 14px;
+    font-weight: 400;
+    color: $neutral-800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .option-description {
+    font-family: $font-family-primary;
+    font-size: 12px;
+    font-weight: 400;
+    color: $neutral-500;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .check-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $primary-500;
+    flex-shrink: 0;
+  }
+
+  &:hover:not(.disabled) {
+    background-color: $neutral-100;
+  }
+
+  &.selected {
+    background-color: rgba($primary-500, 0.08);
+
+    .option-label {
+      color: $primary-600;
+      font-weight: 500;
+    }
+
+    &:hover {
+      background-color: rgba($primary-500, 0.12);
+    }
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  color: $neutral-500;
+}
+
+// ============================================
+// FOOTER
+// ============================================
+
+.select-footer {
+  margin-top: 6px;
+  font-family: $font-family-primary;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: $error-600;
+  font-weight: 500;
+
+  .message-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.success-message {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: $success-600;
+  font-weight: 500;
+
+  .message-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.hint-message {
+  color: $neutral-600;
+  font-weight: 400;
+}
