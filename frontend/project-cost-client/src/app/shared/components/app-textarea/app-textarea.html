@@ -1,0 +1,189 @@
+<div class="textarea-container" [class]="class">
+  <!-- Label -->
+  <label *ngIf="label" [for]="id" class="textarea-label">
+    {{ label }}
+    <span *ngIf="required" class="required-asterisk">*</span>
+  </label>
+
+  <!-- Textarea Wrapper -->
+  <div
+    class="textarea-wrapper"
+    [class.focused]="isFocused()"
+    [class.has-error]="!!getErrorMessage()"
+    [class.disabled]="disabled"
+    [class.readonly]="readonly"
+    [class.with-toolbar]="showToolbar"
+    [style.width]="width || null"
+  >
+    <!-- Rich Text Toolbar -->
+    <div *ngIf="showToolbar" class="toolbar">
+      <div class="toolbar-group">
+        <button type="button" class="toolbar-btn" matTooltip="Undo" aria-label="Undo" (mousedown)="$event.preventDefault()" (click)="undo()">
+          <mat-icon>undo</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Redo" aria-label="Redo" (mousedown)="$event.preventDefault()" (click)="redo()">
+          <mat-icon>redo</mat-icon>
+        </button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-group">
+        <button type="button" class="toolbar-btn" matTooltip="Bold (Ctrl+B)" aria-label="Bold" (mousedown)="$event.preventDefault()" (click)="formatBold()">
+          <mat-icon>format_bold</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Italic (Ctrl+I)" aria-label="Italic" (mousedown)="$event.preventDefault()" (click)="formatItalic()">
+          <mat-icon>format_italic</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Underline (Ctrl+U)" aria-label="Underline" (mousedown)="$event.preventDefault()" (click)="formatUnderline()">
+          <mat-icon>format_underlined</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Link (Ctrl+K)" aria-label="Link" (mousedown)="$event.preventDefault()" (click)="insertLink()">
+          <mat-icon>link</mat-icon>
+        </button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-group">
+        <button type="button" class="toolbar-btn" matTooltip="Align Left" aria-label="Align Left" (mousedown)="$event.preventDefault()" (click)="alignLeft()">
+          <mat-icon>format_align_left</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Align Center" aria-label="Align Center" (mousedown)="$event.preventDefault()" (click)="alignCenter()">
+          <mat-icon>format_align_center</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Align Right" aria-label="Align Right" (mousedown)="$event.preventDefault()" (click)="alignRight()">
+          <mat-icon>format_align_right</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Bullet List" aria-label="Bullet List" (mousedown)="$event.preventDefault()" (click)="insertBulletList()">
+          <mat-icon>format_list_bulleted</mat-icon>
+        </button>
+      </div>
+      <div class="toolbar-divider"></div>
+      <div class="toolbar-group" style="position: relative;">
+        <button type="button" class="toolbar-btn" matTooltip="Text Color" aria-label="Text Color" (mousedown)="$event.preventDefault()" (click)="toggleColorPicker()">
+          <mat-icon>format_color_text</mat-icon>
+        </button>
+
+        <!-- Color Picker Dropdown -->
+        <div *ngIf="showColorPicker()" class="color-picker-dropdown">
+          <div class="color-grid">
+            <button *ngFor="let color of ['#000000', '#e60000', '#ff9900', '#ffff00', '#008a00', '#0066cc', '#9933ff', '#ffffff', '#facccc', '#ffebcc', '#ffffcc', '#cce8cc', '#cce0f5', '#ebd6ff', '#bbbbbb', '#f06666', '#ffc266', '#ffff66', '#66b966', '#66a3e0', '#c285ff', '#888888', '#a10000', '#b26b00', '#b2b200', '#006100', '#0047b2', '#6b24b2', '#444444', '#5c0000', '#663d00', '#666600', '#003700', '#002966', '#3d1466']"
+              type="button"
+              class="color-btn"
+              [style.background-color]="color"
+              (mousedown)="$event.preventDefault()"
+              (click)="changeTextColor(color)"
+              [attr.aria-label]="'Color ' + color">
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="toolbar-btn" matTooltip="Insert Link" aria-label="Insert Link" (mousedown)="$event.preventDefault()" (click)="insertLink()">
+          <mat-icon>insert_link</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Code Block" aria-label="Code Block" (mousedown)="$event.preventDefault()" (click)="insertCodeBlock()">
+          <mat-icon>code</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Insert Image" aria-label="Insert Image" (mousedown)="$event.preventDefault()" (click)="insertImage()">
+          <mat-icon>image</mat-icon>
+        </button>
+        <button type="button" class="toolbar-btn" matTooltip="Insert Emoji" aria-label="Insert Emoji" (mousedown)="$event.preventDefault()" (click)="toggleEmojiPicker()">
+          <mat-icon>sentiment_satisfied_alt</mat-icon>
+        </button>
+
+        <!-- Emoji Picker Dropdown -->
+        <div *ngIf="showEmojiPicker()" class="emoji-picker-dropdown">
+          <div class="emoji-grid">
+            <button *ngFor="let emoji of emojis"
+              type="button"
+              class="emoji-btn"
+              (mousedown)="$event.preventDefault()"
+              (click)="insertEmoji(emoji)"
+              [attr.aria-label]="'Emoji ' + emoji">
+              {{ emoji }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rich Text Editor (Content Editable) -->
+    <div
+      *ngIf="showToolbar"
+      #editorElement
+      [id]="id"
+      class="rich-text-editor"
+      [class.with-toolbar]="showToolbar"
+      [attr.contenteditable]="!disabled && !readonly"
+      [attr.placeholder]="placeholder"
+      (input)="updateValue()"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (keydown)="onKeyDown($event)"
+      [innerHTML]="value()"
+    ></div>
+
+    <!-- Plain Textarea (Without Toolbar) -->
+    <textarea
+      *ngIf="!showToolbar"
+      #textareaElement
+      [id]="id"
+      [name]="name"
+      [placeholder]="placeholder"
+      [value]="value()"
+      [required]="required"
+      [readonly]="readonly"
+      [disabled]="disabled || loading"
+      [rows]="rows"
+      [cols]="cols || null"
+      [attr.wrap]="wrap"
+      [attr.minlength]="minlength || null"
+      [attr.maxlength]="maxlength || null"
+      class="textarea-field"
+      [style.resize]="resize"
+      (input)="onInput($event)"
+      (focus)="onFocus($event)"
+      (blur)="onBlur($event)"
+      (keydown)="onKeyDown($event)"
+    ></textarea>
+
+    <!-- Icons -->
+    <div class="textarea-icons" *ngIf="showClearButton() || loading">
+      <div *ngIf="loading" class="loading-spinner-wrapper">
+        <span class="loading-spinner"></span>
+      </div>
+
+      <button
+        *ngIf="showClearButton() && !loading"
+        type="button"
+        class="clear-button"
+        (click)="onClearClick()"
+        [matTooltip]="'Clear'"
+        aria-label="Clear textarea"
+        tabindex="-1"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="textarea-footer" *ngIf="hint || getErrorMessage() || successMessage || showCounter">
+    <div class="footer-left">
+      <span *ngIf="getErrorMessage()" class="error-message">
+        <mat-icon class="message-icon">error</mat-icon>
+        {{ getErrorMessage() }}
+      </span>
+      <span *ngIf="!getErrorMessage() && successMessage && hasValue()" class="success-message">
+        <mat-icon class="message-icon">check_circle</mat-icon>
+        {{ successMessage }}
+      </span>
+      <span *ngIf="!getErrorMessage() && !successMessage && hint" class="hint-message">
+        {{ hint }}
+      </span>
+    </div>
+
+    <div class="footer-right">
+      <span *ngIf="showCounter && maxlength" class="character-counter">
+        {{ characterCount() }}/{{ maxlength }}
+      </span>
+    </div>
+  </div>
+</div>

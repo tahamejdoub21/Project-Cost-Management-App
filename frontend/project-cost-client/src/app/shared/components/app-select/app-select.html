@@ -1,0 +1,125 @@
+<!-- Custom Select Component -->
+<div class="select-container" [class]="class">
+  <!-- Label -->
+  <label *ngIf="label" [for]="id" class="select-label">
+    {{ label }}
+    <span *ngIf="required" class="required-asterisk">*</span>
+    <mat-icon *ngIf="tooltipText" class="tooltip-icon" [matTooltip]="tooltipText">
+      help_outline
+    </mat-icon>
+  </label>
+
+  <!-- Select Wrapper -->
+  <div
+    #selectElement
+    class="select-wrapper"
+    [class.focused]="isFocused() || isOpen()"
+    [class.has-error]="!!getErrorMessage()"
+    [class.disabled]="disabled"
+    [class.readonly]="readonly"
+    [class.has-value]="hasValue()"
+    [style.width]="width || null"
+    (click)="toggleDropdown()"
+    (blur)="onBlur()"
+    [attr.tabindex]="disabled || readonly ? -1 : 0"
+    [attr.aria-label]="label || placeholder"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-disabled]="disabled"
+  >
+    <!-- Selected Value Display -->
+    <div class="select-display">
+      <mat-icon *ngIf="selectedOption()?.icon" class="option-icon">
+        {{ selectedOption()?.icon }}
+      </mat-icon>
+      <span class="select-text" [class.placeholder]="!hasValue()">
+        {{ displayText() }}
+      </span>
+    </div>
+
+    <!-- Icons -->
+    <div class="select-icons">
+      <!-- Loading Spinner -->
+      <div *ngIf="loading" class="loading-spinner-wrapper">
+        <span class="loading-spinner"></span>
+      </div>
+
+      <!-- Clear Button -->
+      <button
+        *ngIf="showClearButton() && !loading"
+        type="button"
+        class="select-icon clear-icon"
+        (click)="clearSelection($event)"
+        [matTooltip]="'Clear'"
+        aria-label="Clear selection"
+        tabindex="-1"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <!-- Dropdown Arrow -->
+      <mat-icon class="dropdown-arrow" [class.open]="isOpen()">
+        expand_more
+      </mat-icon>
+    </div>
+  </div>
+
+  <!-- Dropdown Options -->
+  <div *ngIf="isOpen()" class="select-dropdown">
+    <!-- Search Input -->
+    <div *ngIf="searchable" class="search-wrapper">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($event)"
+        (click)="$event.stopPropagation()"
+      />
+    </div>
+
+    <!-- Options List -->
+    <div class="options-list">
+      <div
+        *ngFor="let option of filteredOptions()"
+        class="select-option"
+        [class.selected]="option.value === value()"
+        [class.disabled]="option.disabled"
+        (click)="selectOption(option); $event.stopPropagation()"
+      >
+        <mat-icon *ngIf="option.icon" class="option-icon">
+          {{ option.icon }}
+        </mat-icon>
+        <div class="option-content">
+          <div class="option-label">{{ option.label }}</div>
+          <div *ngIf="option.description" class="option-description">
+            {{ option.description }}
+          </div>
+        </div>
+        <mat-icon *ngIf="option.value === value()" class="check-icon">
+          check
+        </mat-icon>
+      </div>
+
+      <!-- No Results -->
+      <div *ngIf="filteredOptions().length === 0" class="no-results">
+        No options found
+      </div>
+    </div>
+  </div>
+
+  <!-- Helper Text / Error Message -->
+  <div class="select-footer" *ngIf="hint || getErrorMessage() || successMessage">
+    <span *ngIf="getErrorMessage()" class="error-message">
+      <mat-icon class="message-icon">error</mat-icon>
+      {{ getErrorMessage() }}
+    </span>
+    <span *ngIf="!getErrorMessage() && successMessage && hasValue()" class="success-message">
+      <mat-icon class="message-icon">check_circle</mat-icon>
+      {{ successMessage }}
+    </span>
+    <span *ngIf="!getErrorMessage() && !successMessage && hint" class="hint-message">
+      {{ hint }}
+    </span>
+  </div>
+</div>

@@ -1,0 +1,450 @@
+@use '../../../../styles/variables' as *;
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: $font-family-primary;
+  margin-bottom: $spacing-4;
+}
+
+.textarea-container {
+  width: 100%;
+}
+
+.textarea-label {
+  display: block;
+  font-family: $font-family-primary;
+  font-size: 13px;
+  font-weight: 600;
+  color: $neutral-800;
+  margin-bottom: 6px;
+
+  .required-asterisk {
+    color: $error-500;
+    margin-left: 2px;
+  }
+}
+
+.textarea-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  background-color: $bg-primary;
+  border-radius: 8px;
+  border: 1.5px solid $neutral-300;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover:not(.disabled):not(.readonly) {
+    border-color: $neutral-400;
+  }
+
+  &.focused {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.08);
+  }
+
+  &.has-error {
+    border-color: $error-500;
+
+    &.focused {
+      box-shadow: 0 0 0 3px rgba($error-500, 0.08);
+    }
+  }
+
+  &.disabled {
+    background-color: $neutral-50;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.readonly {
+    background-color: $neutral-50;
+    cursor: default;
+  }
+
+  &.with-toolbar {
+    padding: 0;
+  }
+}
+
+// ============================================
+// TOOLBAR STYLES
+// ============================================
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: $neutral-50;
+  border-bottom: 1.5px solid $neutral-200;
+  border-radius: 8px 8px 0 0;
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background-color: $neutral-300;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: $neutral-600;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &:hover {
+    background-color: $neutral-200;
+    color: $neutral-800;
+  }
+
+  &:active {
+    background-color: $neutral-300;
+  }
+
+  &.active {
+    background-color: $primary-100;
+    color: $primary-700;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+
+    &:hover {
+      background: transparent;
+    }
+  }
+}
+
+.textarea-field {
+  width: 100%;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $neutral-700;
+  line-height: 1.6;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 12px 44px 12px 14px;
+  min-height: 110px;
+  border-radius: 8px;
+  box-sizing: border-box;
+
+  &.with-toolbar {
+    border-radius: 0 0 8px 8px;
+    min-height: 90px;
+  }
+
+  &::placeholder {
+    color: $neutral-400;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.textarea-icons {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 4px;
+  z-index: 1;
+}
+
+.clear-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: $neutral-500;
+  }
+
+  &:hover {
+    background-color: $neutral-100;
+
+    mat-icon {
+      color: $neutral-700;
+    }
+  }
+}
+
+.loading-spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.loading-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid $neutral-200;
+  border-top-color: $primary-500;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.textarea-footer {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: $font-family-primary;
+  font-size: 12px;
+}
+
+.footer-left {
+  flex: 1;
+}
+
+.error-message,
+.success-message,
+.hint-message {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.error-message {
+  color: $error-600;
+  font-weight: 500;
+}
+
+.success-message {
+  color: $success-600;
+  font-weight: 500;
+}
+
+.hint-message {
+  color: $neutral-600;
+}
+
+.message-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.character-counter {
+  color: $neutral-600;
+  font-weight: 400;
+}
+
+// ============================================
+// RICH TEXT EDITOR STYLES
+// ============================================
+
+.rich-text-editor {
+  width: 100%;
+  font-family: $font-family-primary;
+  font-size: 14px;
+  font-weight: 400;
+  color: $neutral-700;
+  line-height: 1.6;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 12px 44px 12px 14px;
+  min-height: 110px;
+  border-radius: 0 0 8px 8px;
+  box-sizing: border-box;
+  overflow-y: auto;
+
+  &:empty:before {
+    content: attr(placeholder);
+    color: $neutral-400;
+    pointer-events: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  // Style formatted content
+  b, strong {
+    font-weight: 700;
+  }
+
+  i, em {
+    font-style: italic;
+  }
+
+  u {
+    text-decoration: underline;
+  }
+
+  a {
+    color: $primary-500;
+    text-decoration: underline;
+  }
+
+  ul {
+    margin: 8px 0;
+    padding-left: 24px;
+  }
+
+  pre {
+    background: $neutral-100;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin: 8px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+}
+
+// ============================================
+// COLOR PICKER STYLES
+// ============================================
+
+.color-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: $shadow-lg;
+  padding: 12px;
+  z-index: 1000;
+  animation: dropdownSlideDown 0.2s ease-out;
+}
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 28px);
+  gap: 6px;
+}
+
+.color-btn {
+  width: 28px;
+  height: 28px;
+  border: 2px solid $neutral-300;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.1);
+    border-color: $primary-500;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// ============================================
+// EMOJI PICKER STYLES
+// ============================================
+
+.emoji-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: $shadow-lg;
+  padding: 12px;
+  z-index: 1000;
+  animation: dropdownSlideDown 0.2s ease-out;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 32px);
+  gap: 4px;
+}
+
+.emoji-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  padding: 0;
+
+  &:hover {
+    background: $neutral-100;
+    transform: scale(1.2);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+// Animation
+@keyframes dropdownSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
