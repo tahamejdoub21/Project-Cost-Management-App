@@ -1,0 +1,37 @@
+<div class="radio-container" [class.disabled]="disabled" [class]="'size-' + size">
+  <div class="radio-label-wrapper" *ngIf="label">
+    <label class="radio-group-label">
+      {{ label }}
+      <span class="required-indicator" *ngIf="required">*</span>
+    </label>
+  </div>
+
+  <div class="radio-options" [class.horizontal]="orientation === 'horizontal'">
+    <label
+      *ngFor="let option of options"
+      class="radio-option"
+      [class.disabled]="isOptionDisabled(option)"
+      [class.selected]="isSelected(option.value)"
+    >
+      <input
+        type="radio"
+        class="radio-input"
+        [name]="name"
+        [value]="option.value"
+        [checked]="isSelected(option.value)"
+        [disabled]="isOptionDisabled(option)"
+        [required]="required"
+        (change)="onRadioChange(option.value)"
+      />
+      <span class="radio-circle">
+        <span class="radio-dot" *ngIf="isSelected(option.value)"></span>
+      </span>
+      <span class="radio-content">
+        <span class="radio-option-label">{{ option.label }}</span>
+        <span class="radio-description" *ngIf="option.description">{{ option.description }}</span>
+      </span>
+    </label>
+  </div>
+
+  <span class="radio-error" *ngIf="errorMessage">{{ errorMessage }}</span>
+</div>

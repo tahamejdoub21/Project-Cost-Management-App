@@ -1,0 +1,26 @@
+<div class="switch-container" [class.disabled]="disabled" [class]="'size-' + size">
+  <label class="switch-wrapper" [class.label-left]="labelPosition === 'left'">
+    <span class="switch-content" *ngIf="label || description" [class.label-left]="labelPosition === 'left'">
+      <span class="switch-label">
+        {{ label }}
+        <span class="required-indicator" *ngIf="required">*</span>
+      </span>
+      <span class="switch-description" *ngIf="description">{{ description }}</span>
+    </span>
+
+    <div class="switch-control">
+      <input
+        type="checkbox"
+        class="switch-input"
+        [checked]="checked"
+        [disabled]="disabled"
+        [required]="required"
+        (change)="onSwitchChange($event)"
+      />
+      <span class="switch-track" [class.checked]="checked">
+        <span class="switch-thumb"></span>
+      </span>
+    </div>
+  </label>
+  <span class="switch-error" *ngIf="errorMessage">{{ errorMessage }}</span>
+</div>

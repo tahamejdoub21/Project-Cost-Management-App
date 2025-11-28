@@ -1,0 +1,211 @@
+@use '../../../../styles/variables' as *;
+
+.switch-container {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  width: 100%;
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    .switch-wrapper {
+      cursor: not-allowed;
+    }
+  }
+}
+
+.switch-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-3;
+  cursor: pointer;
+  user-select: none;
+
+  &.label-left {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+
+  &:hover:not(.disabled) {
+    .switch-track {
+      border-color: $primary-600;
+    }
+  }
+}
+
+.switch-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+
+  &:focus-visible + .switch-track {
+    outline: 2px solid $primary-500;
+    outline-offset: 2px;
+  }
+
+  &:disabled + .switch-track {
+    background-color: $neutral-100;
+    border-color: $neutral-300;
+    cursor: not-allowed;
+
+    .switch-thumb {
+      background-color: $neutral-300;
+    }
+  }
+}
+
+.switch-control {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.switch-track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 2px solid $border-medium;
+  border-radius: $radius-full;
+  background-color: $neutral-200;
+  transition: all $transition-base;
+
+  &.checked {
+    background-color: $primary-500;
+    border-color: $primary-500;
+
+    .switch-thumb {
+      transform: translateX(var(--thumb-translate));
+      background-color: white;
+    }
+  }
+}
+
+.switch-thumb {
+  position: absolute;
+  border-radius: $radius-full;
+  background-color: white;
+  box-shadow: $shadow-sm;
+  transition: all $transition-base;
+  left: 2px;
+}
+
+.switch-content {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-1;
+  flex: 1;
+
+  &.label-left {
+    order: 1;
+  }
+}
+
+.switch-label {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
+  line-height: $line-height-normal;
+}
+
+.required-indicator {
+  color: $error-500;
+  margin-left: $spacing-1;
+}
+
+.switch-description {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-regular;
+  color: $text-secondary;
+  line-height: $line-height-normal;
+}
+
+.switch-error {
+  font-family: $font-family-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-regular;
+  color: $error-500;
+}
+
+// Size Variants
+.size-sm {
+  --track-width: 36px;
+  --track-height: 20px;
+  --thumb-size: 14px;
+  --thumb-translate: 16px;
+
+  .switch-track {
+    width: var(--track-width);
+    height: var(--track-height);
+  }
+
+  .switch-thumb {
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    top: 1px;
+  }
+
+  .switch-label {
+    font-size: $font-size-sm;
+  }
+
+  .switch-description {
+    font-size: $font-size-xs;
+  }
+}
+
+.size-md {
+  --track-width: 44px;
+  --track-height: 24px;
+  --thumb-size: 18px;
+  --thumb-translate: 20px;
+
+  .switch-track {
+    width: var(--track-width);
+    height: var(--track-height);
+  }
+
+  .switch-thumb {
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    top: 1px;
+  }
+
+  .switch-label {
+    font-size: $font-size-base;
+  }
+
+  .switch-description {
+    font-size: $font-size-sm;
+  }
+}
+
+.size-lg {
+  --track-width: 52px;
+  --track-height: 28px;
+  --thumb-size: 22px;
+  --thumb-translate: 24px;
+
+  .switch-track {
+    width: var(--track-width);
+    height: var(--track-height);
+  }
+
+  .switch-thumb {
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    top: 1px;
+  }
+
+  .switch-label {
+    font-size: $font-size-lg;
+  }
+
+  .switch-description {
+    font-size: $font-size-base;
+  }
+}

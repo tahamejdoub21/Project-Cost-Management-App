@@ -332,6 +332,89 @@
       </div>
     </section>
 
+    <!-- TEXTAREA Section -->
+    <section class="demo-section">
+      <h2 class="section-title">TEXTAREA</h2>
+      <div class="demo-grid">
+        <!-- Basic Textarea -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Basic</span>
+          <app-textarea
+            label="Description"
+            placeholder="Enter your message..."
+            [rows]="4">
+          </app-textarea>
+        </div>
+
+        <!-- With Character Counter -->
+        <div class="demo-item full-width">
+          <span class="demo-label">With Character Counter</span>
+          <app-textarea
+            label="Message"
+            placeholder="Enter your message..."
+            [rows]="5"
+            [maxlength]="500"
+            [showCounter]="true"
+            [clearable]="true"
+            hint="Maximum 500 characters">
+          </app-textarea>
+        </div>
+
+        <!-- Resizable Vertical -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Resizable (Vertical)</span>
+          <app-textarea
+            label="Notes"
+            placeholder="Add your notes..."
+            [rows]="6"
+            resize="vertical"
+            [clearable]="true">
+          </app-textarea>
+        </div>
+
+        <!-- Required with Validation -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Required Field</span>
+          <app-textarea
+            label="Required Textarea"
+            placeholder="This field is required..."
+            [rows]="4"
+            [required]="true"
+            [clearable]="true"
+            hint="Please provide detailed information">
+          </app-textarea>
+        </div>
+
+        <!-- With Rich Text Toolbar -->
+        <div class="demo-item full-width">
+          <span class="demo-label">With Rich Text Toolbar</span>
+          <app-textarea
+            label="Description with Toolbar"
+            placeholder="Enter a description..."
+            [rows]="5"
+            [showToolbar]="true"
+            [clearable]="true"
+            hint="Rich text editor with formatting options">
+          </app-textarea>
+        </div>
+
+        <!-- Toolbar with Character Counter -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Toolbar + Counter</span>
+          <app-textarea
+            label="Message"
+            placeholder="Type your message..."
+            [rows]="6"
+            [showToolbar]="true"
+            [maxlength]="1000"
+            [showCounter]="true"
+            [clearable]="true"
+            hint="Maximum 1000 characters">
+          </app-textarea>
+        </div>
+      </div>
+    </section>
+
     <!-- DATE PICKER Section -->
     <section class="demo-section">
       <h2 class="section-title">DATE PICKER</h2>
@@ -394,6 +477,318 @@
         <div class="view-item">
           <span class="demo-label">MONTH SELECT - EXPANDED</span>
           <p class="view-description">Click on the month in the calendar header to see month selection view</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKBOX Section -->
+    <section class="demo-section">
+      <h2 class="section-title">CHECKBOXES</h2>
+      <div [formGroup]="form" class="demo-grid">
+        <!-- Basic Checkbox -->
+        <div class="demo-item">
+          <span class="demo-label">Basic</span>
+          <app-checkbox
+            formControlName="termsAccepted"
+            [label]="checkboxExamples.basic.label">
+          </app-checkbox>
+        </div>
+
+        <!-- With Description -->
+        <div class="demo-item full-width">
+          <span class="demo-label">With Description</span>
+          <app-checkbox
+            formControlName="emailNotifications"
+            [label]="checkboxExamples.withDescription.label"
+            [description]="checkboxExamples.withDescription.description">
+          </app-checkbox>
+        </div>
+
+        <!-- Required -->
+        <div class="demo-item">
+          <span class="demo-label">Required</span>
+          <app-checkbox
+            [label]="checkboxExamples.required.label"
+            [description]="checkboxExamples.required.description"
+            [required]="checkboxExamples.required.required">
+          </app-checkbox>
+        </div>
+
+        <!-- Disabled -->
+        <div class="demo-item">
+          <span class="demo-label">Disabled</span>
+          <app-checkbox
+            [label]="checkboxExamples.disabled.label"
+            [description]="checkboxExamples.disabled.description"
+            [disabled]="checkboxExamples.disabled.disabled">
+          </app-checkbox>
+        </div>
+
+        <!-- Size Variants -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Size Variants</span>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <app-checkbox
+              size="sm"
+              label="Small checkbox"
+              description="This is a small checkbox">
+            </app-checkbox>
+            <app-checkbox
+              size="md"
+              label="Medium checkbox"
+              description="This is a medium checkbox (default)">
+            </app-checkbox>
+            <app-checkbox
+              size="lg"
+              label="Large checkbox"
+              description="This is a large checkbox">
+            </app-checkbox>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RADIO Section -->
+    <section class="demo-section">
+      <h2 class="section-title">RADIO BUTTONS</h2>
+      <div [formGroup]="form" class="demo-grid">
+        <!-- Payment Methods -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Payment Method</span>
+          <app-radio
+            formControlName="paymentMethod"
+            label="Select payment method"
+            [options]="radioExamples.paymentMethods">
+          </app-radio>
+        </div>
+
+        <!-- Subscription Plans -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Subscription Plan</span>
+          <app-radio
+            formControlName="subscriptionPlan"
+            label="Choose your plan"
+            [options]="radioExamples.subscriptionPlans">
+          </app-radio>
+        </div>
+
+        <!-- Horizontal Orientation -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Horizontal Layout</span>
+          <app-radio
+            label="Simple choice"
+            [options]="radioExamples.simpleOptions"
+            orientation="horizontal">
+          </app-radio>
+        </div>
+
+        <!-- Size Variants -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Size Variants</span>
+          <div style="display: flex; flex-direction: column; gap: 24px;">
+            <app-radio
+              size="sm"
+              label="Small radio buttons"
+              [options]="radioExamples.simpleOptions">
+            </app-radio>
+            <app-radio
+              size="md"
+              label="Medium radio buttons (default)"
+              [options]="radioExamples.simpleOptions">
+            </app-radio>
+            <app-radio
+              size="lg"
+              label="Large radio buttons"
+              [options]="radioExamples.simpleOptions">
+            </app-radio>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SWITCH Section -->
+    <section class="demo-section">
+      <h2 class="section-title">SWITCHES</h2>
+      <div [formGroup]="form" class="demo-grid">
+        <!-- Basic Switch -->
+        <div class="demo-item">
+          <span class="demo-label">Basic</span>
+          <app-switch
+            formControlName="darkMode"
+            [label]="switchExamples.simple.label">
+          </app-switch>
+        </div>
+
+        <!-- With Description -->
+        <div class="demo-item full-width">
+          <span class="demo-label">With Description</span>
+          <app-switch
+            formControlName="notifications"
+            [label]="switchExamples.basic.label"
+            [description]="switchExamples.basic.description">
+          </app-switch>
+        </div>
+
+        <!-- Required -->
+        <div class="demo-item">
+          <span class="demo-label">Required</span>
+          <app-switch
+            [label]="switchExamples.required.label"
+            [description]="switchExamples.required.description"
+            [required]="switchExamples.required.required">
+          </app-switch>
+        </div>
+
+        <!-- Disabled -->
+        <div class="demo-item">
+          <span class="demo-label">Disabled</span>
+          <app-switch
+            [label]="switchExamples.disabled.label"
+            [description]="switchExamples.disabled.description"
+            [disabled]="switchExamples.disabled.disabled">
+          </app-switch>
+        </div>
+
+        <!-- Label Position Left -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Label Position (Left)</span>
+          <app-switch
+            formControlName="autoSave"
+            label="Auto-save"
+            description="Automatically save your work"
+            labelPosition="left">
+          </app-switch>
+        </div>
+
+        <!-- Size Variants -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Size Variants</span>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <app-switch
+              size="sm"
+              label="Small switch"
+              description="This is a small switch">
+            </app-switch>
+            <app-switch
+              size="md"
+              label="Medium switch"
+              description="This is a medium switch (default)">
+            </app-switch>
+            <app-switch
+              size="lg"
+              label="Large switch"
+              description="This is a large switch">
+            </app-switch>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MULTISELECT Section -->
+    <section class="demo-section">
+      <h2 class="section-title">MULTISELECT</h2>
+      <div [formGroup]="form" class="demo-grid">
+        <!-- Basic Multiselect -->
+        <div class="demo-item">
+          <span class="demo-label">Basic</span>
+          <app-multiselect
+            label="Skills"
+            formControlName="skills"
+            placeholder="Select skills"
+            [options]="skillOptions">
+          </app-multiselect>
+        </div>
+
+        <!-- Searchable -->
+        <div class="demo-item">
+          <span class="demo-label">Searchable</span>
+          <app-multiselect
+            label="Skills (Searchable)"
+            formControlName="skills"
+            placeholder="Search and select skills"
+            [options]="skillOptions"
+            [searchable]="true">
+          </app-multiselect>
+        </div>
+
+        <!-- With Icons and Descriptions -->
+        <div class="demo-item full-width">
+          <span class="demo-label">With Icons & Descriptions</span>
+          <app-multiselect
+            label="Team Members"
+            formControlName="teamMembers"
+            placeholder="Select team members"
+            [options]="teamOptions"
+            [searchable]="true"
+            [clearable]="true"
+            hint="Select multiple team members">
+          </app-multiselect>
+        </div>
+
+        <!-- Clearable with Tags -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Tags with Icons</span>
+          <app-multiselect
+            label="Project Tags"
+            formControlName="tags"
+            placeholder="Add tags"
+            [options]="tagOptions"
+            [searchable]="true"
+            [clearable]="true"
+            [showSelectAll]="true"
+            hint="Click tags to remove them">
+          </app-multiselect>
+        </div>
+
+        <!-- Required -->
+        <div class="demo-item">
+          <span class="demo-label">Required</span>
+          <app-multiselect
+            label="Required Skills"
+            placeholder="Select at least one skill"
+            [options]="skillOptions"
+            [required]="true"
+            [searchable]="true"
+            errorMessage="Please select at least one skill">
+          </app-multiselect>
+        </div>
+
+        <!-- Disabled -->
+        <div class="demo-item">
+          <span class="demo-label">Disabled</span>
+          <app-multiselect
+            label="Disabled Multiselect"
+            placeholder="Cannot select"
+            [options]="skillOptions"
+            [disabled]="true">
+          </app-multiselect>
+        </div>
+
+        <!-- With Max Height -->
+        <div class="demo-item full-width">
+          <span class="demo-label">Custom Max Height</span>
+          <app-multiselect
+            label="Skills (Limited Height)"
+            formControlName="skills"
+            placeholder="Select skills"
+            [options]="skillOptions"
+            [searchable]="true"
+            [maxHeight]="'200px'"
+            hint="Dropdown limited to 200px height">
+          </app-multiselect>
+        </div>
+
+        <!-- Without Select All -->
+        <div class="demo-item">
+          <span class="demo-label">No Select All</span>
+          <app-multiselect
+            label="Tags"
+            formControlName="tags"
+            placeholder="Select tags"
+            [options]="tagOptions"
+            [showSelectAll]="false"
+            [clearable]="true">
+          </app-multiselect>
         </div>
       </div>
     </section>

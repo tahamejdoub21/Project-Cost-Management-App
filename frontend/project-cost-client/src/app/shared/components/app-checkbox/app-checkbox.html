@@ -1,0 +1,52 @@
+<div class="checkbox-container" [class.disabled]="disabled" [class]="'size-' + size">
+  <label class="checkbox-wrapper">
+    <input
+      type="checkbox"
+      class="checkbox-input"
+      [checked]="checked"
+      [disabled]="disabled"
+      [required]="required"
+      [indeterminate]="indeterminate"
+      (change)="onCheckboxChange($event)"
+    />
+    <span class="checkbox-box" [class.indeterminate]="indeterminate">
+      <svg
+        *ngIf="checked && !indeterminate"
+        class="checkbox-icon"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M13.3334 4L6.00008 11.3333L2.66675 8"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <svg
+        *ngIf="indeterminate"
+        class="checkbox-icon"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 8H12"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </span>
+    <span class="checkbox-content" *ngIf="label || description">
+      <span class="checkbox-label">
+        {{ label }}
+        <span class="required-indicator" *ngIf="required">*</span>
+      </span>
+      <span class="checkbox-description" *ngIf="description">{{ description }}</span>
+    </span>
+  </label>
+  <span class="checkbox-error" *ngIf="errorMessage">{{ errorMessage }}</span>
+</div>
