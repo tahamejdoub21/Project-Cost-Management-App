@@ -1,0 +1,149 @@
+@use '../../../styles/variables' as *;
+
+.avatar-examples {
+  min-height: 100vh;
+  background: $bg-secondary;
+  padding: $spacing-8 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-6;
+}
+
+.page-header {
+  margin-bottom: $spacing-10;
+
+  h1 {
+    font-size: $font-size-4xl;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0 0 $spacing-3 0;
+  }
+
+  .page-description {
+    font-size: $font-size-lg;
+    color: $text-secondary;
+    margin: 0;
+    max-width: 700px;
+  }
+}
+
+.section {
+  background: $bg-primary;
+  border-radius: $radius-xl;
+  padding: $spacing-8;
+  margin-bottom: $spacing-6;
+  box-shadow: $shadow-sm;
+
+  h2 {
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0 0 $spacing-2 0;
+  }
+
+  .section-description {
+    font-size: $font-size-base;
+    color: $text-secondary;
+    margin: 0 0 $spacing-6 0;
+  }
+}
+
+.demo-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-6;
+  flex-wrap: wrap;
+}
+
+.demo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-2;
+
+  .label {
+    font-size: $font-size-sm;
+    color: $text-tertiary;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.demo-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: $spacing-6;
+}
+
+.demo-card {
+  background: $bg-tertiary;
+  border: 1px solid $neutral-200;
+  border-radius: $radius-lg;
+  padding: $spacing-6;
+}
+
+.result {
+  margin-top: $spacing-6;
+  padding-top: $spacing-6;
+  border-top: 1px solid $neutral-200;
+
+  &-title {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $text-primary;
+    margin: 0 0 $spacing-3 0;
+  }
+
+  &-text {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+    margin: 0;
+  }
+
+  &-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      font-size: $font-size-sm;
+      color: $text-primary;
+      padding: $spacing-2 0;
+      border-bottom: 1px solid $neutral-200;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  &-email {
+    color: $text-tertiary;
+    font-size: $font-size-xs;
+    margin-left: $spacing-2;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 $spacing-4;
+  }
+
+  .page-header h1 {
+    font-size: $font-size-3xl;
+  }
+
+  .section {
+    padding: $spacing-6;
+  }
+
+  .demo-container {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-row {
+    gap: $spacing-4;
+  }
+}

@@ -1,0 +1,30 @@
+<div
+  class="app-avatar"
+  [class]="'app-avatar--' + size"
+  [class.app-avatar--border]="border"
+  [class.app-avatar--rounded]="rounded"
+  [class.app-avatar--clickable]="clickable"
+  [attr.aria-label]="alt || 'Avatar'"
+  role="img"
+>
+  <img
+    *ngIf="src && !imageError"
+    [src]="src"
+    [alt]="alt"
+    class="app-avatar__image"
+    (error)="onImageError()"
+  />
+  <div
+    *ngIf="!src || imageError"
+    class="app-avatar__initials"
+    [style.background-color]="getBackgroundColor()"
+  >
+    {{ getInitials() }}
+  </div>
+  <div
+    *ngIf="status !== 'none'"
+    class="app-avatar__status"
+    [class]="'app-avatar__status--' + status"
+    [attr.aria-label]="status"
+  ></div>
+</div>

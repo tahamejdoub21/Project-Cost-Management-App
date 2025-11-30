@@ -1,0 +1,290 @@
+<div class="avatar-examples">
+  <div class="container">
+    <div class="page-header">
+      <h1>Avatar & Avatar Group Components</h1>
+      <p class="page-description">
+        Flexible avatar components with image fallbacks, status indicators, and multi-select
+        dropdown functionality.
+      </p>
+    </div>
+
+    <!-- Avatar Sizes -->
+    <section class="section">
+      <h2>Avatar Sizes</h2>
+      <p class="section-description">
+        Avatars come in 6 sizes: xs, sm, md (default), lg, xl, and 2xl.
+      </p>
+      <div class="demo-row">
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Sarah Johnson"
+            size="xs"
+          ></app-avatar>
+          <span class="label">xs</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Sarah Johnson"
+            size="sm"
+          ></app-avatar>
+          <span class="label">sm</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Sarah Johnson"
+            size="md"
+          ></app-avatar>
+          <span class="label">md</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Sarah Johnson"
+            size="lg"
+          ></app-avatar>
+          <span class="label">lg</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Sarah Johnson"
+            size="xl"
+          ></app-avatar>
+          <span class="label">xl</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Sarah Johnson"
+            size="2xl"
+          ></app-avatar>
+          <span class="label">2xl</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avatar with Initials -->
+    <section class="section">
+      <h2>Avatar with Initials</h2>
+      <p class="section-description">
+        When no image is provided, avatars display initials with auto-generated colors.
+      </p>
+      <div class="demo-row">
+        <div class="demo-item">
+          <app-avatar alt="Sarah Johnson" size="lg"></app-avatar>
+          <span class="label">SJ</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar alt="Michael Chen" size="lg"></app-avatar>
+          <span class="label">MC</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar alt="Emily Rodriguez" size="lg"></app-avatar>
+          <span class="label">ER</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar initials="DK" alt="David Kim" size="lg"></app-avatar>
+          <span class="label">Custom</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avatar with Status -->
+    <section class="section">
+      <h2>Status Indicators</h2>
+      <p class="section-description">
+        Avatars can display status indicators: online, offline, away, or busy.
+      </p>
+      <div class="demo-row">
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=1"
+            alt="Online"
+            size="lg"
+            status="online"
+            [border]="true"
+          ></app-avatar>
+          <span class="label">Online</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=13"
+            alt="Busy"
+            size="lg"
+            status="busy"
+            [border]="true"
+          ></app-avatar>
+          <span class="label">Busy</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=5"
+            alt="Away"
+            size="lg"
+            status="away"
+            [border]="true"
+          ></app-avatar>
+          <span class="label">Away</span>
+        </div>
+        <div class="demo-item">
+          <app-avatar
+            src="https://i.pravatar.cc/150?img=9"
+            alt="Offline"
+            size="lg"
+            status="offline"
+            [border]="true"
+          ></app-avatar>
+          <span class="label">Offline</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avatar Group - Multi Select -->
+    <section class="section">
+      <h2>Avatar Group - Multi Select</h2>
+      <p class="section-description">
+        Select multiple team members from a searchable dropdown. Selected avatars are displayed
+        with overlap.
+      </p>
+      <div class="demo-container">
+        <div class="demo-card">
+          <app-avatar-group
+            [users]="users"
+            [selectedUsers]="selectedUsers()"
+            (selectionChange)="onSelectionChange($event)"
+            label="Project Team"
+            placeholder="Add team members..."
+            [max]="4"
+            [showStatus]="true"
+            [multiSelect]="true"
+            size="md"
+          ></app-avatar-group>
+          <div class="result" *ngIf="selectedUsers().length > 0">
+            <p class="result-title">Selected Members ({{ selectedUsers().length }}):</p>
+            <ul class="result-list">
+              <li *ngFor="let user of selectedUsers()">
+                {{ user.name }} <span class="result-email">{{ user.email }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avatar Group - With More Count -->
+    <section class="section">
+      <h2>Avatar Group - Overflow Display</h2>
+      <p class="section-description">
+        When there are more selected users than the max display count, a "+N" indicator shows the
+        remaining count.
+      </p>
+      <div class="demo-container">
+        <div class="demo-card">
+          <app-avatar-group
+            [users]="users"
+            [selectedUsers]="selectedTeamMembers()"
+            (selectionChange)="onTeamChange($event)"
+            label="Team Members"
+            placeholder="Select members..."
+            [max]="3"
+            [showStatus]="true"
+            [multiSelect]="true"
+            size="md"
+          ></app-avatar-group>
+          <div class="result" *ngIf="selectedTeamMembers().length > 0">
+            <p class="result-title">
+              Total Selected: {{ selectedTeamMembers().length }} members
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avatar Group - Single Select -->
+    <section class="section">
+      <h2>Avatar Group - Single Select</h2>
+      <p class="section-description">
+        Select a single user from the dropdown. Perfect for assigning tasks or selecting owners.
+      </p>
+      <div class="demo-container">
+        <div class="demo-card">
+          <app-avatar-group
+            [users]="users"
+            [selectedUsers]="singleSelectedUser()"
+            (selectionChange)="onSingleUserChange($event)"
+            label="Task Assignee"
+            placeholder="Assign to..."
+            [multiSelect]="false"
+            [showStatus]="true"
+            size="md"
+            [required]="true"
+          ></app-avatar-group>
+          <div class="result" *ngIf="singleSelectedUser().length > 0">
+            <p class="result-title">Assigned to:</p>
+            <p class="result-text">
+              {{ singleSelectedUser()[0].name }} - {{ singleSelectedUser()[0].email }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Avatar Group - Different Sizes -->
+    <section class="section">
+      <h2>Avatar Group - Size Variants</h2>
+      <p class="section-description">Avatar groups support all avatar sizes.</p>
+      <div class="demo-container">
+        <div class="demo-card">
+          <app-avatar-group
+            [users]="users"
+            [selectedUsers]="[users[0], users[1], users[2]]"
+            placeholder="Small avatars..."
+            [max]="4"
+            size="sm"
+          ></app-avatar-group>
+        </div>
+        <div class="demo-card">
+          <app-avatar-group
+            [users]="users"
+            [selectedUsers]="[users[0], users[1], users[2]]"
+            placeholder="Large avatars..."
+            [max]="4"
+            size="lg"
+          ></app-avatar-group>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clickable Avatars -->
+    <section class="section">
+      <h2>Interactive Avatars</h2>
+      <p class="section-description">Avatars can be made clickable with hover effects.</p>
+      <div class="demo-row">
+        <app-avatar
+          src="https://i.pravatar.cc/150?img=1"
+          alt="Sarah Johnson"
+          size="lg"
+          [clickable]="true"
+          [border]="true"
+        ></app-avatar>
+        <app-avatar
+          src="https://i.pravatar.cc/150?img=13"
+          alt="Michael Chen"
+          size="lg"
+          [clickable]="true"
+          [border]="true"
+        ></app-avatar>
+        <app-avatar
+          src="https://i.pravatar.cc/150?img=5"
+          alt="Emily Rodriguez"
+          size="lg"
+          [clickable]="true"
+          [border]="true"
+        ></app-avatar>
+      </div>
+    </section>
+  </div>
+</div>
