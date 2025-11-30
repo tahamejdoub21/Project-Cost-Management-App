@@ -1,0 +1,121 @@
+@use '../../../../styles/variables' as *;
+
+.app-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: $neutral-200;
+  flex-shrink: 0;
+  transition: all $transition-base;
+
+  &--rounded {
+    border-radius: $radius-full;
+  }
+
+  &--border {
+    border: 2px solid $bg-primary;
+    box-shadow: $shadow-sm;
+  }
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: $shadow-md;
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+
+  // Size variants
+  &--xs {
+    width: 24px;
+    height: 24px;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-medium;
+  }
+
+  &--sm {
+    width: 32px;
+    height: 32px;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+
+  &--md {
+    width: 40px;
+    height: 40px;
+    font-size: $font-size-base;
+    font-weight: $font-weight-medium;
+  }
+
+  &--lg {
+    width: 48px;
+    height: 48px;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+  }
+
+  &--xl {
+    width: 64px;
+    height: 64px;
+    font-size: $font-size-xl;
+    font-weight: $font-weight-semibold;
+  }
+
+  &--2xl {
+    width: 80px;
+    height: 80px;
+    font-size: $font-size-2xl;
+    font-weight: $font-weight-bold;
+  }
+
+  &__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__initials {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-inverse;
+    user-select: none;
+  }
+
+  &__status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 25%;
+    height: 25%;
+    min-width: 8px;
+    min-height: 8px;
+    border-radius: $radius-full;
+    border: 2px solid $bg-primary;
+
+    &--online {
+      background-color: $success-500;
+    }
+
+    &--offline {
+      background-color: $neutral-400;
+    }
+
+    &--away {
+      background-color: $warning-500;
+    }
+
+    &--busy {
+      background-color: $error-500;
+    }
+  }
+}

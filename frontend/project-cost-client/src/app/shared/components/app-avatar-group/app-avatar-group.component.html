@@ -1,0 +1,162 @@
+<div class="app-avatar-group">
+  <!-- Label -->
+  <label *ngIf="label" class="app-avatar-group__label">
+    {{ label }}
+    <span *ngIf="required" class="app-avatar-group__required">*</span>
+  </label>
+
+  <!-- Avatar Display Trigger -->
+  <div
+    class="app-avatar-group__trigger"
+    [class.app-avatar-group__trigger--disabled]="disabled"
+    (click)="toggleDropdown()"
+    role="button"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="'Select ' + (multiSelect ? 'members' : 'member')"
+    tabindex="0"
+  >
+    <!-- Avatars -->
+    <div class="app-avatar-group__avatars">
+      <app-avatar
+        *ngFor="let user of getVisibleUsers()"
+        [src]="user.avatar"
+        [alt]="user.name"
+        [size]="size"
+        [status]="getUserStatus(user)"
+        [border]="border"
+        [clickable]="true"
+      ></app-avatar>
+      <div
+        *ngIf="getRemainingCount() > 0"
+        class="app-avatar-group__more"
+        [class]="'app-avatar-group__more--' + size"
+      >
+        +{{ getRemainingCount() }}
+      </div>
+      <!-- Add Button -->
+      <button
+        type="button"
+        class="app-avatar-group__add-btn"
+        [class]="'app-avatar-group__add-btn--' + size"
+        [attr.aria-label]="'Add member'"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 4V16M4 10H16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dropdown Menu -->
+  <div class="app-avatar-group__dropdown" *ngIf="isOpen()" @slideDown>
+    <!-- Search -->
+    <div class="app-avatar-group__search">
+      <div class="app-avatar-group__search-wrapper">
+        <svg
+          class="app-avatar-group__search-icon"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM19 19l-4.35-4.35"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <input
+          type="text"
+          class="app-avatar-group__search-input"
+          [placeholder]="searchPlaceholder"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onSearchChange($event)"
+        />
+      </div>
+    </div>
+
+    <!-- User List -->
+    <div class="app-avatar-group__list">
+      <div
+        *ngFor="let user of getFilteredUsers()"
+        class="app-avatar-group__item"
+        [class.app-avatar-group__item--selected]="isUserSelected(user)"
+        (click)="toggleUser(user)"
+        role="option"
+        [attr.aria-selected]="isUserSelected(user)"
+      >
+        <div class="app-avatar-group__item-content">
+          <app-avatar
+            [src]="user.avatar"
+            [alt]="user.name"
+            size="sm"
+            [status]="getUserStatus(user)"
+          ></app-avatar>
+          <div class="app-avatar-group__item-info">
+            <div class="app-avatar-group__item-name">{{ user.name }}</div>
+            <div class="app-avatar-group__item-email" *ngIf="user.email">
+              {{ user.email }}
+            </div>
+          </div>
+        </div>
+        <div class="app-avatar-group__item-check" *ngIf="multiSelect && isUserSelected(user)">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M16.667 5L7.5 14.167L3.333 10"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="getFilteredUsers().length === 0" class="app-avatar-group__empty">
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 48 48"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="24" cy="24" r="24" fill="#F5F5F5" />
+          <path
+            d="M24 28C27.866 28 31 24.866 31 21C31 17.134 27.866 14 24 14C20.134 14 17 17.134 17 21C17 24.866 20.134 28 24 28Z"
+            stroke="#A3A3A3"
+            stroke-width="2"
+          />
+          <path
+            d="M14 34C14 29.5817 18.4772 26 24 26C29.5228 26 34 29.5817 34 34"
+            stroke="#A3A3A3"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+        <p class="app-avatar-group__empty-text">No members found</p>
+      </div>
+    </div>
+  </div>
+</div>

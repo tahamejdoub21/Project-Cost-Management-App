@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { ComponentsDemoComponent } from './demo/components-demo.component';
+import { AvatarExamplesComponent } from './pages/avatar-examples/avatar-examples.component';
 
 export const routes: Routes = [
   {
@@ -10,6 +11,10 @@ export const routes: Routes = [
   {
     path: 'inputs',
     component: ComponentsDemoComponent,
+  },
+  {
+    path: 'avatars',
+    component: AvatarExamplesComponent,
   },
   {
     path: '**',
